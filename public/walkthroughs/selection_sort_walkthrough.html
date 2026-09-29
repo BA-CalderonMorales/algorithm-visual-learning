@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Selection Sort Walkthrough</title>
+  <style>
+    :root { --bg:#18181b; --muted:#2f2f34; --border:#52525b; --text:#f4f4f5; --sub:#a1a1aa; --green:#34d399; --blue:#60a5fa; --orange:#fb923c; --yellow:#facc15; }
+    * { box-sizing:border-box; }
+    html,body { margin:0; height:100%; overflow:hidden; background:var(--bg); color:var(--text); font-family:Arial,sans-serif; }
+    #selection-sort { height:100vh; padding:28px 36px; position:relative; }
+    h1 { margin:0 0 8px; font-size:clamp(22px,2vw,32px); font-weight:500; }
+    .complexity { color:var(--sub); font-size:12px; line-height:1.4; margin:0 0 8px; max-width:900px; }
+    .step { color:var(--sub); margin-bottom:18px; }
+    .controls { position:absolute; top:24px; right:32px; display:flex; gap:8px; padding:8px; border:1px solid var(--border); border-radius:12px; background:#27272a; }
+    button { font:inherit; padding:9px 14px; border:1px solid var(--border); border-radius:8px; background:#303036; color:var(--text); cursor:pointer; }
+    button:hover:not(:disabled) { border-color:var(--blue); background:#3f3f46; }
+    button:disabled { opacity:.45; cursor:default; }
+    .stage { height:calc(100vh - 190px); min-height:420px; border:1px solid var(--border); background:#1f1f22; overflow-y:auto; overscroll-behavior:contain; scroll-behavior:smooth; padding:22px 24px; scrollbar-width:thin; scrollbar-color:#71717a #27272a; }
+    .stage::-webkit-scrollbar { width:12px; }
+    .stage::-webkit-scrollbar-track { background:#27272a; border-left:1px solid #3f3f46; }
+    .stage::-webkit-scrollbar-thumb { background:#71717a; border:3px solid #27272a; border-radius:999px; }
+    .stage::-webkit-scrollbar-thumb:hover { background:#a1a1aa; }
+    .content { width:min(1450px,100%); margin:0 auto; }
+    .message { color:var(--sub); font-size:clamp(15px,1.35vw,20px); line-height:1.4; margin:4px 0 18px; }
+    .legend { display:flex; flex-wrap:wrap; gap:8px 18px; margin-bottom:14px; color:var(--sub); font-size:12px; }
+    .legend span { display:flex; align-items:center; gap:6px; }
+    .swatch { width:12px; height:12px; border:1px solid var(--border); border-radius:3px; }
+    .history { display:flex; flex-direction:column; gap:8px; }
+    .history-row { display:grid; grid-template-columns:62px minmax(250px,auto) minmax(240px,1fr); align-items:center; gap:14px; min-height:62px; padding:8px 12px; border:1px solid transparent; border-radius:10px; background:#1c1c20; scroll-margin-block:calc(50vh - 145px); }
+    .history-row.current { border-color:var(--blue); background:#22252b; box-shadow:0 0 0 1px #60a5fa33; }
+    .history-label { color:var(--sub); font-size:12px; text-align:right; white-space:nowrap; }
+    .history-array { display:flex; gap:5px; flex-wrap:wrap; align-items:center; }
+    .history-cell { width:34px; height:32px; display:grid; place-items:center; border:1px solid var(--border); border-radius:5px; background:var(--muted); color:var(--text); font-size:15px; }
+    .history-cell.sorted { border-color:var(--green); background:#245743; }
+    .history-cell.minimum { border-color:var(--blue); background:#24405f; }
+    .history-cell.scan { border-color:var(--yellow); background:#514616; }
+    .history-cell.swap { border-color:var(--orange); background:#493326; }
+    .history-reason { color:var(--sub); font-size:13px; line-height:1.4; }
+    .history-row.current .history-reason { color:var(--text); }
+    .pass-pill { color:#bfdbfe; border:1px solid #3b82f6; border-radius:999px; padding:3px 9px; font-size:11px; white-space:nowrap; }
+    @media(max-width:1100px) {
+      #selection-sort { padding:20px; }
+      .controls { position:static; width:max-content; max-width:100%; flex-wrap:wrap; margin:12px 0; padding:6px; gap:5px; }
+      button { padding:7px 9px; font-size:12px; }
+      .stage { height:calc(100vh - 225px); min-height:350px; padding:16px 12px; }
+      .history-row { grid-template-columns:50px minmax(220px,auto) minmax(190px,1fr); gap:9px; padding:8px; }
+      .history-cell { width:29px; height:28px; font-size:13px; }
+    }
+    @media(max-width:700px) {
+      #selection-sort { padding:14px; }
+      .stage { height:calc(100vh - 250px); min-height:300px; }
+      .history-row { grid-template-columns:48px 1fr; }
+      .history-reason { grid-column:2; }
+      .history-label { grid-row:1 / span 2; }
+    }
+    #selection-sort .controls button { width:96px; height:28px; display:inline-flex; align-items:center; justify-content:center; padding:0 4px; font-size:11px; line-height:1; white-space:nowrap; }
+  </style>
+</head>
+<body>
+<main id="selection-sort">
+  <h1>Selection Sort: scan, choose minimum, swap</h1>
+  <div class="complexity"><strong>Time complexity:</strong> Best Θ(n²) · Average Θ(n²) · Worst Θ(n²)</div>
+  <div class="complexity"><strong>Divide and conquer:</strong> No · <strong>Runtime lower bound (best):</strong> Θ(n²) comparisons · <strong>Runtime upper bound (worst):</strong> O(n²) · <a href="selection_sort.py" target="_blank" rel="noopener">Python implementation</a></div>
+  <div class="step" id="step">Step 1</div>
+  <div class="controls"><button id="back" disabled>Back step</button><button id="next">Next step</button><button id="reset">Reset</button><button id="shuffle">Shuffle same size</button></div>
+  <section class="stage"><div class="content">
+    <div class="message" id="message"></div>
+    <div class="legend"><span><i class="swatch" style="background:#245743;border-color:#34d399"></i>Sorted prefix</span><span><i class="swatch" style="background:#24405f;border-color:#60a5fa"></i>Smallest found so far</span><span><i class="swatch" style="background:#514616;border-color:#facc15"></i>Value being checked</span><span><i class="swatch" style="background:#493326;border-color:#fb923c"></i>Swap positions</span></div>
+    <div class="history" id="history"></div>
+  </div></section>
+</main>
+<script>
+(() => {
+  const original=[8,1,4,9,5,3,7,2,6,0];
+  let states=[],step=0;
+  function build(values) {
+    const a=values.slice(),trace=[];
+    const add=(msg,tags={},pass=null)=>trace.push({a:a.slice(),msg,tags,pass});
+    add('Start with the unsorted array. Selection Sort finds the smallest remaining value and places it at the next sorted position.');
+    for(let start=0;start<a.length-1;start++) {
+      let min=start;
+      add(`Pass ${start+1}: begin at index ${start}. Treat everything before it as the sorted prefix.`,{[min]:'minimum'},start+1);
+      for(let scan=start+1;scan<a.length;scan++) {
+        const tags=Object.fromEntries(Array.from({length:start},(_,i)=>[i,'sorted']));
+        tags[min]='minimum'; tags[scan]='scan';
+        add(`Compare ${a[scan]} at index ${scan} with the smallest found so far, ${a[min]} at index ${min}.`,tags,start+1);
+        if(a[scan]<a[min]) {
+          min=scan;
+          const updated=Object.fromEntries(Array.from({length:start},(_,i)=>[i,'sorted']));
+          updated[min]='minimum';
+          add(`${a[min]} is smaller, so it becomes the new minimum for this pass. Continue scanning the unsorted suffix.`,updated,start+1);
+        }
+      }
+      const prefix=Object.fromEntries(Array.from({length:start},(_,i)=>[i,'sorted']));
+      if(min!==start) {
+        const chosen=a[min], displaced=a[start];
+        [a[start],a[min]]=[a[min],a[start]];
+        add(`Pass ${start+1} is complete. Swap the minimum ${chosen} at index ${min} with ${displaced} at index ${start}.`,{...prefix,[start]:'swap',[min]:'swap'},start+1);
+      } else {
+        add(`Pass ${start+1} is complete. ${a[start]} is already the smallest remaining value, so no swap is needed.`,{...prefix,[start]:'sorted'},start+1);
+      }
+      const sorted=Object.fromEntries(Array.from({length:start+1},(_,i)=>[i,'sorted']));
+      add(`Index ${start} is now fixed. The sorted prefix contains ${a.slice(0,start+1).join(', ')}.`,sorted,start+1);
+    }
+    add(`The remaining value ${a[a.length-1]} is already in its final position. The entire array is sorted.`,Object.fromEntries(a.map((_,i)=>[i,'sorted'])));
+    return trace;
+  }
+  function render() {
+    const state=states[step];
+    document.getElementById('step').textContent=`Step ${step+1} of ${states.length}`;
+    document.getElementById('message').textContent=state.msg;
+    const history=document.getElementById('history'); history.replaceChildren();
+    states.slice(0,step+1).forEach((item,index)=>{
+      const row=document.createElement('article'); row.className='history-row'+(index===step?' current':'');
+      const label=document.createElement('div'); label.className='history-label'; label.textContent=`Step ${index+1}`;
+      const values=document.createElement('div'); values.className='history-array';
+      item.a.forEach((value,i)=>{const cell=document.createElement('div');cell.className=`history-cell ${item.tags?.[i]||''}`;cell.textContent=value;values.appendChild(cell);});
+      if(item.pass!==null){const pill=document.createElement('span');pill.className='pass-pill';pill.textContent=`pass ${item.pass}`;values.appendChild(pill);}
+      const reason=document.createElement('div'); reason.className='history-reason'; reason.textContent=item.msg;
+      row.append(label,values,reason); history.appendChild(row);
+    });
+    document.getElementById('back').disabled=step===0;
+    document.getElementById('next').disabled=step===states.length-1;
+    const active=history.querySelector('.history-row.current');
+    if(active) requestAnimationFrame(()=>active.scrollIntoView({behavior:'smooth',block:'center',inline:'nearest'}));
+  }
+  function reset(values=original){states=build(values);step=0;render();}
+  document.getElementById('back').onclick=()=>{if(step>0){step--;render();}};
+  document.getElementById('next').onclick=()=>{if(step<states.length-1){step++;render();}};
+  document.getElementById('reset').onclick=()=>reset();
+  document.getElementById('shuffle').onclick=()=>{const values=Array.from({length:10},(_,i)=>i);for(let i=values.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[values[i],values[j]]=[values[j],values[i]];}reset(values);};
+  reset();
+})();
+</script>
+</body>
+</html>
+

@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Insertion Sort Walkthrough</title>
+  <style>
+    :root { --bg:#18181b; --panel:#202023; --muted:#2f2f34; --border:#52525b; --text:#f4f4f5; --sub:#a1a1aa; --green:#34d399; --blue:#60a5fa; --orange:#fb923c; }
+    * { box-sizing:border-box; }
+    html,body { margin:0; height:100%; overflow:hidden; background:var(--bg); color:var(--text); font-family:Arial,sans-serif; }
+    #insertion-sort { height:100vh; padding:28px 36px; position:relative; }
+    h1 { margin:0 0 8px; font-size:clamp(22px,2vw,32px); font-weight:500; }
+    .complexity { color:var(--sub); font-size:12px; line-height:1.4; margin:0 0 8px; max-width:760px; }
+    .step { color:var(--sub); margin-bottom:18px; }
+    .controls { position:absolute; top:24px; right:32px; display:flex; gap:8px; padding:8px; border:1px solid var(--border); border-radius:12px; background:#27272a; }
+    button { font:inherit; padding:9px 14px; border:1px solid var(--border); border-radius:8px; background:#303036; color:var(--text); cursor:pointer; }
+    button:hover:not(:disabled) { border-color:var(--blue); background:#3f3f46; }
+    button:disabled { opacity:.45; cursor:default; }
+    .stage { height:calc(100vh - 180px); min-height:500px; border:1px solid var(--border); background:#1f1f22; display:block; overflow-y:auto; overscroll-behavior:contain; scroll-behavior:smooth; scroll-padding-block:calc(50% - 90px); padding:28px 32px; scrollbar-width:thin; scrollbar-color:#71717a #27272a; }
+    .stage::-webkit-scrollbar { width:12px; }
+    .stage::-webkit-scrollbar-track { background:#27272a; border-left:1px solid #3f3f46; }
+    .stage::-webkit-scrollbar-thumb { background:#71717a; border:3px solid #27272a; border-radius:999px; }
+    .stage::-webkit-scrollbar-thumb:hover { background:#a1a1aa; }
+    .content { width:min(1400px,100%); margin:0 auto; text-align:left; }
+    .message { color:var(--sub); font-size:clamp(16px,1.5vw,22px); min-height:32px; margin-bottom:30px; }
+    .array-card { display:none; }
+    .label { color:var(--sub); font-size:13px; margin-bottom:16px; }
+    .array-line { display:flex; justify-content:center; align-items:end; gap:14px; }
+    .index-label { color:var(--sub); font-size:12px; padding-bottom:5px; }
+    .array { display:flex; justify-content:center; gap:clamp(8px,1.4vw,18px); }
+    .item { width:clamp(48px,5vw,76px); flex:0 0 clamp(48px,5vw,76px); }
+    .tag { min-height:18px; color:var(--sub); font-size:12px; }
+    .box { height:clamp(48px,5vw,76px); display:grid; place-items:center; background:var(--muted); border:2px solid var(--border); font-size:clamp(20px,2.4vw,34px); }
+    .index { color:var(--sub); font-size:11px; margin-top:5px; }
+    .sorted .box { border-color:var(--green); box-shadow:0 0 0 2px #34d39955; }
+    .key .box { border-color:var(--blue); background:#24405f; box-shadow:0 0 0 2px #60a5fa55; }
+    .compare .box { border-color:var(--orange); box-shadow:0 0 0 2px #fb923c55; }
+    .shift .box { border-color:var(--orange); background:#493326; }
+    .history { margin-top:22px; color:var(--sub); font-size:13px; text-align:left; }
+    .history-row { display:flex; align-items:center; gap:16px; margin:10px 0; padding:8px 10px; border:1px solid transparent; }
+    .history-label { width:58px; flex:0 0 58px; color:var(--sub); font-size:11px; text-align:right; }
+    .history-array { display:flex; gap:6px; }
+    .history-cell { width:32px; height:28px; display:grid; place-items:center; border:1px solid var(--border); background:var(--muted); font-size:14px; }
+    .history-cell.sorted { border-color:var(--green); background:#245743; }
+    .history-cell.key { border-color:var(--blue); background:#24405f; }
+    .history-cell.compare { border-color:#facc15; background:#514616; }
+    .history-cell.shift { border-color:var(--orange); background:#493326; }
+    .history-cell.inserted { border-color:var(--green); background:#245743; }
+    .history-row.current .history-cell { border-color:var(--border); }
+    .history-row.current { border-color:var(--blue); background:#202023; }
+    .history-reason { flex:1; color:var(--sub); line-height:1.35; }
+    .legend { position:absolute; bottom:20px; left:36px; color:var(--sub); font-size:13px; }
+    @media (max-width:1100px) { #insertion-sort { padding:20px; } .controls { top:16px; right:20px; gap:5px; padding:6px; } button { padding:7px 9px; font-size:12px; } .stage { padding:20px 14px; } .array { gap:8px; } .item { width:52px; flex-basis:52px; } .box { height:52px; font-size:22px; } .legend { left:20px; bottom:12px; } }
+    @media (max-width:1600px) { #insertion-sort { padding:18px 22px; } .controls { top:14px; right:20px; gap:4px; padding:5px; } button { padding:6px 8px; font-size:11px; } .stage { padding:18px 12px; } }
+    #insertion-sort .controls button { width:96px; height:28px; display:inline-flex; align-items:center; justify-content:center; padding:0 4px; font-size:11px; line-height:1; white-space:nowrap; }
+    @media(max-width:900px) { #insertion-sort .controls { position:static; width:max-content; max-width:100%; flex-wrap:wrap; margin:12px 0; } .stage { height:calc(100vh - 255px); min-height:280px; } }
+  </style>
+</head>
+<body>
+<main id="insertion-sort">
+  <h1>Insertion Sort: key, compare, shift, insert</h1>
+  <div class="complexity"><strong>Time complexity:</strong> Best Θ(n) · Average Θ(n²) · Worst Θ(n²)</div>
+  <div class="complexity"><strong>Divide and conquer:</strong> No · <strong>Runtime lower bound (best):</strong> Θ(n) · <strong>Runtime upper bound (worst):</strong> O(n²) · <a href="insertion_sort.py" target="_blank" rel="noopener">Python implementation</a></div>
+  <div class="step" id="step">Step 1</div>
+  <div class="controls"><button id="back" disabled>Back step</button><button id="next">Next step</button><button id="reset">Reset</button><button id="shuffle">Shuffle same size</button></div>
+  <section class="stage"><div class="content"><div class="message" id="message"></div><div class="array-card"><div class="label">Current array</div><div class="array-line"><div class="index-label">indices</div><div class="array" id="array"></div></div></div><div class="history" id="history"></div></div></section>
+  <div class="legend">Green: sorted portion. Blue: key. Orange: comparison, shift, or open position.</div>
+</main>
+<script>
+(() => {
+  const original = [4,7,8,2,8,9,5,6,3,1];
+  let states = [], step = 0;
+  function build(values) {
+    const a = values.slice(), trace = [{a:a.slice(), tags:{0:'sorted'}, msg:'Start with the first value as the sorted portion.'}];
+    const add = (msg,tags={},focus=[]) => trace.push({a:a.slice(),tags,focus,msg});
+    for (let current=1; current<a.length; current++) {
+      const key=a[current];
+      let pos=current-1;
+      let shifted=false;
+      while(pos>=0 && a[pos]>key) {
+        shifted=true;
+        add(`Compare ${a[pos]} with key ${key}: ${a[pos]} is greater, so shift ${a[pos]} one position right to index ${pos+1}. Then compare the next value to the left.`, {...Object.fromEntries(Array.from({length:current},(_,i)=>[i,'sorted'])), [current]:'key', [pos]:'compare',[pos+1]:'shift'}, [pos,pos+1]);
+        a[pos+1]=a[pos]; pos--;
+      }
+      a[pos+1]=key;
+      const stop = pos>=0 ? `Compare ${a[pos]} with key ${key}: it is not greater, so shifting stops.` : `Key ${key} is the smallest value so far, so it shifts to index 0.`;
+      const action = shifted ? `${stop} Insert key ${key} at index ${pos+1}.` : `Key ${key} is already in order after the sorted prefix. No shift is needed.`;
+      add(`${action} The sorted portion now ends at index ${current}.`, {...Object.fromEntries(Array.from({length:current+1},(_,i)=>[i,'sorted'])), [pos+1]:'inserted'}, [pos+1]);
+    }
+    add('The entire array is sorted.', Object.fromEntries(a.map((_,i)=>[i,'sorted'])));
+    return trace;
+  }
+  function render(){
+    const s=states[step]; document.getElementById('step').textContent=`Step ${step+1} of ${states.length}`; document.getElementById('message').textContent=s.msg;
+    const el=document.getElementById('array'); el.replaceChildren();
+    s.a.forEach((value,i)=>{ const item=document.createElement('div'); item.className='item'; const tag=s.tags?.[i]||''; if(tag==='sorted') item.classList.add('sorted'); if(tag==='key') item.classList.add('key'); if(tag==='compare') item.classList.add('compare'); if(tag==='shift') item.classList.add('shift'); item.innerHTML=`<div class="tag">${tag}</div><div class="box">${value}</div><div class="index">${i}</div>`; el.appendChild(item); });
+    const history=document.getElementById('history'); history.replaceChildren();
+    states.slice(0,step+1).forEach((state,index)=>{ const row=document.createElement('div'); row.className='history-row'+(index===step?' current':''); const label=document.createElement('div'); label.className='history-label'; label.textContent=`Step ${index+1}`; const values=document.createElement('div'); values.className='history-array'; state.a.forEach((value,i)=>{ const cell=document.createElement('div'); const tag=state.tags?.[i]||''; cell.className=`history-cell ${tag}`; cell.textContent=value; values.appendChild(cell); }); const reason=document.createElement('div'); reason.className='history-reason'; reason.textContent=state.msg; row.append(label,values,reason); history.appendChild(row); });
+    document.getElementById('back').disabled=step===0; document.getElementById('next').disabled=step===states.length-1;
+    const currentRow=history.querySelector('.history-row.current');
+    if(currentRow) requestAnimationFrame(()=>currentRow.scrollIntoView({behavior:'smooth',block:'center',inline:'nearest'}));
+  }
+  function reset(values=original){states=build(values);step=0;render();}
+  document.getElementById('back').onclick=()=>{if(step){step--;render();}}; document.getElementById('next').onclick=()=>{if(step<states.length-1){step++;render();}}; document.getElementById('reset').onclick=()=>reset();
+  document.getElementById('shuffle').onclick=()=>{const v=Array.from({length:10},(_,i)=>i);for(let i=v.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[v[i],v[j]]=[v[j],v[i]];}reset(v);};
+  reset();
+})();
+</script>
+</body>
+</html>
+

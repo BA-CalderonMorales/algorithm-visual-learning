@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Merge Sort Walkthrough</title>
+  <style>
+    :root { --bg:#18181b; --muted:#2f2f34; --border:#52525b; --text:#f4f4f5; --sub:#a1a1aa; --green:#34d399; --blue:#60a5fa; --orange:#fb923c; --yellow:#facc15; --purple:#c084fc; }
+    * { box-sizing:border-box; }
+    html,body { margin:0; height:100%; overflow:hidden; background:var(--bg); color:var(--text); font-family:Arial,sans-serif; }
+    main { height:100vh; padding:22px 28px; position:relative; }
+    h1 { margin:0 0 7px; font-size:clamp(22px,2vw,30px); font-weight:500; }
+    .complexity,.memory { color:var(--sub); font-size:12px; line-height:1.4; margin:0 0 6px; max-width:900px; }
+    .memory { color:#e9d5ff; }
+    .memory a { color:#93c5fd; }
+    .step { color:var(--sub); margin:8px 0 14px; }
+    .controls { position:absolute; top:20px; right:28px; display:flex; gap:5px; padding:6px; border:1px solid var(--border); border-radius:12px; background:#27272a; }
+    button { width:96px; height:28px; display:inline-flex; align-items:center; justify-content:center; padding:0 4px; border:1px solid var(--border); border-radius:8px; background:#303036; color:var(--text); font:11px Arial,sans-serif; white-space:nowrap; cursor:pointer; }
+    button:hover:not(:disabled) { border-color:var(--blue); background:#3f3f46; }
+    button:disabled { opacity:.45; cursor:default; }
+    .stage { height:calc(100vh - 190px); min-height:330px; border:1px solid var(--border); background:#1f1f22; overflow-y:auto; overscroll-behavior:contain; scroll-behavior:smooth; padding:18px; scrollbar-width:thin; scrollbar-color:#71717a #27272a; }
+    .stage::-webkit-scrollbar { width:12px; }
+    .stage::-webkit-scrollbar-track { background:#27272a; }
+    .stage::-webkit-scrollbar-thumb { background:#71717a; border:3px solid #27272a; border-radius:999px; }
+    .stage::-webkit-scrollbar-thumb:hover { background:#a1a1aa; }
+    .content { width:min(1450px,100%); margin:auto; }
+    .message { color:var(--text); font-size:clamp(15px,1.3vw,19px); line-height:1.35; margin:2px 0 14px; }
+    .legend { display:flex; flex-wrap:wrap; gap:8px 16px; color:var(--sub); font-size:12px; margin-bottom:14px; }
+    .legend span { display:flex; align-items:center; gap:6px; }
+    .swatch { width:12px; height:12px; border:1px solid; border-radius:3px; }
+    .history { display:flex; flex-direction:column; gap:8px; }
+    .row { display:grid; grid-template-columns:56px minmax(320px,480px) minmax(230px,1fr); gap:12px; align-items:center; padding:9px 11px; min-height:68px; border:1px solid #3f3f46; border-radius:10px; background:#1c1c20; scroll-margin-block:calc(50vh - 155px); }
+    .row.current { border:2px solid var(--blue); background:#22252b; }
+    .row-label { color:var(--sub); text-align:right; font-size:11px; white-space:nowrap; }
+    .array { display:grid; grid-template-columns:repeat(10,minmax(0,1fr)); gap:3px; width:min(100%,390px); }
+    .position { display:flex; min-width:0; flex-direction:column; align-items:center; gap:3px; }
+    .cell { width:100%; height:30px; display:grid; place-items:center; border:1px solid var(--border); border-radius:4px; background:var(--muted); font-size:14px; }
+    .position.left .cell { border-color:var(--green); background:#245743; }
+    .position.right .cell { border-color:var(--orange); background:#493326; }
+    .position.leaf .cell { border-color:var(--blue); background:#24405f; }
+    .position.done .cell { border-color:var(--purple); background:#42265f; }
+    .index { color:var(--sub); font-size:9px; line-height:1; }
+    .visual { min-width:0; }
+    .run-strips { display:flex; flex-wrap:wrap; gap:4px 8px; margin-top:7px; }
+    .run-strip { display:inline-flex; align-items:center; gap:2px; color:var(--sub); font-size:10px; }
+    .run-strip b { font-weight:500; margin-right:2px; }
+    .mini { display:inline-grid; width:23px; height:21px; place-items:center; border:1px solid var(--border); border-radius:3px; background:var(--muted); color:var(--text); font-size:11px; }
+    .run-strip.left .mini { border-color:var(--green); }
+    .run-strip.right .mini { border-color:var(--orange); }
+    .run-strip.output .mini { border-color:var(--purple); }
+    .mini.compare { background:#514616; border-color:var(--yellow) !important; }
+    .mini.chosen { background:#42265f; border-color:var(--purple) !important; }
+    .reason { color:var(--sub); font-size:13px; line-height:1.4; }
+    .row.current .reason { color:var(--text); }
+    .badge { display:inline-block; margin-bottom:4px; padding:2px 7px; border:1px solid #6b7280; border-radius:999px; color:#d4d4d8; font-size:10px; }
+    @media(max-width:1100px) { main { padding:18px 20px; } .controls { position:static; width:max-content; max-width:100%; flex-wrap:wrap; margin:9px 0; } .stage { height:calc(100vh - 230px); min-height:280px; padding:12px; } .row { grid-template-columns:46px minmax(250px,auto) minmax(170px,1fr); gap:8px; } }
+    @media(max-width:700px) { main { padding:14px; } .stage { height:calc(100vh - 260px); } .row { grid-template-columns:42px minmax(0,1fr); } .reason { grid-column:2; } .row-label { grid-row:1 / span 2; } }
+  </style>
+</head>
+<body>
+<main>
+  <h1>Merge Sort: split, then merge sorted halves</h1>
+  <div class="complexity"><strong>Time complexity:</strong> Best Θ(n log n) · Average Θ(n log n) · Worst Θ(n log n). Extra space: Θ(n).</div>
+  <div class="complexity"><strong>Divide and conquer:</strong> Yes · <strong>Runtime lower bound (best):</strong> Ω(n log n) · <strong>Runtime upper bound (worst):</strong> O(n log n) · <a href="merge_sort.py" target="_blank" rel="noopener">Python implementation</a></div>
+  <div class="memory"><strong>Memory cue:</strong> Merge = split into singles → compare the fronts of sorted halves → combine. <a href="counting_sort_walkthrough.html" target="_blank" rel="noopener">Counting Sort</a> = tally → positions → place.</div>
+  <div class="step" id="step">Step 1</div>
+  <div class="controls"><button id="back" disabled>Back step</button><button id="next">Next step</button><button id="reset">Reset</button><button id="shuffle">Shuffle same size</button></div>
+  <section class="stage"><div class="content"><div class="message" id="message"></div>
+    <div class="legend"><span><i class="swatch" style="background:#245743;border-color:#34d399"></i>Left half</span><span><i class="swatch" style="background:#493326;border-color:#fb923c"></i>Right half</span><span><i class="swatch" style="background:#514616;border-color:#facc15"></i>Compared fronts</span><span><i class="swatch" style="background:#42265f;border-color:#c084fc"></i>Growing merged result</span></div>
+    <div class="history" id="history"></div>
+  </div></section>
+</main>
+<script>
+(() => {
+  const original=[8,1,4,9,5,3,7,2,6,0];
+  let states=[],step=0;
+  function build(values) {
+    const a=values.slice(),trace=[];
+    const add=(msg,meta={})=>trace.push({a:a.slice(),msg,...meta});
+    add('Start with the whole array. Split it into smaller ranges until each range has one value.',{phase:'start'});
+    function sort(lo,hi,depth=0) {
+      if(lo===hi){add(`Index ${lo} contains ${a[lo]}. A single value is already sorted.`,{phase:'leaf',lo,hi,depth});return;}
+      const mid=Math.floor((lo+hi)/2);
+      add(`Split indices ${lo}–${hi} into left ${lo}–${mid} and right ${mid+1}–${hi}. Sort each half before merging.`,{phase:'split',lo,mid,hi,depth});
+      sort(lo,mid,depth+1);sort(mid+1,hi,depth+1);
+      const left=a.slice(lo,mid+1),right=a.slice(mid+1,hi+1),out=[];
+      const context={lo,mid,hi,left,right,depth};
+      add(`Both halves are sorted. Merge left [${left.join(', ')}] with right [${right.join(', ')}].`,{...context,phase:'ready',out:out.slice()});
+      let li=0,ri=0;
+      while(li<left.length&&ri<right.length){
+        add(`Compare the first unused values: ${left[li]} on the left and ${right[ri]} on the right.`,{...context,phase:'compare',li,ri,out:out.slice()});
+        const fromLeft=left[li]<=right[ri];
+        const chosen=fromLeft?left[li++]:right[ri++];out.push(chosen);
+        add(`Take ${chosen} from the ${fromLeft?'left':'right'} half. The merged result now begins [${out.join(', ')}].`,{...context,phase:'take',chosenSide:fromLeft?'left':'right',out:out.slice()});
+      }
+      while(li<left.length){out.push(left[li++]);add(`Copy remaining left value ${out[out.length-1]} into the merged result.`,{...context,phase:'take',chosenSide:'left',out:out.slice()});}
+      while(ri<right.length){out.push(right[ri++]);add(`Copy remaining right value ${out[out.length-1]} into the merged result.`,{...context,phase:'take',chosenSide:'right',out:out.slice()});}
+      for(let i=0;i<out.length;i++)a[lo+i]=out[i];
+      add(`Write the merged result back into indices ${lo}–${hi}: [${out.join(', ')}].`,{...context,phase:'done',out:out.slice()});
+    }
+    sort(0,a.length-1);
+    add(`The entire array is sorted: [${a.join(', ')}].`,{phase:'final',lo:0,hi:a.length-1});
+    return trace;
+  }
+  function render() {
+    const active=states[step];document.getElementById('step').textContent=`Step ${step+1} of ${states.length}`;
+    document.getElementById('message').textContent=active.msg;
+    const history=document.getElementById('history');history.replaceChildren();
+    states.slice(0,step+1).forEach((item,index)=>{
+      const row=document.createElement('article');row.className='row'+(index===step?' current':'');
+      const label=document.createElement('div');label.className='row-label';label.textContent=`Step ${index+1}`;
+      const visual=document.createElement('div');visual.className='visual';
+      const array=document.createElement('div');array.className='array';
+      item.a.forEach((value,i)=>{
+        const pos=document.createElement('div');pos.className='position';
+        if(item.phase==='leaf'&&i===item.lo)pos.classList.add('leaf');
+        if(item.phase==='done'&&i>=item.lo&&i<=item.hi)pos.classList.add('done');
+        if(item.phase==='final')pos.classList.add('done');
+        if(['split','ready','compare','take'].includes(item.phase)){
+          if(i>=item.lo&&i<=item.mid)pos.classList.add('left');
+          if(i>item.mid&&i<=item.hi)pos.classList.add('right');
+        }
+        const cell=document.createElement('div');cell.className='cell';cell.textContent=value;
+        const indexLabel=document.createElement('span');indexLabel.className='index';indexLabel.textContent=i;
+        pos.append(cell,indexLabel);array.appendChild(pos);
+      });
+      visual.appendChild(array);
+      if(item.left&&item.right){
+        const strips=document.createElement('div');strips.className='run-strips';
+        [['left','L',item.left],['right','R',item.right],['output','→',Array.from({length:item.hi-item.lo+1},(_,i)=>item.out[i]??'·')]].forEach(([kind,title,nums])=>{
+          const strip=document.createElement('div');strip.className=`run-strip ${kind}`;
+          const heading=document.createElement('b');heading.textContent=title;strip.appendChild(heading);
+          nums.forEach((num,i)=>{const cell=document.createElement('span');cell.className='mini';cell.textContent=num;
+            if(item.phase==='compare'&&((kind==='left'&&i===item.li)||(kind==='right'&&i===item.ri)))cell.classList.add('compare');
+            if(kind==='output'&&item.phase==='take'&&i===item.out.length-1)cell.classList.add('chosen');
+            strip.appendChild(cell);
+          });strips.appendChild(strip);
+        });visual.appendChild(strips);
+      }
+      const reason=document.createElement('div');reason.className='reason';
+      const badge=document.createElement('span');badge.className='badge';badge.textContent=item.phase==='split'?`split ${item.lo}–${item.hi}`:item.phase==='leaf'?'base case':item.phase==='final'?'sorted':item.left?`merge ${item.lo}–${item.hi}`:'original';
+      reason.appendChild(badge);const words=document.createElement('div');words.textContent=item.msg;reason.appendChild(words);
+      row.append(label,visual,reason);history.appendChild(row);
+    });
+    document.getElementById('back').disabled=step===0;document.getElementById('next').disabled=step===states.length-1;
+    const current=history.querySelector('.row.current');if(current)requestAnimationFrame(()=>current.scrollIntoView({behavior:'smooth',block:'center',inline:'nearest'}));
+  }
+  function reset(values=original){states=build(values);step=0;render();}
+  document.getElementById('back').onclick=()=>{if(step){step--;render();}};
+  document.getElementById('next').onclick=()=>{if(step<states.length-1){step++;render();}};
+  document.getElementById('reset').onclick=()=>reset();
+  document.getElementById('shuffle').onclick=()=>{const v=Array.from({length:10},(_,i)=>i);for(let i=v.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[v[i],v[j]]=[v[j],v[i]];}reset(v);};
+  reset();
+})();
+</script>
+</body>
+</html>
+

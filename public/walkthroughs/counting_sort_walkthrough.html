@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Counting Sort Walkthrough</title>
+<style>
+:root{color-scheme:dark;--bg:#171719;--panel:#202024;--line:#45454e;--ink:#f4f4f7;--muted:#aeb0be;--blue:#68aafc;--green:#55d8a7;--orange:#ffa661;--purple:#bd9bff}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.4 system-ui,Segoe UI,sans-serif}main{height:100vh;display:flex;flex-direction:column;padding:16px 20px;gap:10px;min-width:0}.top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap}h1{font-size:clamp(20px,2vw,28px);font-weight:500;margin:0}.complexity,.cue{color:var(--muted);font-size:13px}.cue{color:#d6d1b5}.cue a{color:var(--blue)}.toolbar{display:flex;gap:5px;flex-wrap:wrap;background:#242429;border:1px solid var(--line);border-radius:12px;padding:6px}button{width:96px;height:28px;padding:0 5px;border:1px solid #4b4b58;border-radius:7px;background:#303039;color:var(--ink);font:12px system-ui;cursor:pointer}button:hover:not(:disabled){border-color:var(--blue)}button:disabled{opacity:.42;cursor:default}.status{color:var(--muted);font-size:13px}.legend{font-size:12px;color:var(--muted)}.ledger{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;border:1px solid var(--line);background:#1c1c20;border-radius:10px;padding:25vh max(12px,3vw);scrollbar-color:#67677a #24242a;scrollbar-width:thin}.ledger::-webkit-scrollbar{width:10px}.ledger::-webkit-scrollbar-track{background:#24242a}.ledger::-webkit-scrollbar-thumb{background:#67677a;border-radius:8px}.row{max-width:1360px;margin:0 auto 14px;display:grid;grid-template-columns:minmax(0,1fr) minmax(195px,27%);gap:15px;border:1px solid #43434c;border-radius:9px;background:var(--panel);padding:12px;opacity:.77}.row.active{border-color:var(--blue);box-shadow:0 0 0 1px #3566a1;opacity:1}.number{color:var(--blue);font-size:12px;margin-bottom:6px}.strips{display:grid;gap:9px}.strip{min-width:0}.strip-title{color:var(--muted);font-size:12px;margin-bottom:3px}.cells{display:flex;gap:4px;flex-wrap:wrap}.cell{width:clamp(24px,3vw,40px);min-width:24px;text-align:center;border:1px solid #555560;background:#29292f;border-radius:3px;padding:3px 1px;position:relative;font-size:16px}.cell small{display:block;color:var(--muted);font-size:10px;line-height:1}.cell.hit{border-color:var(--orange);background:#68472e}.cell.bucket{border-color:var(--purple);background:#47375d}.cell.placed{border-color:var(--green);background:#285446}.reason{align-self:center;color:#e4e5ec;font-size:14px}.reason strong{color:var(--green)}@media(max-width:750px){main{padding:10px}.row{grid-template-columns:1fr}.reason{font-size:13px}.ledger{padding:22vh 10px}.cell{width:30px}}
+</style>
+</head>
+<body>
+<main>
+ <div class="top"><div><h1>Counting Sort Walkthrough</h1><div class="complexity">Best, average, worst: Θ(n + k) time; Θ(n + k) extra space. k = max − min + 1 distinct integer buckets.</div><div class="complexity"><b>Divide and conquer:</b> No · <b>Runtime lower bound:</b> Θ(n + k) · <b>Runtime upper bound:</b> O(n + k) · <a href="counting_sort.py" target="_blank" rel="noopener">Python implementation</a></div><div class="cue">Recall: <b>count → cumulative positions → place right-to-left</b>. Unlike <a href="merge_sort_walkthrough.html" target="_blank">Merge Sort</a>, this does not compare pairs of values.</div></div><div class="toolbar"><button id="back">Back step</button><button id="next">Next step</button><button id="reset">Reset</button><button id="shuffle">Shuffle</button></div></div>
+ <div id="status" class="status"></div>
+ <div id="ledger" class="ledger" aria-live="polite"></div>
+ <div class="legend">Orange = input being read · Purple = count/position bucket · Green = output placement</div>
+</main>
+<script>
+(()=>{
+const original=[4,2,2,8,3,3,1,4,0,2];let values=original.slice(),steps=[],at=0;
+const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function build(input){
+ const min=Math.min(...input),max=Math.max(...input),n=input.length,counts=Array(max-min+1).fill(0),output=Array(n).fill(null),trace=[];
+ const push=(stage,reason,focus={})=>trace.push({stage,reason,counts:counts.slice(),output:output.slice(),focus});
+ push('count','Start with the original array. Each bucket begins at zero. Repeated values share a bucket.');
+ input.forEach((v,i)=>{counts[v-min]++;push('count',`Read input index ${i}: ${v}. Add 1 to bucket ${v}, now ${counts[v-min]}.`,{input:i,bucket:v-min})});
+ push('prefix','The counts tell how many of each value exist. Next, turn them into cumulative ending positions.');
+ for(let b=1;b<counts.length;b++){counts[b]+=counts[b-1];push('prefix',`Values ≤ ${b+min} occupy the first ${counts[b]} output slots. Bucket ${b+min} now stores that ending position.`,{bucket:b})}
+ push('place','Now read the input from right to left. This preserves the order of equal values (stable sort).');
+ for(let i=n-1;i>=0;i--){const v=input[i],b=v-min,destination=counts[b]-1;output[destination]=v;counts[b]--;push('place',`Input[${i}] is ${v}. Bucket ${v} points to output[${destination}]. Place ${v} there, then move that bucket left.`,{input:i,bucket:b,output:destination})}
+ push('done',`Sorted output: ${output.join(', ')}. Counting Sort has filled every position.`);
+ return trace;
+}
+function cells(items,focus,kind){return items.map((v,i)=>`<div class="cell ${focus===i?kind:''}">${v===null?'·':esc(v)}<small>${i}</small></div>`).join('')}
+function buckets(items,min,focus){return items.map((v,i)=>`<div class="cell ${focus===i?'bucket':''}">${v}<small>${i+min}</small></div>`).join('')}
+function render(){const min=Math.min(...values);$('status').textContent=`Step ${at+1} of ${steps.length} · ${steps[at].stage==='count'?'Count values':steps[at].stage==='prefix'?'Cumulative positions':steps[at].stage==='place'?'Place into output':'Final output'}`;$('back').disabled=at===0;$('next').disabled=at===steps.length-1;
+ $('ledger').innerHTML=steps.slice(0,at+1).map((step,i)=>`<section class="row ${i===at?'active':''}" ${i===at?'id="active-row"':''}><div><div class="number">${i+1} · ${step.stage==='count'?'Count':step.stage==='prefix'?'Prefix totals':step.stage==='place'?'Stable placement':'Complete'}</div><div class="strips"><div class="strip"><div class="strip-title">Input · original values and indices</div><div class="cells">${cells(values,step.focus.input,'hit')}</div></div><div class="strip"><div class="strip-title">${step.stage==='count'?'Frequencies':step.stage==='prefix'?'Cumulative ending positions':'Remaining positions'} · bucket value beneath each cell</div><div class="cells">${buckets(step.counts,min,step.focus.bucket)}</div></div><div class="strip"><div class="strip-title">Output · destination indices beneath each cell</div><div class="cells">${cells(step.output,step.focus.output,'placed')}</div></div></div></div><div class="reason">${esc(step.reason)}</div></section>`).join('');
+ requestAnimationFrame(()=>{const row=$('active-row'),box=$('ledger');if(row){const delta=row.getBoundingClientRect().top-box.getBoundingClientRect().top;box.scrollTo({top:box.scrollTop+delta-box.clientHeight/2+row.clientHeight/2,behavior:'smooth'})}});}
+function start(v){values=v.slice();steps=build(values);at=0;render()}
+function move(delta){at=Math.max(0,Math.min(steps.length-1,at+delta));render()}
+function shuffle(){const v=original.slice();for(let i=v.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[v[i],v[j]]=[v[j],v[i]]}start(v)}
+ $('back').onclick=()=>move(-1);$('next').onclick=()=>move(1);$('reset').onclick=()=>{at=0;render()};$('shuffle').onclick=shuffle;window.addEventListener('keydown',e=>{if(e.key==='ArrowRight')move(1);if(e.key==='ArrowLeft')move(-1)});start(values);
+})();
+</script>
+</body>
+</html>
+

@@ -1,0 +1,385 @@
+<div id="quick-sort-walkthrough">
+  <style>
+    html, body { margin: 0; min-height: 100%; height: 100%; overflow: hidden; background: #18181b; }
+    #quick-sort-walkthrough {
+      --foreground: #f4f4f5;
+      --muted-foreground: #a1a1aa;
+      --muted: #27272a;
+      --border: #52525b;
+      --viz-series-1: #60a5fa;
+      --viz-series-2: #34d399;
+      --viz-series-3: #fb923c;
+      color: var(--foreground);
+      background: #18181b;
+      font-family: Arial, sans-serif;
+      width: 100%;
+      max-width: none;
+      min-height: 100vh;
+      position: relative;
+      height: 100vh;
+      padding: 28px 36px;
+      margin: 0;
+      border: 1px solid var(--border);
+      box-sizing: border-box;
+    }
+    #quick-sort-walkthrough .title { font-size: clamp(20px, 2vw, 30px); font-weight: 500; margin-bottom: 8px; }
+    #quick-sort-walkthrough .complexity { color: var(--muted-foreground); font-size: 12px; line-height: 1.4; margin: 0 0 8px; }
+    #quick-sort-walkthrough .step { color: var(--muted-foreground); margin-bottom: 18px; }
+    #quick-sort-walkthrough #qs-detail { display: none; }
+    #quick-sort-walkthrough .array { display: flex; justify-content: center; align-self: center; gap: clamp(8px, 1.5vw, 18px); align-items: end; flex-wrap: nowrap; margin: 0 auto; }
+    #quick-sort-walkthrough .item { width: clamp(48px, 5vw, 76px); flex: 0 0 clamp(48px, 5vw, 76px); text-align: center; }
+    #quick-sort-walkthrough .box { width: 100%; height: clamp(48px, 5vw, 76px); box-sizing: border-box; display: grid; place-items: center; padding: 0; background: var(--muted); border: 2px solid var(--border); font-size: clamp(20px, 2.4vw, 34px); transition: transform .25s ease, background .25s ease, border-color .25s ease; }
+    #quick-sort-walkthrough .index { font-size: 11px; color: var(--muted-foreground); margin-top: 4px; }
+    #quick-sort-walkthrough .tag { font-size: 11px; min-height: 16px; color: var(--muted-foreground); }
+    #quick-sort-walkthrough .pivot .box { background: color-mix(in srgb, var(--viz-series-1) 22%, var(--muted)); }
+    #quick-sort-walkthrough .focus .box { background: color-mix(in srgb, var(--viz-series-2) 22%, var(--muted)); }
+    #quick-sort-walkthrough .swap .box { background: color-mix(in srgb, var(--viz-series-3) 22%, var(--muted)); }
+    #quick-sort-walkthrough .message { display: none; }
+    #quick-sort-walkthrough .controls { position: absolute; top: 24px; right: 32px; z-index: 2; display: flex; align-items: center; gap: 8px; padding: 8px; border: 1px solid var(--border); border-radius: 12px; background: color-mix(in srgb, var(--muted) 78%, #18181b); box-shadow: 0 8px 24px rgba(0,0,0,.22); }
+    #quick-sort-walkthrough button { font: inherit; padding: 9px 14px; margin: 0; border: 1px solid var(--border); border-radius: 8px; background: #303036; color: var(--foreground); cursor: pointer; transition: background .15s ease, border-color .15s ease, transform .15s ease; }
+    #quick-sort-walkthrough button:hover:not(:disabled) { background: #3f3f46; border-color: var(--viz-series-1); transform: translateY(-1px); }
+    #quick-sort-walkthrough button:disabled { cursor: default; }
+    #quick-sort-walkthrough button:disabled { opacity: .45; }
+    #quick-sort-walkthrough .history { margin: 18px 0; padding-left: 0; list-style: none; color: var(--muted-foreground); }
+    #quick-sort-walkthrough .history-row { display: flex; flex-direction: column; justify-content: flex-start; align-items: flex-start; gap: 4px; margin: 14px 0; }
+    #quick-sort-walkthrough .history-description { color: var(--muted-foreground); font-size: 13px; }
+    #quick-sort-walkthrough .history-row.current .history-description { color: var(--foreground); }
+    #quick-sort-walkthrough .history-array { display: flex; justify-content: flex-start; gap: 8px; flex-wrap: wrap; margin-left: 0; }
+    #quick-sort-walkthrough .history-cell { width: 42px; height: 42px; flex: 0 0 42px; box-sizing: border-box; display: grid; place-items: center; padding: 0; text-align: center; border: 1px solid var(--border); background: var(--muted); font-size: 18px; }
+    #quick-sort-walkthrough .history-index { width: 42px; flex: 0 0 42px; text-align: center; font-size: 11px; color: var(--muted-foreground); }
+    #quick-sort-walkthrough .history-stack { display: flex; flex-direction: column; gap: 2px; }
+    #quick-sort-walkthrough .history-row.current .history-cell { border-color: var(--viz-series-1); }
+    #quick-sort-walkthrough .history-row.current { color: var(--foreground); }
+    #quick-sort-walkthrough .history { display: none; }
+    #quick-sort-walkthrough .study-stage { min-height: 52vh; display: grid; place-items: center; margin: 18px 0; padding: 24px; border: 1px solid var(--border); background: color-mix(in srgb, var(--muted) 42%, #18181b); }
+    #quick-sort-walkthrough .stage-content { width: min(1100px, 100%); }
+    #quick-sort-walkthrough .context-row { position: relative; min-height: 360px; display: grid; grid-template-columns: minmax(0, 1fr); grid-template-areas: "previous" "current" "split" "next"; gap: 18px; align-items: start; }
+    #quick-sort-walkthrough .context-card { min-height: 90px; padding: 12px; border: 1px solid var(--border); background: color-mix(in srgb, var(--muted) 60%, #18181b); text-align: center; box-sizing: border-box; width: 100%; }
+    #quick-sort-walkthrough #qs-previous { grid-area: previous; }
+    #quick-sort-walkthrough #qs-next-preview { grid-area: next; filter: blur(2px); opacity: .48; transition: filter .2s ease, opacity .2s ease; }
+    #quick-sort-walkthrough #qs-split { grid-area: split; }
+    #quick-sort-walkthrough #qs-next-preview { filter: none; opacity: 1; }
+    #quick-sort-walkthrough .context-card.current { grid-area: current; margin: 0; border: 2px solid var(--viz-series-1); padding: 18px; }
+    #quick-sort-walkthrough .context-label { color: var(--muted-foreground); font-size: 12px; margin-bottom: 10px; }
+    #quick-sort-walkthrough .context-values { display: flex; justify-content: center; flex-wrap: nowrap; gap: 4px; }
+    #quick-sort-walkthrough .context-node { width: 24px; height: 24px; flex: 0 0 24px; display: grid; place-items: center; border: 1px solid var(--border); background: var(--muted); font-size: 13px; }
+    #quick-sort-walkthrough .context-card.current .context-node { width: 48px; height: 48px; font-size: 20px; }
+    #quick-sort-walkthrough .context-card.current .item.insertion-range .box { border-color: var(--viz-series-2); box-shadow: 0 0 0 2px color-mix(in srgb, var(--viz-series-2) 35%, transparent); }
+    #quick-sort-walkthrough .context-card.current .item.context-pivot .box { border-color: var(--viz-series-1); box-shadow: 0 0 0 2px color-mix(in srgb, var(--viz-series-1) 35%, transparent); }
+    #quick-sort-walkthrough .context-card.current .item.s2-range .box { border-color: var(--viz-series-3); box-shadow: 0 0 0 2px color-mix(in srgb, var(--viz-series-3) 35%, transparent); }
+    #quick-sort-walkthrough .array-line { display: flex; justify-content: center; align-items: end; gap: 12px; }
+    #quick-sort-walkthrough .index-caption { color: var(--muted-foreground); font-size: 11px; padding-bottom: 4px; }
+    #quick-sort-walkthrough .stage-caption { text-align: center; color: var(--muted-foreground); margin-bottom: 22px; font-size: clamp(14px, 1.4vw, 20px); }
+    #quick-sort-walkthrough .split-view { display: flex; justify-content: center; align-items: stretch; gap: clamp(12px, 2vw, 30px); margin-top: 30px; }
+    #quick-sort-walkthrough .split-panel { flex: 1; min-height: 92px; padding: 16px; border: 2px solid var(--border); text-align: center; background: color-mix(in srgb, var(--muted) 75%, #18181b); }
+    #quick-sort-walkthrough .split-panel.left { border-color: var(--viz-series-2); }
+    #quick-sort-walkthrough .split-panel.pivot { flex: 0 0 120px; border-color: var(--viz-series-1); }
+    #quick-sort-walkthrough .split-panel.right { border-color: var(--viz-series-3); }
+    #quick-sort-walkthrough .split-label { font-size: 13px; color: var(--muted-foreground); margin-bottom: 10px; }
+    #quick-sort-walkthrough .split-values { display: flex; justify-content: center; flex-wrap: wrap; gap: 8px; }
+    #quick-sort-walkthrough .split-node { width: 42px; height: 42px; display: grid; place-items: center; border: 2px solid var(--border); background: var(--muted); font-size: 22px; }
+    #quick-sort-walkthrough .split-panel.left .split-node { border-color: var(--viz-series-2); }
+    #quick-sort-walkthrough .split-panel.pivot .split-node { border-color: var(--viz-series-1); background: color-mix(in srgb, var(--viz-series-1) 22%, var(--muted)); }
+    #quick-sort-walkthrough .split-panel.right .split-node { border-color: var(--viz-series-3); }
+    #quick-sort-walkthrough .legend { position: absolute; bottom: 20px; left: 36px; margin: 0; }
+    @media (max-width: 1300px) { #quick-sort-walkthrough .context-node { width: 20px; height: 20px; flex-basis: 20px; font-size: 11px; } }
+    @media (max-width: 760px) { #quick-sort-walkthrough { padding: 20px; } #quick-sort-walkthrough .controls { top: 20px; right: 20px; } #quick-sort-walkthrough .study-stage { min-height: 44vh; padding: 12px; } #quick-sort-walkthrough .legend { left: 20px; bottom: 12px; } }
+    @media (max-width: 1100px) { #quick-sort-walkthrough { padding: 20px; } #quick-sort-walkthrough .controls { top: 16px; right: 20px; gap: 5px; padding: 6px; } #quick-sort-walkthrough button, #quick-sort-walkthrough .preset-select { padding: 7px 9px; font-size: 12px; } #quick-sort-walkthrough .phases { margin-top: 14px; } #quick-sort-walkthrough .phase-label { font-size: 9px; } #quick-sort-walkthrough .connector { width: 16px; } #quick-sort-walkthrough .study-stage { padding: 14px; } #quick-sort-walkthrough .context-card.current .context-node { width: 40px; height: 40px; font-size: 18px; } }
+    @media (max-width: 1600px) { #quick-sort-walkthrough { padding: 18px 22px; } #quick-sort-walkthrough .controls { top: 14px; right: 20px; gap: 4px; padding: 5px; } #quick-sort-walkthrough button, #quick-sort-walkthrough .preset-select { padding: 6px 8px; font-size: 11px; height: 28px; } #quick-sort-walkthrough .preset-select { width: 96px !important; max-width: 96px !important; flex-basis: 96px !important; } #quick-sort-walkthrough .phase-label { font-size: 9px; } #quick-sort-walkthrough .connector { width: 14px; } }
+    #quick-sort-walkthrough .legend { margin-top: 16px; color: var(--muted-foreground); font-size: 13px; }
+    #quick-sort-walkthrough .phases { display: flex; align-items: center; gap: 0; margin: 16px 0; overflow-x: auto; }
+    #quick-sort-walkthrough .phase { display: flex; align-items: center; color: var(--muted-foreground); white-space: nowrap; }
+    #quick-sort-walkthrough .node { width: 28px; height: 28px; border: 2px solid var(--border); border-radius: 50%; display: grid; place-items: center; }
+    #quick-sort-walkthrough .phase.active .node { border-color: var(--viz-series-1); background: color-mix(in srgb, var(--viz-series-1) 20%, var(--muted)); color: var(--foreground); }
+    #quick-sort-walkthrough .connector { width: 28px; height: 2px; background: var(--border); }
+    #quick-sort-walkthrough .phase-label { margin-left: 6px; font-size: 11px; }
+    #quick-sort-walkthrough .preset-select { appearance: none; font: inherit; width: 150px !important; max-width: 150px !important; min-width: 0 !important; flex: 0 0 150px !important; height: 38px; line-height: 18px; padding: 8px 10px; margin: 0; background: #303036; color: var(--foreground); border: 1px solid var(--border); border-radius: 8px; cursor: pointer; overflow: hidden; text-overflow: ellipsis; }
+    #quick-sort-walkthrough .preset-menu { position: relative; flex: 0 0 82px; width: 82px; }
+    #quick-sort-walkthrough .preset-menu summary { list-style: none; width: 82px; height: 28px; box-sizing: border-box; padding: 6px 4px; border: 1px solid var(--border); border-radius: 8px; background: #303036; color: var(--foreground); font-size: 10px; line-height: 14px; text-align: center; cursor: pointer; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    #quick-sort-walkthrough .preset-menu summary::-webkit-details-marker { display: none; }
+    #quick-sort-walkthrough .preset-options { position: absolute; top: 34px; right: 0; z-index: 10; display: grid; gap: 4px; min-width: 120px; padding: 6px; border: 1px solid var(--border); border-radius: 8px; background: #27272a; box-shadow: 0 8px 20px rgba(0,0,0,.35); }
+    #quick-sort-walkthrough .preset-options button { width: 100%; text-align: left; }
+    #quick-sort-walkthrough .study-stage { display:block; height:calc(100vh - 230px); min-height:320px; max-height:none; overflow-y:auto; overscroll-behavior:contain; scroll-behavior:smooth; padding:16px; }
+    #quick-sort-walkthrough .stage-content { width:min(1500px,100%); margin:0 auto; }
+    #quick-sort-walkthrough .stage-caption, #quick-sort-walkthrough .context-row { display:none; }
+    #quick-sort-walkthrough .history { display:flex; flex-direction:column; gap:8px; margin:0; padding:0; }
+    #quick-sort-walkthrough .history-row { display:grid; grid-template-columns:58px minmax(280px,auto) minmax(260px,1fr); align-items:center; gap:14px; min-height:64px; margin:0; padding:8px 12px; border:1px solid var(--border); border-radius:10px; background:color-mix(in srgb, var(--muted) 50%, #18181b); scroll-margin-block:calc(50vh - 150px); }
+    #quick-sort-walkthrough .history-row.current { border:2px solid var(--viz-series-1); background:color-mix(in srgb, var(--viz-series-1) 8%, #202023); }
+    #quick-sort-walkthrough .history-row.current .history-cell:not(.pivot):not(.focus):not(.swap):not(.insertion-range):not(.S1):not(.S2) { border-color:var(--border); }
+    #quick-sort-walkthrough .history-description { color:var(--muted-foreground); font-size:13px; line-height:1.4; }
+    #quick-sort-walkthrough .history-row.current .history-description { color:var(--foreground); }
+    #quick-sort-walkthrough .history-stack { min-width:0; overflow-x:auto; }
+    #quick-sort-walkthrough .history-array { display:flex; flex-wrap:nowrap; align-items:center; gap:4px; margin:0; }
+    #quick-sort-walkthrough .history-cell { width:30px; height:30px; flex:0 0 30px; border-radius:4px; font-size:14px; }
+    #quick-sort-walkthrough .history-index { width:30px; flex:0 0 30px; font-size:10px; }
+    #quick-sort-walkthrough .history-cell.pivot { background:color-mix(in srgb, var(--viz-series-1) 28%, var(--muted)); border-color:var(--viz-series-1); }
+    #quick-sort-walkthrough .history-cell.focus { background:color-mix(in srgb, var(--viz-series-2) 28%, var(--muted)); border-color:var(--viz-series-2); }
+    #quick-sort-walkthrough .history-cell.swap { background:color-mix(in srgb, var(--viz-series-3) 28%, var(--muted)); border-color:var(--viz-series-3); }
+    #quick-sort-walkthrough .history-cell.insertion-range, #quick-sort-walkthrough .history-cell.S1 { border-color:var(--viz-series-2); }
+    #quick-sort-walkthrough .history-cell.S2 { border-color:var(--viz-series-3); }
+    #quick-sort-walkthrough .study-stage { scrollbar-width:thin; scrollbar-color:#71717a #27272a; }
+    #quick-sort-walkthrough .study-stage::-webkit-scrollbar { width:12px; }
+    #quick-sort-walkthrough .study-stage::-webkit-scrollbar-track { background:#27272a; border-left:1px solid #3f3f46; }
+    #quick-sort-walkthrough .study-stage::-webkit-scrollbar-thumb { background:#71717a; border:3px solid #27272a; border-radius:999px; }
+    #quick-sort-walkthrough .study-stage::-webkit-scrollbar-thumb:hover { background:#a1a1aa; }
+    @media (max-width:1100px) { #quick-sort-walkthrough .study-stage { height:calc(100vh - 235px); min-height:280px; padding:12px; } #quick-sort-walkthrough .history-row { grid-template-columns:48px minmax(230px,auto) minmax(190px,1fr); gap:8px; padding:8px; } #quick-sort-walkthrough .history-cell { width:26px; height:26px; flex-basis:26px; font-size:12px; } #quick-sort-walkthrough .history-index { width:26px; flex-basis:26px; } }
+    @media (max-width:700px) { #quick-sort-walkthrough .history-row { grid-template-columns:44px 1fr; } #quick-sort-walkthrough .history-description { grid-column:2; } #quick-sort-walkthrough .history-label { grid-row:1 / span 2; } }
+    #quick-sort-walkthrough .controls > button, #quick-sort-walkthrough .preset-menu, #quick-sort-walkthrough .preset-menu summary { width:96px !important; min-width:96px !important; max-width:96px !important; flex:0 0 96px !important; height:28px !important; box-sizing:border-box; }
+    #quick-sort-walkthrough .controls > button, #quick-sort-walkthrough .preset-menu summary { display:inline-flex; align-items:center; justify-content:center; padding:0 4px !important; font-size:11px !important; line-height:1 !important; white-space:nowrap; }
+    #quick-sort-walkthrough .preset-menu summary { cursor:pointer; }
+    @media(max-width:900px) { #quick-sort-walkthrough .controls { position:static; width:max-content; max-width:100%; flex-wrap:wrap; margin:12px 0; } #quick-sort-walkthrough .study-stage { height:calc(100vh - 260px); min-height:250px; } }
+  </style>
+  <div class="title">Quick Sort: partition, recursion, and insertion-sort cutoff</div>
+  <div class="complexity"><strong>Time complexity:</strong> Best Θ(n log n) · Average Θ(n log n) · Worst Θ(n²)</div>
+  <div class="complexity"><strong>Divide and conquer:</strong> Yes · <strong>Runtime lower bound (best):</strong> Ω(n log n) with balanced partitions · <strong>Runtime upper bound (worst):</strong> O(n²) · <a href="quick_sort.py" target="_blank" rel="noopener">Python implementation</a></div>
+  <div class="step" id="qs-step">Step 1 of 8</div>
+  <div class="controls"><button type="button" id="qs-back">Back step</button><button type="button" id="qs-next">Next step</button><button type="button" id="qs-reset">Reset</button><button type="button" id="qs-shuffle">Shuffle same size</button><details class="preset-menu"><summary>Predefined</summary><div class="preset-options"><button type="button" data-preset="[4,7,8,2,9,5,6,3,1]">Worksheet A</button><button type="button" data-preset="[7,2,3,8,9,1,4,5,6]">Worksheet B</button></div></details></div>
+  <div class="phases" id="qs-phases" aria-label="Quick Sort phases"></div>
+  <div class="study-stage"><div class="stage-content"><div class="stage-caption" id="qs-stage-caption" aria-live="polite"></div><div class="context-row"><div class="context-card" id="qs-previous"></div><div class="context-card current"><div class="context-label">Current step</div><div class="array-line"><div class="index-caption">indices</div><div class="array" id="qs-array" aria-live="polite"></div></div></div><div class="split-view" id="qs-split" aria-live="polite"></div><div class="context-card" id="qs-next-preview"></div></div><ol class="history" id="qs-history" aria-live="polite"></ol></div></div>
+  <div class="step" id="qs-detail"></div>
+  <div class="message" id="qs-message" aria-hidden="true"></div>
+  <div class="legend">Purple: pivot. Green: values being compared. Orange: values swapped in the current step.</div>
+  <script>
+    document.title = 'Quick Sort Walkthrough';
+    (() => {
+      const array = [8, 1, 4, 9, 5, 3, 7, 2, 6, 0];
+      const professorStates = [
+        {a: array, tags: {0:'left',4:'center',9:'right'}, msg: 'Observe the range indices: left = 0, center = 4, and right = 9.'},
+        {a: array, tags: {0:'left sample',4:'center sample',9:'right sample'}, focus:[0,4,9], msg: 'Read the sampled values: 8, 5, and 0. Their median is 5.'},
+        {a: [0,1,4,9,5,3,7,2,6,8], tags: {0:'smallest',4:'pivot candidate',9:'largest'}, swap:[0,9], msg: 'Order the three sampled values: 0 moves left, 8 moves right, and 5 remains the pivot candidate.'},
+        {a: [0,1,4,9,6,3,7,2,5,8], tags: {8:'pivot'}, swap:[4,8], msg: 'Move the median pivot 5 to right - 1. This swaps 5 with the value 6 at index 8.'},
+        {a: [0,1,4,9,6,3,7,2,5,8], tags: {0:'i',7:'j',8:'pivot'}, focus:[0,7], msg: 'Partition begins. Set i = left = 0 and j = right - 2 = 7. The pivot is 5.'},
+        {a: [0,1,4,9,6,3,7,2,5,8], tags: {3:'i',7:'j',8:'pivot'}, focus:[3,7], msg: 'Move i right past 0, 1, and 4. Move j left past 2. The pointers find 9 on the left and 2 on the right.'},
+        {a: [0,1,4,2,6,3,7,9,5,8], tags: {3:'i',7:'j',8:'pivot'}, swap:[3,7], msg: 'Swap 9 and 2 because 9 is too large for the left side and 2 is small enough for the left side.'},
+        {a: [0,1,4,2,6,3,7,9,5,8], tags: {4:'i',5:'j',8:'pivot'}, focus:[4,5], msg: 'Continue scanning. i stops at 6 and j stops at 3. The pointers have not crossed yet.'},
+        {a: [0,1,4,2,3,6,7,9,5,8], tags: {4:'i',5:'j',8:'pivot'}, swap:[4,5], msg: 'Swap 6 and 3. Now the smaller value is on the left side.'},
+        {a: [0,1,4,2,3,6,7,9,5,8], tags: {5:'i',4:'j',8:'pivot'}, focus:[5,4], msg: 'Now i and j have crossed. Do not swap the crossed pair.'},
+        {a: [0,1,4,2,3,5,7,9,6,8], tags: {5:'pivot'}, swap:[5,8], msg: 'The pointers crossed with i = 5 and j = 4. Now swap a[i] = 6 with the pivot at index 8. The pivot 5 settles at index 5.'},
+        {a: [0,1,4,2,3], tags: {0:'S1',4:'S1'}, focus:[0,4], msg: 'The left subarray S1 is [0, 1, 4, 2, 3]. The pivot at index 5 is finished and is not included in S1.'},
+        {a: [7,9,6,8], tags: {6:'S2',9:'S2'}, focus:[6,9], msg: 'The right subarray S2 is [7, 9, 6, 8]. S1 and S2 are processed independently.'},
+        {a: [0,1,4,2,3], tags: {0:'left',2:'center',4:'right'}, msg: 'S1 has more than the cutoff size, so Quick Sort is applied again. Its samples are 0, 4, and 3; the median is 3.'},
+        {a: [0,1,2,3,4], tags: {3:'pivot'}, swap:[2,3], msg: 'After the median-of-three setup for S1, the pivot 3 is moved to right - 1 before partitioning.'},
+        {a: [0,1,2,3,4], tags: {3:'pivot'}, focus:[0,2], msg: 'Partitioning S1 places 0, 1, and 2 on the left of pivot 3. The pointers cross without another regular swap.'},
+        {a: [0,1,2,3,4], tags: {3:'pivot'}, msg: 'The pivot 3 is already in its final position. S1 is now sorted.'},
+        {a: [7,9,6,8], tags: {0:'i',2:'j'}, focus:[0,2], msg: 'S2 is also above the cutoff, so Quick Sort processes it separately. The next partition compares values inside S2 only.'},
+        {a: [6,7,8,9], tags: {1:'pivot'}, swap:[1,2], msg: 'After partitioning S2, its pivot settles between the smaller and larger values.'},
+        {a: [6,7,8,9], tags: {0:'S2 small'}, msg: 'The remaining S2 pieces are at or below the cutoff, so insertion sort finishes them.'},
+        {a: [0,1,2,3,4,5,6,7,8,9], tags: {0:'sorted',9:'sorted'}, msg: 'After both recursive sides finish and the small pieces are insertion-sorted, the complete array is sorted.'}
+      ];
+      let states = professorStates;
+      function buildTrace(values) {
+        const a = values.slice();
+        const trace = [{a: a.slice(), tags: {0:'left', [Math.floor((a.length - 1) / 2)]:'center', [a.length - 1]:'right'}, msg: 'Practice array. Observe the left, center, and right indices for the median-of-three sample.'}];
+        function add(msg, tags = {}, swap = [], focus = []) { trace.push({a: a.slice(), tags, swap, focus, msg}); }
+        function insertion(left, right) {
+          add(`This subarray has size ${right - left + 1}, so insertion sort works on it one value at a time.`, { [`${left}`]: 'insertion range', [`${right}`]: 'insertion range' });
+          for (let current = left + 1; current <= right; current++) {
+            const key = a[current];
+            let position = current - 1;
+            add(`Insertion sort selects ${key} at index ${current} and compares it with the sorted portion to its left.`, { [current]:'key', [`${left}`]:'insertion range', [`${right}`]:'insertion range' }, [], [current]);
+            while (position >= left && a[position] > key) {
+              a[position + 1] = a[position];
+              add(`Shift ${a[position]} right from index ${position} to index ${position + 1} because it is greater than ${key}.`, { [position]:'shift', [position + 1]:'open slot', [`${left}`]:'insertion range', [`${right}`]:'insertion range' }, [position, position + 1]);
+              position--;
+            }
+            a[position + 1] = key;
+            add(`Insert ${key} at index ${position + 1}. The insertion-sort portion is now extended.`, { [position + 1]:'inserted', [`${left}`]:'insertion range', [`${right}`]:'insertion range' }, [], [position + 1]);
+          }
+        }
+        function quick(left, right) {
+          if (right - left + 1 <= 4) { insertion(left, right); return; }
+          const center = Math.floor((left + right) / 2);
+          const sample = [{i:left,v:a[left]}, {i:center,v:a[center]}, {i:right,v:a[right]}].sort((x,y) => x.v-y.v);
+          const min = sample[0].v, med = sample[1].v, max = sample[2].v;
+          a[left] = min; a[center] = med; a[right] = max;
+          add(`Median-of-three samples ${values[left]}, ${values[center]}, and ${values[right]} produce pivot ${med}.`, {[left]:'smallest',[center]:'median',[right]:'largest'});
+          const pivotIndex = right - 1;
+          const medIndex = a.indexOf(med, left);
+          [a[medIndex], a[pivotIndex]] = [a[pivotIndex], a[medIndex]];
+          add(`Move pivot ${med} to right - 1 at index ${pivotIndex}, before partitioning.`, {[pivotIndex]:'pivot'}, [medIndex,pivotIndex]);
+          const pivot = a[pivotIndex]; let i = left, j = right - 2;
+          add(`Partition starts with i = ${i}, j = ${j}, and pivot = ${pivot}.`, {[i]:'i',[j]:'j',[pivotIndex]:'pivot'}, [], [i,j]);
+          while (true) {
+            while (i < pivotIndex && a[i] < pivot) {
+              const passedValue = a[i];
+              i++;
+              add(`i moves from index ${i - 1} to index ${i} after passing ${passedValue}, because ${passedValue} is less than the pivot ${pivot}.`, {[i]:'i',[j]:'j',[pivotIndex]:'pivot'}, [], [i,j]);
+            }
+            if (i < pivotIndex) {
+              add(`i stops at index ${i}: A[i] = ${a[i]} is not less than pivot ${pivot}. Now begin scanning j from the right.`, {[i]:'i',[j]:'j',[pivotIndex]:'pivot'}, [], [i,j]);
+            }
+            while (j >= left && a[j] > pivot) {
+              const passedValue = a[j];
+              j--;
+              add(`j moves from index ${j + 1} to index ${j} after passing ${passedValue}, because ${passedValue} is greater than the pivot ${pivot}.`, {[i]:'i',[j]:'j',[pivotIndex]:'pivot'}, [], [i,j]);
+            }
+            if (i >= j) { add(`The pointers crossed: i = ${i}, j = ${j}. Stop regular partition swaps.`, {[i]:'i',[j]:'j',[pivotIndex]:'pivot'}, [], [i,j]); break; }
+            add(`The scans stop at i = ${i} with ${a[i]} and j = ${j} with ${a[j]}. These are the two values ready to compare before the swap.`, {[i]:'i',[j]:'j',[pivotIndex]:'pivot'}, [], [i,j]);
+            const leftValue = a[i], rightValue = a[j];
+            [a[i],a[j]] = [a[j],a[i]];
+            add(`Swap ${leftValue} and ${rightValue}: a[i] at index ${i} exchanges with a[j] at index ${j}.`, {[i]:'i',[j]:'j',[pivotIndex]:'pivot'}, [i,j]);
+            i++; j--;
+          }
+          const finalLeftValue = a[i];
+          [a[i], a[pivotIndex]] = [a[pivotIndex], a[i]];
+          add(`The pointers crossed. Swap a[i] = ${finalLeftValue} at index ${i} with the pivot ${pivot} at index ${pivotIndex}. The pivot settles at index ${i}.`, {[i]:'pivot'}, [i,pivotIndex]);
+          quick(left, i - 1); quick(i + 1, right);
+        }
+        quick(0, a.length - 1);
+        add('All recursive sides and insertion-sort cutoffs are complete. The array is sorted.', {0:'sorted',[a.length - 1]:'sorted'});
+        return trace;
+      }
+      let step = 0;
+      function render() {
+        const s = states[step];
+        document.getElementById('qs-step').textContent = `Step ${step + 1} of ${states.length}`;
+        document.getElementById('qs-message').textContent = s.msg;
+        document.getElementById('qs-stage-caption').textContent = s.msg;
+        function renderContextCard(id, label, state) {
+          const card = document.getElementById(id);
+          card.replaceChildren();
+          if (!state) { card.style.visibility = 'hidden'; return; }
+          card.style.visibility = 'visible';
+          const heading = document.createElement('div');
+          heading.className = 'context-label';
+          heading.textContent = label;
+          const values = document.createElement('div');
+          values.className = 'context-values';
+          state.a.forEach(value => { const node = document.createElement('span'); node.className = 'context-node'; node.textContent = value; values.appendChild(node); });
+          card.append(heading, values);
+        }
+        renderContextCard('qs-previous', step > 0 ? `Previous step ${step}` : '', step > 0 ? states[step - 1] : null);
+        renderContextCard('qs-next-preview', step < states.length - 1 ? `Next step ${step + 2}` : '', step < states.length - 1 ? states[step + 1] : null);
+        const split = document.getElementById('qs-split');
+        split.replaceChildren();
+        let pivotIndex = s.tags && Object.keys(s.tags).find(index => s.tags[index] === 'pivot');
+        if (pivotIndex === undefined && step >= 10 && step < states.length - 1) {
+          for (let prior = step - 1; prior >= 0; prior--) {
+            const priorPivot = states[prior].tags && Object.keys(states[prior].tags).find(index => states[prior].tags[index] === 'pivot');
+            if (priorPivot !== undefined) { pivotIndex = priorPivot; break; }
+          }
+        }
+        if (step >= 10 && pivotIndex !== undefined && step < states.length - 1) {
+          const pivot = pivotIndex === undefined ? null : s.a[Number(pivotIndex)];
+          const left = pivotIndex === undefined ? s.a : s.a.slice(0, Number(pivotIndex));
+          const right = pivotIndex === undefined ? [] : s.a.slice(Number(pivotIndex) + 1);
+          [['left', 'S1 / left side', left], ['pivot', 'Pivot', pivot === null ? '—' : [pivot]], ['right', 'S2 / right side', right]].forEach(([kind, label, values]) => {
+            const panel = document.createElement('div');
+            panel.className = `split-panel ${kind}`;
+            const shown = Array.isArray(values) ? values : [values];
+            panel.innerHTML = `<div class="split-label">${label}</div><div class="split-values">${shown.map(value => `<span class="split-node">${value}</span>`).join('')}</div>`;
+            split.appendChild(panel);
+          });
+        }
+        const detail = document.getElementById('qs-detail');
+        detail.textContent = step === 0
+          ? 'Step 1: Observe the range indices. left = 0, center = 4, right = 9.'
+          : step === 1
+            ? 'Step 2: Read the sampled values: 8, 5, and 0. The median is 5.'
+            : step === 2
+              ? 'Step 3: Order the sampled values: 0 moves left, 8 moves right, and 5 remains the pivot candidate.'
+              : step === 3
+                ? 'Step 4: Move the median pivot 5 to right - 1 before partitioning.'
+              : '';
+        const phaseNames = ['Original array', 'Pivot selection', 'Partitioning', 'S1 | pivot | S2', 'Recursive Quick Sort / insertion sort', 'Final array'];
+        const last = states.length - 1;
+        const tagValues = Object.values(s.tags || {});
+        const isPartitioning = tagValues.includes('i') || tagValues.includes('j');
+        const isSplit = /S1|S2|left side|right side|settles at index|settles between|final position/i.test(s.msg);
+        const isFinal = step === last;
+        const phaseAt = step === 0 ? 0 : isFinal ? 5 : isSplit ? 3 : isPartitioning ? 2 : /insertion|recursive|Quick Sort processes/i.test(s.msg) ? 4 : 1;
+        const phases = document.getElementById('qs-phases');
+        phases.replaceChildren();
+        phaseNames.forEach((name, index) => {
+          const phase = document.createElement('div');
+          phase.className = 'phase' + (index === phaseAt ? ' active' : '');
+          phase.innerHTML = `<div class="node">${index + 1}</div><div class="phase-label">${name}</div>`;
+          phases.appendChild(phase);
+          if (index < phaseNames.length - 1) {
+            const connector = document.createElement('div');
+            connector.className = 'connector';
+            phases.appendChild(connector);
+          }
+        });
+        const history = document.getElementById('qs-history');
+        history.replaceChildren();
+        states.slice(0, step + 1).forEach((state, index) => {
+          const row = document.createElement('div');
+          row.className = 'history-row' + (index === step ? ' current' : '');
+          const label = document.createElement('div');
+          label.className = 'history-label';
+          label.textContent = `Step ${index + 1}`;
+          const description = document.createElement('div');
+          description.className = 'history-description';
+          description.textContent = state.msg;
+          const mini = document.createElement('div');
+          mini.className = 'history-stack';
+          const valuesRow = document.createElement('div');
+          valuesRow.className = 'history-array';
+          const indicesRow = document.createElement('div');
+          indicesRow.className = 'history-array';
+          state.a.forEach((value, valueIndex) => {
+            const cell = document.createElement('span');
+            cell.className = 'history-cell';
+            cell.textContent = value;
+            const tag = state.tags && state.tags[valueIndex] ? state.tags[valueIndex].toLowerCase() : '';
+            if (tag.includes('pivot')) cell.classList.add('pivot');
+            else if (tag === 's1' || tag.includes('insertion range')) cell.classList.add('S1');
+            else if (tag === 's2' || tag.includes('s2')) cell.classList.add('S2');
+            if (state.swap && state.swap.includes(valueIndex)) cell.classList.add('swap');
+            else if (state.focus && state.focus.includes(valueIndex)) cell.classList.add('focus');
+            valuesRow.appendChild(cell);
+            const indexCell = document.createElement('span');
+            indexCell.className = 'history-index';
+            indexCell.textContent = valueIndex;
+            indicesRow.appendChild(indexCell);
+          });
+          mini.append(valuesRow, indicesRow);
+          row.append(label, mini, description);
+          history.appendChild(row);
+        });
+        const activeHistoryRow = history.querySelector('.history-row.current');
+        if (activeHistoryRow) requestAnimationFrame(() => activeHistoryRow.scrollIntoView({behavior:'smooth', block:'center', inline:'nearest'}));
+        const el = document.getElementById('qs-array');
+        el.replaceChildren();
+        s.a.forEach((value, index) => {
+          const item = document.createElement('div');
+          item.className = 'item';
+          if (s.tags && s.tags[index] === 'pivot') item.classList.add('pivot');
+          if (s.focus && s.focus.includes(index)) item.classList.add('focus');
+          if (s.swap && s.swap.includes(index)) item.classList.add('swap');
+          if (pivotIndex !== undefined && /insertion sort/i.test(s.msg)) {
+            if (index === Number(pivotIndex)) item.classList.add('context-pivot');
+            else if (index < Number(pivotIndex)) item.classList.add('insertion-range');
+            else item.classList.add('s2-range');
+          }
+          item.innerHTML = `<div class="tag">${s.tags && s.tags[index] ? s.tags[index] : ''}</div><div class="box">${value}</div><div class="index">${index}</div>`;
+          el.appendChild(item);
+        });
+        document.getElementById('qs-next').disabled = step === states.length - 1;
+        document.getElementById('qs-back').disabled = step === 0;
+      }
+      document.getElementById('qs-back').addEventListener('click', () => { if (step > 0) { step -= 1; render(); } });
+      document.getElementById('qs-next').addEventListener('click', () => { if (step < states.length - 1) { step += 1; render(); } });
+      document.getElementById('qs-reset').addEventListener('click', () => { step = 0; render(); });
+      document.getElementById('qs-shuffle').addEventListener('click', () => {
+        const values = Array.from({length: 10}, (_, index) => index);
+        for (let index = values.length - 1; index > 0; index--) {
+          const swapIndex = Math.floor(Math.random() * (index + 1));
+          [values[index], values[swapIndex]] = [values[swapIndex], values[index]];
+        }
+        states = buildTrace(values);
+        step = 0;
+        render();
+      });
+      document.querySelectorAll('[data-preset]').forEach((button) => button.addEventListener('click', (event) => {
+        states = buildTrace(JSON.parse(event.currentTarget.dataset.preset));
+        step = 0;
+        render();
+        event.currentTarget.closest('details').open = false;
+      }));
+      render();
+    })();
+  </script>
+</div>
+
