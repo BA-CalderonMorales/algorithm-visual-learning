@@ -81,7 +81,12 @@
     #quick-sort-walkthrough .split-panel.left .split-node { border-color: var(--viz-series-2); }
     #quick-sort-walkthrough .split-panel.pivot .split-node { border-color: var(--viz-series-1); background: color-mix(in srgb, var(--viz-series-1) 22%, var(--muted)); }
     #quick-sort-walkthrough .split-panel.right .split-node { border-color: var(--viz-series-3); }
-    #quick-sort-walkthrough .legend { position: absolute; bottom: 20px; left: 36px; margin: 0; }
+    #quick-sort-walkthrough .legend { display:flex; flex-wrap:wrap; align-items:center; gap:8px 16px; margin:0 0 12px; color:var(--muted-foreground); font-size:11px; line-height:1.4; }
+    #quick-sort-walkthrough .legend-item { display:inline-flex; align-items:center; gap:6px; white-space:nowrap; }
+    #quick-sort-walkthrough .legend-swatch { width:9px; height:9px; flex:0 0 9px; border-radius:3px; background:var(--border); }
+    #quick-sort-walkthrough .legend-swatch.pivot { background:var(--viz-series-1); }
+    #quick-sort-walkthrough .legend-swatch.compare { background:var(--viz-series-2); }
+    #quick-sort-walkthrough .legend-swatch.swap { background:var(--viz-series-3); }
     @media (max-width: 1300px) { #quick-sort-walkthrough .context-node { width: 20px; height: 20px; flex-basis: 20px; font-size: 11px; } }
     @media (max-width: 760px) { #quick-sort-walkthrough { padding: 20px; } #quick-sort-walkthrough .controls { top: 20px; right: 20px; } #quick-sort-walkthrough .study-stage { min-height: 44vh; padding: 12px; } #quick-sort-walkthrough .legend { left: 20px; bottom: 12px; } }
     @media (max-width: 1100px) { #quick-sort-walkthrough { padding: 20px; } #quick-sort-walkthrough .controls { top: 16px; right: 20px; gap: 5px; padding: 6px; } #quick-sort-walkthrough button, #quick-sort-walkthrough .preset-select { padding: 7px 9px; font-size: 12px; } #quick-sort-walkthrough .phases { margin-top: 14px; } #quick-sort-walkthrough .phase-label { font-size: 9px; } #quick-sort-walkthrough .connector { width: 16px; } #quick-sort-walkthrough .study-stage { padding: 14px; } #quick-sort-walkthrough .context-card.current .context-node { width: 40px; height: 40px; font-size: 18px; } }
@@ -89,13 +94,13 @@
     #quick-sort-walkthrough .legend { margin-top: 16px; color: var(--muted-foreground); font-size: 13px; }
     #quick-sort-walkthrough .phases { display: flex; align-items: center; gap: 0; margin: 16px 0; overflow-x: auto; }
     #quick-sort-walkthrough .phase { display: flex; align-items: center; color: var(--muted-foreground); white-space: nowrap; }
-    #quick-sort-walkthrough .node { width: 28px; height: 28px; border: 2px solid var(--border); border-radius: 50%; display: grid; place-items: center; }
+    #quick-sort-walkthrough .node { box-sizing:border-box; width:32px; height:32px; flex:0 0 32px; aspect-ratio:1; border:2px solid var(--border); border-radius:50%; display:grid; place-items:center; }
     #quick-sort-walkthrough .phase.active .node { border-color: var(--viz-series-1); background: color-mix(in srgb, var(--viz-series-1) 20%, var(--muted)); color: var(--foreground); }
     #quick-sort-walkthrough .connector { width: 28px; height: 2px; background: var(--border); }
     #quick-sort-walkthrough .phase-label { margin-left: 6px; font-size: 11px; }
     #quick-sort-walkthrough .preset-select { appearance: none; font: inherit; width: 150px !important; max-width: 150px !important; min-width: 0 !important; flex: 0 0 150px !important; height: 38px; line-height: 18px; padding: 8px 10px; margin: 0; background: #303036; color: var(--foreground); border: 1px solid var(--border); border-radius: 8px; cursor: pointer; overflow: hidden; text-overflow: ellipsis; }
     #quick-sort-walkthrough .preset-menu { position: relative; flex: 0 0 82px; width: 82px; }
-    #quick-sort-walkthrough .preset-menu summary { list-style: none; width: 82px; height: 28px; box-sizing: border-box; padding: 6px 4px; border: 1px solid var(--border); border-radius: 8px; background: #303036; color: var(--foreground); font-size: 10px; line-height: 14px; text-align: center; cursor: pointer; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    #quick-sort-walkthrough .preset-menu summary { list-style: none; width: 100%; min-width: 0; height: 28px; box-sizing: border-box; padding: 0 8px; border: 1px solid var(--border); border-radius: 8px; background: #303036; color: var(--foreground); font-size: 11px; line-height: 1; text-align: center; cursor: pointer; white-space: nowrap; }
     #quick-sort-walkthrough .preset-menu summary::-webkit-details-marker { display: none; }
     #quick-sort-walkthrough .preset-options { position: absolute; top: 34px; right: 0; z-index: 10; display: grid; gap: 4px; min-width: 120px; padding: 6px; border: 1px solid var(--border); border-radius: 8px; background: #27272a; box-shadow: 0 8px 20px rgba(0,0,0,.35); }
     #quick-sort-walkthrough .preset-options button { width: 100%; text-align: left; }
@@ -103,12 +108,13 @@
     #quick-sort-walkthrough .stage-content { width:min(1500px,100%); margin:0 auto; }
     #quick-sort-walkthrough .stage-caption, #quick-sort-walkthrough .context-row { display:none; }
     #quick-sort-walkthrough .history { display:flex; flex-direction:column; gap:8px; margin:0; padding:0; }
-    #quick-sort-walkthrough .history-row { display:grid; grid-template-columns:58px minmax(280px,auto) minmax(260px,1fr); align-items:center; gap:14px; min-height:64px; margin:0; padding:8px 12px; border:1px solid var(--border); border-radius:10px; background:color-mix(in srgb, var(--muted) 50%, #18181b); scroll-margin-block:calc(50vh - 150px); }
+    #quick-sort-walkthrough .history-row { display:grid; grid-template-columns:76px minmax(280px,auto) minmax(260px,1fr); align-items:center; gap:18px; min-height:64px; margin:0; padding:10px 14px; border:1px solid var(--border); border-radius:10px; background:color-mix(in srgb, var(--muted) 50%, #18181b); scroll-margin-block:calc(50vh - 150px); }
+    #quick-sort-walkthrough .history-label { display:inline-flex; align-items:center; justify-content:center; min-width:64px; padding:4px 6px; border:1px solid var(--border); border-radius:999px; color:var(--muted-foreground); font-size:clamp(11px,.8vw,13px); line-height:1.2; white-space:nowrap; }
     #quick-sort-walkthrough .history-row.current { border:2px solid var(--viz-series-1); background:color-mix(in srgb, var(--viz-series-1) 8%, #202023); }
     #quick-sort-walkthrough .history-row.current .history-cell:not(.pivot):not(.focus):not(.swap):not(.insertion-range):not(.S1):not(.S2) { border-color:var(--border); }
     #quick-sort-walkthrough .history-description { color:var(--muted-foreground); font-size:13px; line-height:1.4; }
     #quick-sort-walkthrough .history-row.current .history-description { color:var(--foreground); }
-    #quick-sort-walkthrough .history-stack { min-width:0; overflow-x:auto; }
+    #quick-sort-walkthrough .history-stack { min-width:0; overflow-x:auto; padding:4px 8px; border-radius:7px; background:color-mix(in srgb, var(--muted) 34%, transparent); }
     #quick-sort-walkthrough .history-array { display:flex; flex-wrap:nowrap; align-items:center; gap:4px; margin:0; }
     #quick-sort-walkthrough .history-cell { width:30px; height:30px; flex:0 0 30px; border-radius:4px; font-size:14px; }
     #quick-sort-walkthrough .history-index { width:30px; flex:0 0 30px; font-size:10px; }
@@ -122,12 +128,12 @@
     #quick-sort-walkthrough .study-stage::-webkit-scrollbar-track { background:#27272a; border-left:1px solid #3f3f46; }
     #quick-sort-walkthrough .study-stage::-webkit-scrollbar-thumb { background:#71717a; border:3px solid #27272a; border-radius:999px; }
     #quick-sort-walkthrough .study-stage::-webkit-scrollbar-thumb:hover { background:#a1a1aa; }
-    @media (max-width:1100px) { #quick-sort-walkthrough .study-stage { height:calc(100vh - 235px); min-height:280px; padding:12px; } #quick-sort-walkthrough .history-row { grid-template-columns:48px minmax(230px,auto) minmax(190px,1fr); gap:8px; padding:8px; } #quick-sort-walkthrough .history-cell { width:26px; height:26px; flex-basis:26px; font-size:12px; } #quick-sort-walkthrough .history-index { width:26px; flex-basis:26px; } }
-    @media (max-width:700px) { #quick-sort-walkthrough .history-row { grid-template-columns:44px 1fr; } #quick-sort-walkthrough .history-description { grid-column:2; } #quick-sort-walkthrough .history-label { grid-row:1 / span 2; } }
+    @media (max-width:1100px) { #quick-sort-walkthrough .study-stage { height:calc(100vh - 235px); min-height:280px; padding:12px; } #quick-sort-walkthrough .history-row { grid-template-columns:82px minmax(0,1fr); gap:14px; padding:12px; } #quick-sort-walkthrough .history-description { grid-column:2; margin-top:3px; padding:8px 10px; border:1px solid color-mix(in srgb, var(--border) 65%, transparent); border-radius:7px; background:color-mix(in srgb, var(--muted) 30%, transparent); } #quick-sort-walkthrough .history-label { grid-row:1 / span 2; align-self:stretch; justify-self:stretch; min-width:0; padding:8px 9px 0 0; border:0; border-right:1px solid var(--border); border-radius:0; } #quick-sort-walkthrough .history-stack { padding:7px 9px; } #quick-sort-walkthrough .history-cell { width:26px; height:26px; flex-basis:26px; font-size:12px; } #quick-sort-walkthrough .history-index { width:26px; flex-basis:26px; } }
+    @media (max-width:700px) { #quick-sort-walkthrough .history-row { grid-template-columns:72px minmax(0,1fr); gap:12px; } #quick-sort-walkthrough .history-description { grid-column:2; } #quick-sort-walkthrough .history-label { grid-row:1 / span 2; } }
     #quick-sort-walkthrough .controls > button, #quick-sort-walkthrough .preset-menu, #quick-sort-walkthrough .preset-menu summary { width:96px !important; min-width:96px !important; max-width:96px !important; flex:0 0 96px !important; height:28px !important; box-sizing:border-box; }
     #quick-sort-walkthrough .controls > button, #quick-sort-walkthrough .preset-menu summary { display:inline-flex; align-items:center; justify-content:center; padding:0 4px !important; font-size:11px !important; line-height:1 !important; white-space:nowrap; }
     #quick-sort-walkthrough .preset-menu summary { cursor:pointer; }
-    @media(max-width:1100px) {
+    @media(min-width:601px) {
       #quick-sort-walkthrough { height:100dvh; min-height:100dvh; padding:16px clamp(14px,3vw,24px); overflow:hidden; }
       #quick-sort-walkthrough .title { max-width:100%; margin:0 0 8px; font-size:clamp(19px,3vw,26px); line-height:1.2; }
       #quick-sort-walkthrough .step { margin-bottom:12px; }
@@ -145,7 +151,7 @@
       #quick-sort-walkthrough .history-cell { width:clamp(22px,3vw,28px); height:clamp(22px,3vw,28px); flex-basis:clamp(22px,3vw,28px); font-size:12px; }
       #quick-sort-walkthrough .history-index { width:clamp(22px,3vw,28px); flex-basis:clamp(22px,3vw,28px); }
       #quick-sort-walkthrough .study-stage::-webkit-scrollbar { width:6px; }
-      #quick-sort-walkthrough .legend { position:static; margin:8px 0 0; font-size:11px; line-height:1.4; }
+      #quick-sort-walkthrough .legend { position:static; margin:0 0 10px; font-size:11px; line-height:1.4; }
     }
     @media(max-width:900px) {
       #quick-sort-walkthrough { display:flex; flex-direction:column; }
@@ -162,17 +168,68 @@
       #quick-sort-walkthrough .controls .preset-menu summary { display:flex; width:100% !important; min-width:0 !important; flex:1 1 auto !important; align-items:center; justify-content:center; box-sizing:border-box; }
       #quick-sort-walkthrough .controls > button { white-space:normal; }
     }
+    @media(max-width:1100px) {
+      html, body { width:100%; height:100%; min-height:0; overflow:hidden; }
+      #quick-sort-walkthrough { display:grid; grid-template-columns:142px minmax(0,1fr); grid-template-rows:auto auto auto auto auto 1fr auto; gap:5px 14px; width:100%; height:100dvh; min-height:0; box-sizing:border-box; overflow:hidden; padding:12px clamp(12px,2vw,22px); }
+      #quick-sort-walkthrough > .title, #quick-sort-walkthrough > .walkthrough-kicker { display:none; }
+      #quick-sort-walkthrough > .controls { position:static; grid-column:1; grid-row:1; display:grid; grid-template-columns:minmax(0,1fr); width:auto; max-width:none; align-items:stretch; gap:5px; margin:2px 0; padding:6px; }
+      #quick-sort-walkthrough .controls > button, #quick-sort-walkthrough .controls > .preset-menu { width:100% !important; min-width:0 !important; max-width:none !important; min-height:30px; height:30px; flex:0 0 auto !important; }
+      #quick-sort-walkthrough .controls > button { width:100% !important; }
+      #quick-sort-walkthrough .controls .preset-menu { grid-column:1; }
+      #quick-sort-walkthrough .controls > button { white-space:normal; }
+      #quick-sort-walkthrough .controls .preset-menu { display:flex; }
+      #quick-sort-walkthrough .controls .preset-menu summary { display:flex; width:100% !important; min-width:0 !important; max-width:none !important; height:32px !important; flex:1 1 auto !important; align-items:center; justify-content:center; box-sizing:border-box; }
+      #quick-sort-walkthrough .phases { grid-column:1; grid-row:2; display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:6px; max-width:none; margin:2px 0; padding:0; overflow:visible; }
+      #quick-sort-walkthrough .phase { min-width:0; align-items:center; white-space:normal; }
+      #quick-sort-walkthrough .phase-label { white-space:normal; line-height:1.2; }
+      #quick-sort-walkthrough .connector { display:none; }
+      #quick-sort-walkthrough > #qs-step { grid-column:1; grid-row:3; align-self:end; margin:0; font-size:12px; }
+      #quick-sort-walkthrough > .study-stage { grid-column:2; grid-row:1 / 8; align-self:stretch; display:block; width:100%; height:auto; min-height:0; max-height:none; margin:0; padding:10px; overflow-x:hidden; overflow-y:auto; overscroll-behavior:contain; }
+      #quick-sort-walkthrough .stage-content { width:100%; margin:0; }
+      #quick-sort-walkthrough .history-row { grid-template-columns:68px minmax(0,1fr); gap:5px 7px; min-width:0; padding:7px; }
+      #quick-sort-walkthrough .history-label { grid-row:1 / span 2; }
+      #quick-sort-walkthrough .history-description { grid-column:2; font-size:11px; }
+      #quick-sort-walkthrough .history-stack { min-width:0; overflow-x:auto; }
+      #quick-sort-walkthrough .history-array { max-width:100%; flex-wrap:nowrap; gap:3px; }
+      #quick-sort-walkthrough .history-cell,#quick-sort-walkthrough .history-index { width:clamp(20px,3vw,27px); flex-basis:clamp(20px,3vw,27px); }
+      #quick-sort-walkthrough .history-cell { height:clamp(20px,3vw,27px); font-size:12px; }
+    }
+    @media(min-width:1101px) {
+      #quick-sort-walkthrough { grid-template-columns:minmax(270px,.62fr) minmax(0,1.7fr); gap:8px 22px; padding:22px clamp(22px,3vw,42px); }
+      #quick-sort-walkthrough > .title { font-size:clamp(24px,2.2vw,32px); }
+      #quick-sort-walkthrough .phases { grid-template-columns:1fr; gap:4px; }
+      #quick-sort-walkthrough .phase { min-height:24px; }
+      #quick-sort-walkthrough .phase-label { font-size:11px; }
+      #quick-sort-walkthrough > .study-stage { padding:16px; }
+      #quick-sort-walkthrough .history-row { grid-template-columns:52px minmax(360px,auto) minmax(220px,1fr); gap:12px; padding:10px; }
+      #quick-sort-walkthrough .history-stack { overflow-x:auto; }
+    }
+    #quick-sort-walkthrough #qs-detail, #quick-sort-walkthrough #qs-message { display:none; }
+    @media(max-width:1100px) { #quick-sort-walkthrough .controls, #quick-sort-walkthrough .preset-menu summary { border-radius:2px; } #quick-sort-walkthrough .controls > button { border-radius:2px; } }
+    .walkthrough-kicker { color:#b8c5d8; font-size:12px; line-height:1.45; letter-spacing:.02em; }
+    @media(max-width:600px) {
+      #quick-sort-walkthrough { display:flex; flex-direction:column; gap:5px; box-sizing:border-box; padding:10px; }
+      #quick-sort-walkthrough > .title { order:0; }
+      #quick-sort-walkthrough > .walkthrough-kicker { order:1; }
+      #quick-sort-walkthrough > .controls { order:2; display:grid; grid-template-columns:minmax(0,1fr); width:100%; margin:0; }
+      #quick-sort-walkthrough .controls .preset-menu { grid-column:1; }
+      #quick-sort-walkthrough .controls > button,#quick-sort-walkthrough .controls > .preset-menu { width:100% !important; min-width:0 !important; min-height:32px; }
+      #quick-sort-walkthrough .controls .preset-menu summary { width:100% !important; }
+      #quick-sort-walkthrough .phases { order:4; grid-template-columns:repeat(3,minmax(0,1fr)); margin:2px 0; }
+      #quick-sort-walkthrough > #qs-step { order:5; align-self:start; }
+      #quick-sort-walkthrough > .study-stage { order:6; display:block; width:auto; min-height:0; flex:1 1 0; margin:0; padding:8px; }
+      #quick-sort-walkthrough .history-row { grid-template-columns:34px minmax(0,1fr); }
+    }
   </style>
-  <div class="title">Quick Sort: partition, recursion, and insertion-sort cutoff</div>
-  <div class="complexity"><strong>Time complexity:</strong> Best Θ(n log n) · Average Θ(n log n) · Worst Θ(n²)</div>
-  <div class="complexity"><strong>Divide and conquer:</strong> Yes · <strong>Runtime lower bound (best):</strong> Ω(n log n) with balanced partitions · <strong>Runtime upper bound (worst):</strong> O(n²)</div>
+  <div class="title">Quick Sort</div>
+  <div class="walkthrough-kicker">Partition · recursion · insertion-sort cutoff</div>
   <div class="step" id="qs-step">Step 1 of 8</div>
   <div class="controls"><button type="button" id="qs-back">Back step</button><button type="button" id="qs-next">Next step</button><button type="button" id="qs-reset">Reset</button><button type="button" id="qs-shuffle">Shuffle same size</button><details class="preset-menu"><summary>Predefined</summary><div class="preset-options"><button type="button" data-preset="[4,7,8,2,9,5,6,3,1]">Worksheet A</button><button type="button" data-preset="[7,2,3,8,9,1,4,5,6]">Worksheet B</button></div></details></div>
   <div class="phases" id="qs-phases" aria-label="Quick Sort phases"></div>
-  <div class="study-stage"><div class="stage-content"><div class="stage-caption" id="qs-stage-caption" aria-live="polite"></div><div class="context-row"><div class="context-card" id="qs-previous"></div><div class="context-card current"><div class="context-label">Current step</div><div class="array-line"><div class="index-caption">indices</div><div class="array" id="qs-array" aria-live="polite"></div></div></div><div class="split-view" id="qs-split" aria-live="polite"></div><div class="context-card" id="qs-next-preview"></div></div><ol class="history" id="qs-history" aria-live="polite"></ol></div></div>
+  <div class="study-stage"><div class="stage-content"><div class="legend" aria-label="Color key"><span class="legend-item"><i class="legend-swatch pivot"></i>Pivot</span><span class="legend-item"><i class="legend-swatch compare"></i>Values being compared</span><span class="legend-item"><i class="legend-swatch swap"></i>Values swapped this step</span></div><div class="stage-caption" id="qs-stage-caption" aria-live="polite"></div><div class="context-row"><div class="context-card" id="qs-previous"></div><div class="context-card current"><div class="context-label">Current step</div><div class="array-line"><div class="index-caption">indices</div><div class="array" id="qs-array" aria-live="polite"></div></div></div><div class="split-view" id="qs-split" aria-live="polite"></div><div class="context-card" id="qs-next-preview"></div></div><ol class="history" id="qs-history" aria-live="polite"></ol></div></div>
   <div class="step" id="qs-detail"></div>
   <div class="message" id="qs-message" aria-hidden="true"></div>
-  <div class="legend">Purple: pivot. Green: values being compared. Orange: values swapped in the current step.</div>
+  <script src="motion-runtime.js"></script>
   <script>
     document.title = 'Quick Sort Walkthrough';
     (() => {
@@ -317,11 +374,21 @@
               : '';
         const phaseNames = ['Original array', 'Pivot selection', 'Partitioning', 'S1 | pivot | S2', 'Recursive Quick Sort / insertion sort', 'Final array'];
         const last = states.length - 1;
-        const tagValues = Object.values(s.tags || {});
-        const isPartitioning = tagValues.includes('i') || tagValues.includes('j');
-        const isSplit = /S1|S2|left side|right side|settles at index|settles between|final position/i.test(s.msg);
-        const isFinal = step === last;
-        const phaseAt = step === 0 ? 0 : isFinal ? 5 : isSplit ? 3 : isPartitioning ? 2 : /insertion|recursive|Quick Sort processes/i.test(s.msg) ? 4 : 1;
+        // Phase is a progress marker, not a per-frame guess: recursive partitions
+        // reuse i/j tags, but must not send the learner back to the top-level phases.
+        let phaseAt = 0;
+        let pivotHasSettled = false;
+        for (let index = 1; index <= step; index++) {
+          const state = states[index];
+          const tags = Object.values(state.tags || {});
+          const partitioning = tags.includes('i') || tags.includes('j');
+          const split = /S1|S2|left side|right side|settles at index|settles between|final position/i.test(state.msg);
+          const recursive = pivotHasSettled || /insertion|recursive|Quick Sort processes|subarray.*cutoff|cutoff.*subarray/i.test(state.msg);
+          const final = index === last;
+          const detected = final ? 5 : recursive ? 4 : split ? 3 : partitioning ? 2 : 1;
+          phaseAt = Math.max(phaseAt, detected);
+          if (/pivot settles at index|pivot (?:is )?(?:now )?in its final position/i.test(state.msg)) pivotHasSettled = true;
+        }
         const phases = document.getElementById('qs-phases');
         phases.replaceChildren();
         phaseNames.forEach((name, index) => {
@@ -372,12 +439,6 @@
           row.append(label, mini, description);
           history.appendChild(row);
         });
-        const activeHistoryRow = history.querySelector('.history-row.current');
-        if (activeHistoryRow) requestAnimationFrame(() => {
-          const scroller = document.querySelector('.study-stage');
-          const rowTop = activeHistoryRow.getBoundingClientRect().top - scroller.getBoundingClientRect().top + scroller.scrollTop;
-          scroller.scrollTo({top:rowTop - (scroller.clientHeight - activeHistoryRow.offsetHeight) / 2, behavior:'smooth'});
-        });
         const el = document.getElementById('qs-array');
         el.replaceChildren();
         s.a.forEach((value, index) => {
@@ -396,6 +457,15 @@
         });
         document.getElementById('qs-next').disabled = step === states.length - 1;
         document.getElementById('qs-back').disabled = step === 0;
+        requestAnimationFrame(() => {
+          const stage = document.querySelector('.study-stage');
+          const currentRow = history.querySelector('.history-row.current');
+          if (!stage || !currentRow) return;
+          const stageBounds = stage.getBoundingClientRect();
+          const rowBounds = currentRow.getBoundingClientRect();
+          const desiredTop = stage.scrollTop + rowBounds.top - stageBounds.top - (stage.clientHeight - currentRow.offsetHeight) / 2;
+          stage.scrollTop = Math.max(0, Math.min(desiredTop, stage.scrollHeight - stage.clientHeight));
+        });
       }
       document.getElementById('qs-back').addEventListener('click', () => { if (step > 0) { step -= 1; render(); } });
       document.getElementById('qs-next').addEventListener('click', () => { if (step < states.length - 1) { step += 1; render(); } });
