@@ -7,6 +7,11 @@
   let domain = $state('overview');
   let topic = $state('home');
   let navOpen = $state(false);
+  let globalSearchOpen = $state(false);
+  let globalSearchQuery = $state('');
+  let globalSearchInput = $state(null);
+  let activeSearchIndex = $state(0);
+  let fullscreenActive = $state(false);
   let selectedAlgorithmId = $state('');
   let algorithmView = $state('walkthrough');
   let implementationLanguage = $state('python-simple');
@@ -17,6 +22,40 @@
   let selectedAlgorithm = $derived(algorithms.find((algorithm) => algorithm.id === selectedAlgorithmId));
   let selectedLesson = $derived(algorithmLessons[selectedAlgorithmId]);
   let highlightedLines = $derived(highlightCode(implementationSource, implementationLanguage));
+
+  const baseSearchEntries = [
+    { title: 'Study home', group: 'Start here', description: 'A visual study guide for algorithms, discrete mathematics, and complexity.', href: '#/home', terms: 'learn study guide start overview' },
+    { title: 'Sorting algorithms', group: 'Algorithms', description: 'Browse and compare the sorting algorithm collection.', href: '#/algorithms/sorting', terms: 'sort catalogue sorting' },
+    { title: 'Proof by induction', group: 'Discrete mathematics', description: 'Base case, inductive hypothesis, inductive step, and the bridge to the next case.', href: '#/discrete/induction', terms: 'proof base case hypothesis inductive step mathematical induction' },
+    { title: 'Telescoping sums', group: 'Discrete mathematics', description: 'Rewrite terms as differences, cancel neighbors, and keep the endpoints.', href: '#/discrete/telescoping', terms: 'sum series cancellation endpoints partial fractions' },
+    { title: 'Master theorem', group: 'Discrete mathematics', description: 'Classify divide-and-conquer recurrences with the standard cases.', href: '#/discrete/master-theorem', terms: 'recurrence divide conquer cases a b f(n) log' },
+    { title: 'Time complexity', group: 'Complexity', description: 'Best, average, and worst cases; O, Ω, and Θ growth bounds.', href: '#/complexity/time', terms: 'runtime time big o omega theta growth asymptotic lower upper bound' },
+    { title: 'Space complexity', group: 'Complexity', description: 'Total versus auxiliary memory, recursion stacks, and peak live storage.', href: '#/complexity/space', terms: 'memory space auxiliary total recursion stack' },
+  ];
+  const searchIndex = [
+    ...baseSearchEntries,
+    ...algorithms.flatMap((algorithm) => {
+      const lesson = algorithmLessons[algorithm.id];
+      const context = [algorithm.cue, algorithm.extra, lesson?.idea, lesson?.invariant, lesson?.example, lesson?.watch, lesson?.practice, lesson?.answer, ...(lesson?.practiceChecks ?? []).flatMap((check) => [check.title, check.prompt, check.answer])].filter(Boolean).join(' ');
+      return [
+        { title: `${algorithm.name} · Understand`, group: 'Algorithms', description: `${algorithm.cue} ${lesson?.idea ?? ''} ${lesson?.watch ?? ''}`, href: `#/algorithms/${algorithm.id}/understand`, terms: context },
+        { title: `${algorithm.name} · Step-by-step`, group: 'Algorithms', description: `Follow the ${algorithm.name} walkthrough one action at a time.`, href: `#/algorithms/${algorithm.id}/walkthrough`, terms: context },
+        { title: `${algorithm.name} · Implementations`, group: 'Algorithms', description: 'Simple Python, typed Python, JavaScript, and TypeScript code.', href: `#/algorithms/${algorithm.id}/python/simple`, terms: context },
+        { title: `${algorithm.name} · Practice`, group: 'Algorithms', description: lesson?.practice ?? 'Practice the key decisions in this algorithm.', href: `#/algorithms/${algorithm.id}/practice`, terms: context },
+        { title: `${algorithm.name} · Complexity`, group: 'Algorithms', description: `Best: ${lesson?.best ?? ''}; average: ${lesson?.average ?? ''}; worst: ${lesson?.worst ?? ''}; space: ${lesson?.space ?? ''}`, href: `#/algorithms/${algorithm.id}/complexity`, terms: `${context} ${lesson?.best ?? ''} ${lesson?.average ?? ''} ${lesson?.worst ?? ''} ${lesson?.space ?? ''} ${algorithm.lower} ${algorithm.upper}` },
+      ];
+    }),
+  ];
+  let searchResults = $derived.by(() => {
+    const terms = globalSearchQuery.trim().toLowerCase().split(/\s+/).filter(Boolean);
+    if (!terms.length) return baseSearchEntries.slice(0, 6);
+    return searchIndex.map((entry) => {
+      const haystack = `${entry.title} ${entry.group} ${entry.description} ${entry.terms}`.toLowerCase();
+      if (!terms.every((term) => haystack.includes(term))) return null;
+      const score = terms.reduce((sum, term) => sum + (entry.title.toLowerCase().includes(term) ? 4 : entry.description.toLowerCase().includes(term) ? 2 : 1), 0);
+      return { ...entry, score };
+    }).filter(Boolean).sort((a, b) => b.score - a.score).slice(0, 12);
+  });
 
   const pythonTokenPattern = /(?<triple>"""[\s\S]*?"""|'''[\s\S]*?''')|(?<comment>\#[^\n]*)|(?<string>"(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*')|(?<number>\b(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][+-]?\d+)?\b)|(?<constant>\b(?:True|False|None)\b)|(?<keyword>\b(?:and|as|assert|async|await|break|class|continue|def|del|elif|else|except|finally|for|from|global|if|import|in|is|lambda|nonlocal|not|or|pass|raise|return|try|while|with|yield)\b)|(?<builtin>\b(?:bool|dict|enumerate|filter|float|int|isinstance|len|list|map|max|min|print|range|reversed|set|sorted|str|sum|tuple|type|zip|super|property|staticmethod|classmethod)\b)|(?<operator>[-+*/%=<>!&|^~]+)|(?<punct>[()[\]{}.,:;])|(?<space>\s)|(?<identifier>[A-Za-z_]\w*)|(?<other>.)/g;
 
@@ -74,6 +113,26 @@
   };
 
   onMount(() => {
+    const handleGlobalKeydown = (event) => {
+      if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'k') {
+        event.preventDefault();
+        activeSearchIndex = 0;
+        globalSearchOpen = true;
+        requestAnimationFrame(() => globalSearchInput?.focus());
+      } else if (event.key === 'Escape' && globalSearchOpen) {
+        globalSearchOpen = false;
+        requestAnimationFrame(() => document.querySelector('.global-search-trigger')?.focus());
+      } else if (event.key === 'Tab' && globalSearchOpen) {
+        const focusable = [...document.querySelectorAll('.site-search input, .site-search a[href]')];
+        const first = focusable[0];
+        const last = focusable.at(-1);
+        if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last?.focus(); }
+        else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first?.focus(); }
+      }
+    };
+    const syncFullscreen = () => (fullscreenActive = Boolean(document.fullscreenElement));
+    window.addEventListener('keydown', handleGlobalKeydown);
+    document.addEventListener('fullscreenchange', syncFullscreen);
     const applyRoute = () => {
       const algorithmRoute = window.location.hash.match(/^#\/algorithms\/([^/]+)\/(understand|walkthrough|practice|complexity|python(?:\/(?:simple|typed))?|javascript|typescript)$/);
       if (algorithmRoute) {
@@ -100,8 +159,57 @@
     };
     applyRoute();
     window.addEventListener('hashchange', applyRoute);
-    return () => window.removeEventListener('hashchange', applyRoute);
+    return () => {
+      window.removeEventListener('hashchange', applyRoute);
+      window.removeEventListener('keydown', handleGlobalKeydown);
+      document.removeEventListener('fullscreenchange', syncFullscreen);
+    };
   });
+
+  function handleSearchKeydown(event) {
+    if (event.key === 'ArrowDown' && searchResults.length) {
+      event.preventDefault();
+      activeSearchIndex = (activeSearchIndex + 1) % searchResults.length;
+    } else if (event.key === 'ArrowUp' && searchResults.length) {
+      event.preventDefault();
+      activeSearchIndex = (activeSearchIndex - 1 + searchResults.length) % searchResults.length;
+    } else if (event.key === 'Enter' && searchResults[activeSearchIndex]) {
+      event.preventDefault();
+      openSearchResult(searchResults[activeSearchIndex]);
+    }
+  }
+
+  function openSearchResult(result) {
+    globalSearchOpen = false;
+    globalSearchQuery = '';
+    window.location.hash = result.href;
+  }
+
+  function bindWalkthroughKeyboard(event) {
+    try {
+      event.currentTarget.contentWindow?.addEventListener('keydown', handleFrameShortcut);
+    } catch {
+      // A cross-origin walkthrough should never prevent the main site from working.
+    }
+  }
+
+  function handleFrameShortcut(event) {
+    if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'k') {
+      event.preventDefault();
+      activeSearchIndex = 0;
+      globalSearchOpen = true;
+      requestAnimationFrame(() => globalSearchInput?.focus());
+    }
+  }
+
+  async function toggleFullscreen() {
+    try {
+      if (document.fullscreenElement) await document.exitFullscreen();
+      else await document.documentElement.requestFullscreen();
+    } catch {
+      // Fullscreen can be unavailable in embedded browsers; keep the page usable.
+    }
+  }
 
   const isActive = (nextDomain, nextTopic) => domain === nextDomain && topic === nextTopic;
 
@@ -161,6 +269,11 @@
       <button class:active={isActive('complexity', 'space')} class="nav-link" onclick={() => openPage('complexity', 'space')}>
         <span class="nav-icon">▱</span> Space complexity
       </button>
+
+      <p class="nav-group-title">Contribute</p>
+      <a class="nav-link contribute-link" href="https://github.com/BA-CalderonMorales/algorithm-visual-learning/blob/develop/CONTRIBUTING.md" target="_blank" rel="noopener noreferrer">
+        <span class="nav-icon">＋</span> How to contribute
+      </a>
     </nav>
 
     <div class="sidebar-note"><span class="note-dot"></span><span>Made for curious minds<br />and the next class, too.</span></div>
@@ -172,7 +285,19 @@
         <button class="nav-toggle" aria-label={navOpen ? 'Close navigation' : 'Open navigation'} aria-expanded={navOpen} onclick={() => (navOpen = !navOpen)}>{navOpen ? '×' : '☰'}</button>
         <div class="breadcrumbs"><span>Learning library</span><span class="crumb-separator">/</span><strong>{pageTitle}</strong></div>
       </div>
-      <span class="topbar-status"><span class="status-dot"></span> A study guide in progress</span>
+      <div class="topbar-actions">
+        <button class="global-search-trigger" aria-label="Search topics (Ctrl+K)" onclick={() => { activeSearchIndex = 0; globalSearchOpen = true; requestAnimationFrame(() => globalSearchInput?.focus()); }}>
+          <svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="8.5" cy="8.5" r="5.5"></circle><path d="m13 13 4 4"></path></svg>
+          <span>Search topics</span><kbd>Ctrl K</kbd>
+        </button>
+        <button class="fullscreen-toggle" aria-label={fullscreenActive ? 'Exit fullscreen' : 'Enter fullscreen'} title={fullscreenActive ? 'Exit fullscreen' : 'Enter fullscreen'} onclick={toggleFullscreen}>
+          {#if fullscreenActive}<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M7 3v4H3M13 3v4h4M7 17v-4H3m10 4v-4h4"></path></svg>{:else}<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 7V3h4M17 7V3h-4M3 13v4h4m10-4v4h-4"></path></svg>{/if}
+        </button>
+        <a class="repository-link" href="https://github.com/BA-CalderonMorales/algorithm-visual-learning" target="_blank" rel="noopener noreferrer" aria-label="View the project on GitHub">
+          <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 1.7a8.3 8.3 0 0 0-2.63 16.18c.42.08.57-.18.57-.4v-1.55c-2.32.5-2.81-.98-2.81-.98-.38-.96-.93-1.22-.93-1.22-.76-.52.06-.51.06-.51.84.06 1.28.86 1.28.86.75 1.28 1.96.91 2.44.7.08-.54.29-.91.53-1.12-1.85-.21-3.79-.93-3.79-4.12 0-.91.33-1.65.86-2.24-.09-.21-.37-1.06.08-2.2 0 0 .7-.22 2.29.86a7.95 7.95 0 0 1 4.17 0c1.59-1.08 2.29-.86 2.29-.86.45 1.14.17 1.99.08 2.2.54.59.86 1.33.86 2.24 0 3.2-1.94 3.9-3.8 4.11.3.26.57.77.57 1.55v2.28c0 .22.15.48.58.4A8.3 8.3 0 0 0 10 1.7Z"></path></svg>
+          <span>GitHub</span><span aria-hidden="true">↗</span>
+        </a>
+      </div>
     </header>
 
     <div class="domain-tabs" aria-label="Learning domains">
@@ -247,7 +372,7 @@
             <a role="tab" aria-selected={algorithmView === 'practice'} class:active={algorithmView === 'practice'} href="#/algorithms/{selectedAlgorithm.id}/practice">Practice</a>
             <a role="tab" aria-selected={algorithmView === 'complexity'} class:active={algorithmView === 'complexity'} href="#/algorithms/{selectedAlgorithm.id}/complexity">Complexity</a>
           </div>
-          <iframe class="walkthrough-frame" class:hidden-material={algorithmView !== 'walkthrough'} title="{selectedAlgorithm.name} step-by-step walkthrough" src="./walkthroughs/{selectedAlgorithm.walkthrough}"></iframe>
+          <iframe class="walkthrough-frame" class:hidden-material={algorithmView !== 'walkthrough'} title="{selectedAlgorithm.name} step-by-step walkthrough" src="./walkthroughs/{selectedAlgorithm.walkthrough}" onload={bindWalkthroughKeyboard}></iframe>
           {#if algorithmView === 'understand'}
             <section class="learning-view" aria-labelledby="understand-title">
               <p class="eyebrow">Start with the idea</p>
@@ -369,4 +494,28 @@
     <footer class="site-footer"><span>DSA Study Studio</span><span>Clear steps · careful reasoning · keep learning</span></footer>
   </div>
 </div>
+
+{#if globalSearchOpen}
+  <div class="search-overlay" role="presentation" onclick={(event) => { if (event.target === event.currentTarget) globalSearchOpen = false; }}>
+    <dialog open class="site-search" aria-modal="true" aria-labelledby="site-search-title">
+      <h2 id="site-search-title" class="visually-hidden">Search the study guide</h2>
+      <div class="site-search-field">
+        <svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="8.5" cy="8.5" r="5.5"></circle><path d="m13 13 4 4"></path></svg>
+        <input type="search" bind:this={globalSearchInput} bind:value={globalSearchQuery} oninput={() => (activeSearchIndex = 0)} onkeydown={handleSearchKeydown} placeholder="Search algorithms, proofs, complexity…" aria-label="Search topics" aria-controls="site-search-results" aria-activedescendant={searchResults[activeSearchIndex] ? `search-result-${activeSearchIndex}` : undefined} />
+        <kbd>ESC</kbd>
+      </div>
+      <div id="site-search-results" class="site-search-results" role="listbox" aria-label="Search results">
+        {#each searchResults as result, index (result.href + result.title)}
+          <a id="search-result-{index}" class:search-result-active={index === activeSearchIndex} class="site-search-result" role="option" aria-selected={index === activeSearchIndex} href={result.href} onclick={(event) => { event.preventDefault(); openSearchResult(result); }} onmouseenter={() => (activeSearchIndex = index)}>
+            <span class="search-result-copy"><strong>{result.title}</strong><small>{result.description}</small></span>
+            <span class="search-result-group">{result.group}</span>
+          </a>
+        {:else}
+          <p class="site-search-empty">No matching topics. Try a concept like “pivot”, “induction”, or “space”.</p>
+        {/each}
+      </div>
+      <div class="site-search-hint"><span><kbd>↑</kbd><kbd>↓</kbd> to navigate</span><span><kbd>Enter</kbd> to open</span><span>Search lessons and algorithms</span></div>
+    </dialog>
+  </div>
+{/if}
 
