@@ -165,3 +165,72 @@ h3 { margin: 0; font-size: 16px; letter-spacing: -.02em; }
 @media (max-width: 720px) { .sidebar { position: static; width: auto; padding: 12px 14px 9px; border-right: 0; border-bottom: 1px solid #353640; } .brand { padding: 0 4px 11px; } .sidebar nav { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 2px 5px; } .nav-group-title { grid-column: 1/-1; margin: 10px 5px 3px; } .home-link { margin: 0; } .sidebar-note { display: none; } .content-column { margin-left: 0; } .topbar { height: 45px; padding: 0 15px; } .topbar-status { display: none; } .domain-tabs { top: 45px; padding: 8px 12px 0; } .domain-tabs button { flex: 1; padding: 8px 5px 10px; font-size: 10px; } .page-content { padding: 21px 15px; } .lesson-layout { grid-template-columns: 1fr; } .lesson-aside { position: static; } .case-grid { grid-template-columns: 1fr; } .welcome-panel { grid-template-columns: 1fr; gap: 8px; } .site-footer { padding: 12px 15px; flex-direction: column; } }
 @media (max-width: 460px) { .sidebar nav { grid-template-columns: 1fr; } .nav-link { min-height: 34px; } h1 { font-size: 36px; } .catalog-heading { align-items: stretch; flex-direction: column; } .search { align-items: flex-start; flex-direction: column; gap: 5px; } .search input { width: 100%; } .bounds { grid-template-columns: 1fr; } .theorem-terms { grid-template-columns: 1fr; } .example-head { align-items: flex-start; flex-direction: column; } }
 
+/* Navigation: domain tabs on roomy screens; collapsible topic drawer on every size. */
+.sidebar { position: fixed; inset: 0 auto 0 0; z-index: 12; width: 264px; height: 100dvh; transform: translateX(calc(-100% - 12px)); transition: transform .22s ease; box-shadow: 18px 0 48px #0005; }
+.sidebar.nav-open { transform: translateX(0); }
+.content-column { margin-left: 0; }
+.topbar-leading { display: flex; min-width: 0; align-items: center; gap: 13px; }
+.nav-toggle { display: grid; width: 34px; height: 34px; flex: 0 0 auto; place-items: center; border: 1px solid #41434e; border-radius: 8px; background: #24252b; color: #d6dae4; cursor: pointer; font-size: 17px; line-height: 1; }
+.nav-toggle:hover { border-color: #638cb0; background: #2b3039; }
+.nav-scrim { position: fixed; inset: 0; z-index: 11; border: 0; background: #08090bb8; backdrop-filter: blur(2px); }
+.domain-tabs { display: flex; }
+.formula { overflow: visible; }
+.math-display { display: flex; max-width: 100%; min-height: 58px; align-items: center; justify-content: center; overflow-x: auto; margin: 12px 0; padding: 15px 18px; border: 1px solid #393744; border-radius: 10px; background: linear-gradient(135deg,#1a1b21,#222027); color: #e3dcff; scrollbar-color: #625887 #202127; scrollbar-width: thin; }
+.math-display math { max-width: 100%; font-family: Cambria, "STIX Two Math", "Times New Roman", serif; font-size: 1.45rem; }
+.math-display math[display="block"] { display: block; }
+.math-display math mtext { font-family: inherit; }
+.math-display math mi { font-style: italic; }
+.math-display.math-wide { justify-content: flex-start; }
+.math-display.math-wide math { min-width: max-content; font-size: 1.25rem; }
+.math-display.result-display { border-color: #35624f; background: linear-gradient(135deg,#1d2925,#202c29); color: #a7efd1; }
+.math-display.result-display math { font-size: 1.55rem; }
+.math-display.mini-math { min-height: auto; justify-content: flex-start; margin-top: 12px; padding: 12px 9px; background: #191a20; }
+.math-display.mini-math math { font-size: .9rem; }
+.math-display.compact-math { min-height: 48px; margin: 7px 0 0; padding: 9px; background: #191a20; }
+.math-display.compact-math math { font-size: 1rem; }
+.worked-example > .math-display:first-of-type { margin-top: 9px; }
+.algorithm-view { margin-top: 18px; overflow: hidden; border: 1px solid #3a3d48; border-radius: 13px; background: #1c1d22; box-shadow: 0 14px 36px #0003; }
+.algorithm-view-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 16px 18px 10px; }
+.algorithm-view-heading .eyebrow { margin-bottom: 4px; }
+.algorithm-view-heading h2 { font-size: 17px; }
+.close-view { width: 30px; height: 30px; border: 1px solid #3d404a; border-radius: 7px; background: #24252b; color: #b7bac6; cursor: pointer; font-size: 20px; }
+.material-tabs { display: flex; gap: 4px; padding: 0 18px; border-bottom: 1px solid #363842; }
+.material-tabs button { position: relative; padding: 10px 12px; border: 0; border-radius: 7px 7px 0 0; background: transparent; color: #9296a4; cursor: pointer; font-size: 11px; }
+.material-tabs button:hover { color: #e6e7ee; background: #282a31; }
+.material-tabs button.active { color: #b8d9ff; background: #242a33; }
+.material-tabs button.active::after { position: absolute; right: 9px; bottom: -1px; left: 9px; height: 2px; border-radius: 2px; background: var(--blue); content: ""; }
+.walkthrough-frame { display: block; width: 100%; height: min(76vh,780px); min-height: 560px; border: 0; background: #171719; }
+.python-code { max-height: min(76vh,780px); overflow: auto; margin: 0; padding: 20px; background: #17191e; color: #d8e5da; font: 12px/1.7 ui-monospace,SFMono-Regular,Consolas,monospace; tab-size: 4; scrollbar-color: #52675d #202127; scrollbar-width: thin; }
+.python-code code { font: inherit; white-space: pre; }
+.code-status { margin: 0; padding: 25px 20px; color: var(--muted); font-size: 12px; }
+.code-status.error { color: #ffbd82; }
+.actions button { font: inherit; cursor: pointer; }
+.actions .primary { border: 0; }
+
+@media (min-width: 1100px) {
+  .topbar { padding-inline: clamp(28px,4vw,64px); }
+  .domain-tabs { padding-inline: clamp(28px,4vw,64px); }
+  .page-content { padding-inline: clamp(28px,4vw,64px); }
+}
+@media (max-width: 1099px) {
+  .domain-tabs { display: none; }
+  .topbar { height: 52px; padding-inline: 16px; }
+  .topbar-leading { gap: 10px; }
+  .breadcrumbs { font-size: 10px; }
+  .page-content { padding: 22px clamp(16px,3vw,28px); }
+}
+@media (max-width: 720px) {
+  .sidebar { position: fixed; inset: 0 auto 0 0; width: min(300px,86vw); height: 100dvh; padding: 18px 14px; border-right: 1px solid #353640; border-bottom: 0; }
+  .sidebar nav { display: flex; flex-direction: column; gap: 3px; }
+  .nav-group-title { grid-column: auto; margin: 15px 9px 5px; }
+  .home-link { margin-bottom: 4px; }
+  .sidebar-note { display: flex; }
+  .content-column { margin-left: 0; }
+  .topbar { height: 48px; }
+  .topbar-status { display: none; }
+  .page-content { padding: 20px 15px; }
+  .math-display { justify-content: flex-start; padding: 12px; }
+  .math-display math { font-size: 1.2rem; }
+  .walkthrough-frame { min-height: 480px; height: 70vh; }
+}
+
