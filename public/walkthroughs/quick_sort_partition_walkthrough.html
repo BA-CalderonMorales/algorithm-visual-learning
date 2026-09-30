@@ -195,9 +195,13 @@
       #quick-sort-walkthrough .history-cell { height:clamp(20px,3vw,27px); font-size:12px; }
     }
     @media(min-width:1101px) {
-      #quick-sort-walkthrough { grid-template-columns:minmax(270px,.62fr) minmax(0,1.7fr); gap:8px 22px; padding:22px clamp(22px,3vw,42px); }
-      #quick-sort-walkthrough > .title { font-size:clamp(24px,2.2vw,32px); }
-      #quick-sort-walkthrough .phases { grid-template-columns:1fr; gap:4px; }
+      #quick-sort-walkthrough { display:grid; grid-template-columns:minmax(270px,.62fr) minmax(0,1.7fr); grid-template-rows:auto auto minmax(0,1fr) auto; align-content:stretch; gap:8px 22px; padding:22px clamp(22px,3vw,42px); }
+      #quick-sort-walkthrough > .title { grid-column:1; grid-row:1; font-size:clamp(24px,2.2vw,32px); }
+      #quick-sort-walkthrough > .walkthrough-kicker { grid-column:1; grid-row:2; }
+      #quick-sort-walkthrough > .controls { position:static; grid-column:2; grid-row:1 / span 2; justify-self:end; align-self:start; width:max-content; max-width:100%; }
+      #quick-sort-walkthrough .phases { grid-column:1; grid-row:3; grid-template-columns:minmax(0,1fr); gap:4px; align-self:start; }
+      #quick-sort-walkthrough > #qs-step { grid-column:1; grid-row:4; align-self:end; }
+      #quick-sort-walkthrough > .study-stage { grid-column:2; grid-row:3 / 5; width:100%; height:auto; min-height:0; max-height:none; margin:0; align-self:stretch; overflow-y:auto; }
       #quick-sort-walkthrough .phase { min-height:24px; }
       #quick-sort-walkthrough .phase-label { font-size:11px; }
       #quick-sort-walkthrough > .study-stage { padding:16px; }
