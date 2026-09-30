@@ -16,7 +16,7 @@
     button { font:inherit; padding:9px 14px; border:1px solid var(--border); border-radius:8px; background:#303036; color:var(--text); cursor:pointer; }
     button:hover:not(:disabled) { border-color:var(--blue); background:#3f3f46; }
     button:disabled { opacity:.45; cursor:default; }
-    .stage { height:calc(100vh - 190px); min-height:420px; border:1px solid var(--border); background:#1f1f22; overflow-y:auto; overscroll-behavior:contain; scroll-behavior:smooth; padding:22px 24px; scrollbar-width:thin; scrollbar-color:#71717a #27272a; }
+    .stage { height:calc(100vh - 220px); min-height:390px; border:1px solid var(--border); background:#1f1f22; overflow-y:auto; overscroll-behavior:contain; scroll-behavior:smooth; padding:22px 24px; scrollbar-width:thin; scrollbar-color:#71717a #27272a; }
     .stage::-webkit-scrollbar { width:12px; }
     .stage::-webkit-scrollbar-track { background:#27272a; border-left:1px solid #3f3f46; }
     .stage::-webkit-scrollbar-thumb { background:#71717a; border:3px solid #27272a; border-radius:999px; }
@@ -33,6 +33,7 @@
     .history-array { display:grid; grid-template-columns:repeat(10,minmax(0,1fr)); gap:clamp(2px,.35vw,5px); align-items:center; width:min(100%,390px); min-width:0; padding:4px 7px; border-radius:7px; background:#151518; }
     .history-position { display:flex; min-width:0; flex-direction:column; align-items:center; gap:3px; }
     .history-index { color:var(--sub); font-size:10px; line-height:1; }
+    .pointer-markers { min-height:11px; color:#bfdbfe; font-size:9px; line-height:1; font-weight:700; }
     .history-cell { width:100%; min-width:0; height:32px; display:grid; place-items:center; border:1px solid var(--border); border-radius:5px; background:var(--muted); color:var(--text); font-size:15px; }
     .history-position.outside-lane { opacity:.38; }
     .history-position.in-lane .history-cell { box-shadow:0 0 0 1px #c084fc88; }
@@ -53,7 +54,7 @@
       #shell-sort { padding:20px; }
       .controls { position:static; width:max-content; max-width:100%; flex-wrap:wrap; margin:12px 0; padding:6px; gap:5px; }
       button { padding:7px 9px; font-size:12px; }
-      .stage { height:calc(100vh - 225px); min-height:350px; padding:16px 12px; }
+      .stage { height:calc(100vh - 255px); min-height:320px; padding:16px 12px; }
       .history-row { grid-template-columns:82px minmax(0,1fr); gap:14px; padding:12px; }
       .history-reason { grid-column:2; margin-top:3px; padding:8px 10px; border:1px solid #3f3f46; border-radius:7px; background:#202023; }
       .history-label { grid-row:1 / span 2; align-self:stretch; justify-self:stretch; min-width:0; padding:8px 9px 0 0; border:0; border-right:1px solid #3f3f46; border-radius:0; }
@@ -62,7 +63,7 @@
     }
     @media(max-width:820px) {
       #shell-sort { padding:14px; }
-      .stage { height:calc(100vh - 250px); min-height:300px; }
+      .stage { height:calc(100vh - 280px); min-height:270px; }
       .history-row { grid-template-columns:82px minmax(0,1fr); gap:14px; padding:12px; }
       .history-reason { grid-column:2; }
       .history-label { grid-row:1 / span 2; }
@@ -74,7 +75,8 @@
     body.embedded .step { grid-column:1; grid-row:1; align-self:end; margin:0; font-size:13px; }
     body.embedded .controls { position:static; grid-column:1; grid-row:2; display:flex; flex-direction:column; width:100%; max-width:none; align-self:start; gap:6px; margin:0; padding:7px; }
     body.embedded #shell-sort .controls button { width:100% !important; height:30px; flex:0 0 auto; }
-    body.embedded .stage { grid-column:2; grid-row:1 / span 2; width:100%; height:auto; min-height:0; padding:12px; }
+    body.embedded .legend { grid-column:2; grid-row:1; align-self:end; margin:0; padding:4px 8px; border-bottom:1px solid #3f3f46; }
+    body.embedded .stage { grid-column:2; grid-row:2; width:100%; height:auto; min-height:0; padding:12px; }
     body.embedded .history-row { grid-template-columns:68px minmax(0,1fr); gap:8px; }
     body.embedded .history-array { min-width:0; }
     body.embedded .history-reason { grid-column:2; }
@@ -89,9 +91,9 @@
   <h1>Shell Sort: gap passes, compare, shift, insert</h1>
   <div class="step" id="step">Step 1</div>
   <div class="controls"><button id="back" disabled>Back step</button><button id="next">Next step</button><button id="reset">Reset</button><button id="shuffle">Shuffle same size</button><button id="front-examples">Front examples</button></div>
+  <div class="legend" aria-label="Color key and pointers"><span><i class="swatch" style="background:#24405f;border-color:#60a5fa"></i>Held key</span><span><i class="swatch" style="background:#514616;border-color:#facc15"></i>Compared value</span><span><i class="swatch" style="background:#493326;border-color:#fb923c"></i>Shift / · open slot</span><span><i class="swatch" style="background:#245743;border-color:#34d399"></i>Inserted key</span><span><i class="swatch" style="border-color:#c084fc"></i>Active gap-group</span><span><b>i</b> held-key pass · <b>j</b> gap-spaced comparison</span></div>
   <section class="stage" id="stage"><div class="content">
     <div class="message" id="message"></div>
-    <div class="legend"><span><i class="swatch" style="background:#24405f;border-color:#60a5fa"></i>Held key</span><span><i class="swatch" style="background:#514616;border-color:#facc15"></i>Compared value</span><span><i class="swatch" style="background:#493326;border-color:#fb923c"></i>Shift / · open slot</span><span><i class="swatch" style="background:#245743;border-color:#34d399"></i>Inserted key</span><span><i class="swatch" style="border-color:#c084fc"></i>Active gap-group</span></div>
     <div class="history" id="history"></div>
   </div></section>
 </main>
@@ -109,7 +111,7 @@
 
   function build(values) {
     const a=values.slice(), trace=[];
-    const add=(msg,{tags={},gap=null,heldKey=null,lane=null,kind='',from=null,to=null,moving=null}={})=>trace.push({a:a.slice(),tags,gap,heldKey,lane,kind,from,to,moving,msg});
+    const add=(msg,{tags={},gap=null,heldKey=null,lane=null,kind='',from=null,to=null,moving=null,i=null,j=null}={})=>trace.push({a:a.slice(),tags,gap,heldKey,lane,kind,from,to,moving,i,j,msg});
     add(`Start with the original array. Shell Sort will sort elements that are ${Math.floor(a.length/2)} positions apart, then reduce the gap.`,{gap:Math.floor(a.length/2)});
     for(let gap=Math.floor(a.length/2);gap>0;gap=Math.floor(gap/2)) {
       add(`Begin a gap-${gap} pass. Each index follows only positions ${gap} apart in its own group.`,{gap,kind:'pass-start'});
@@ -118,19 +120,19 @@
         a[i]=null;
         let j=i;
         const lane=i%gap;
-        add(`Hold key ${key} from index ${i}. Compare it with A[${j-gap}], ${gap} positions to the left in this same group.`,{gap,heldKey:key,lane,kind:'hold',from:j-gap,to:i,tags:{[i]:'key',[j-gap]:'compare'}});
+        add(`Hold key ${key} from index ${i}. Compare it with A[${j-gap}], ${gap} positions to the left in this same group.`,{gap,heldKey:key,lane,kind:'hold',from:j-gap,to:i,i,j:j-gap,tags:{[i]:'key',[j-gap]:'compare'}});
         while(j>=gap && a[j-gap]>key) {
           const from=j-gap, moving=a[from];
           a[j]=moving;
           a[from]=null;
-          add(`${moving} is greater than held key ${key}. Shift ${moving} from index ${from} to index ${j}; the open position moves left to index ${from}.`,{gap,heldKey:key,lane,kind:'shift',from,to:j,moving,tags:{[from]:'hole',[j]:'shift'}});
+          add(`${moving} is greater than held key ${key}. Shift ${moving} from index ${from} to index ${j}; the open position moves left to index ${from}.`,{gap,heldKey:key,lane,kind:'shift',from,to:j,moving,i,j:from,tags:{[from]:'hole',[j]:'shift'}});
           j=from;
-          if(j>=gap) add(`Stay in this gap-group. Compare held key ${key} with A[${j-gap}] next; it is ${gap} positions left of the open slot.`,{gap,heldKey:key,lane,kind:'continue',from:j-gap,to:j,tags:{[j]:'hole',[j-gap]:'compare'}});
+          if(j>=gap) add(`Stay in this gap-group. Compare held key ${key} with A[${j-gap}] next; it is ${gap} positions left of the open slot.`,{gap,heldKey:key,lane,kind:'continue',from:j-gap,to:j,i,j:j-gap,tags:{[j]:'hole',[j-gap]:'compare'}});
         }
-        if(j>=gap) add(`A[${j-gap}] = ${a[j-gap]} is not greater than held key ${key}. Stop shifting; the key belongs in the open slot at index ${j}.`,{gap,heldKey:key,lane,kind:'stop',from:j-gap,to:j,tags:{[j-gap]:'compare',[j]:'hole'}});
-        else add(`No earlier index exists in this gap-group. Put held key ${key} into the open slot at index ${j}.`,{gap,heldKey:key,lane,kind:'first',to:j,tags:{[j]:'hole'}});
+        if(j>=gap) add(`A[${j-gap}] = ${a[j-gap]} is not greater than held key ${key}. Stop shifting; the key belongs in the open slot at index ${j}.`,{gap,heldKey:key,lane,kind:'stop',from:j-gap,to:j,i,j:j-gap,tags:{[j-gap]:'compare',[j]:'hole'}});
+        else add(`No earlier index exists in this gap-group. Put held key ${key} into the open slot at index ${j}.`,{gap,heldKey:key,lane,kind:'first',to:j,i,j:null,tags:{[j]:'hole'}});
         a[j]=key;
-        add(`Insert key ${key} at index ${j}. This gap-group is in order for the positions checked so far.`,{gap,lane,kind:'insert',to:j,moving:key,tags:{[j]:'inserted'}});
+        add(`Insert key ${key} at index ${j}. This gap-group is in order for the positions checked so far.`,{gap,lane,kind:'insert',to:j,moving:key,i,j:j>=gap?j-gap:null,tags:{[j]:'inserted'}});
       }
       add(`Gap-${gap} pass complete. Reduce the gap and sort the interleaved groups again.`,{gap});
     }
@@ -152,7 +154,8 @@
         position.className='history-position'+(item.lane===null?'':(i%item.gap===item.lane?' in-lane':' outside-lane'));
         const cell=document.createElement('div'); const tag=item.tags?.[i]||''; cell.className=`history-cell ${tag}`; cell.textContent=value===null?'·':value;
         const indexLabel=document.createElement('span'); indexLabel.className='history-index'; indexLabel.textContent=i;
-        position.append(cell,indexLabel); values.appendChild(position);
+        const marker=document.createElement('span');marker.className='pointer-markers';marker.textContent=[item.i===i?'i':'',item.j===i?'j':''].filter(Boolean).join(' · ');
+        position.append(cell,indexLabel,marker); values.appendChild(position);
       });
       const reason=document.createElement('div'); reason.className='history-reason';
       const badges=document.createElement('div'); badges.className='history-badges';
@@ -204,4 +207,3 @@
 </script>
 </body>
 </html>
-

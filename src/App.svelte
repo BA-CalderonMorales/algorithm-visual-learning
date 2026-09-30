@@ -2,6 +2,7 @@
   import { onMount } from 'svelte';
   import { algorithms, visibleAlgorithms } from './algorithms.js';
   import { algorithmLessons } from './algorithm-lessons.js';
+  import GrowthChart from './GrowthChart.svelte';
 
   let query = $state('');
   let sortBy = $state('');
@@ -67,6 +68,7 @@
         { title: `${algorithm.name} · Implementations`, group: 'Algorithms', description: 'Simple Python, typed Python, JavaScript, and TypeScript code.', href: `#/algorithms/${algorithm.id}/python/simple`, terms: context },
         { title: `${algorithm.name} · Practice`, group: 'Algorithms', description: lesson?.practice ?? 'Practice the key decisions in this algorithm.', href: `#/algorithms/${algorithm.id}/practice`, terms: context },
         { title: `${algorithm.name} · Complexity`, group: 'Algorithms', description: `Best: ${lesson?.best ?? ''}; average: ${lesson?.average ?? ''}; worst: ${lesson?.worst ?? ''}; space: ${lesson?.space ?? ''}`, href: `#/algorithms/${algorithm.id}/complexity`, terms: `${context} ${lesson?.best ?? ''} ${lesson?.average ?? ''} ${lesson?.worst ?? ''} ${lesson?.space ?? ''} ${algorithm.lower} ${algorithm.upper}` },
+        { title: `${algorithm.name} · Growth`, group: 'Algorithms', description: 'Compare theoretical best-, average-, and worst-case operation growth as input size increases.', href: `#/algorithms/${algorithm.id}/growth`, terms: `${context} growth operation count dominant case theoretical chart` },
       ];
     }),
   ];
@@ -158,7 +160,7 @@
     window.addEventListener('keydown', handleGlobalKeydown);
     document.addEventListener('fullscreenchange', syncFullscreen);
     const applyRoute = () => {
-      const algorithmRoute = window.location.hash.match(/^#\/algorithms\/([^/]+)\/(understand|walkthrough|practice|complexity|python(?:\/(?:simple|typed))?|javascript|typescript)$/);
+      const algorithmRoute = window.location.hash.match(/^#\/algorithms\/([^/]+)\/(understand|walkthrough|practice|complexity|growth|python(?:\/(?:simple|typed))?|javascript|typescript)$/);
       if (algorithmRoute) {
         const algorithm = algorithms.find((entry) => entry.id === decodeURIComponent(algorithmRoute[1]));
         if (algorithm) {
@@ -168,7 +170,7 @@
           topic = 'algorithm';
           selectedAlgorithmId = algorithm.id;
           const view = algorithmRoute[2];
-          algorithmView = ['understand', 'walkthrough', 'practice', 'complexity'].includes(view) ? view : 'implementation';
+          algorithmView = ['understand', 'walkthrough', 'practice', 'complexity', 'growth'].includes(view) ? view : 'implementation';
           implementationLanguage = view === 'javascript' || view === 'typescript' ? view : view === 'python/typed' ? 'python-typed' : 'python-simple';
           navOpen = false;
           if (!switchingViewForSameAlgorithm) returnToTop();
@@ -409,8 +411,13 @@
             <a role="tab" aria-selected={algorithmView === 'implementation'} class:active={algorithmView === 'implementation'} href="#/algorithms/{selectedAlgorithm.id}/python/simple">Implementations</a>
             <a role="tab" aria-selected={algorithmView === 'practice'} class:active={algorithmView === 'practice'} href="#/algorithms/{selectedAlgorithm.id}/practice">Practice</a>
             <a role="tab" aria-selected={algorithmView === 'complexity'} class:active={algorithmView === 'complexity'} href="#/algorithms/{selectedAlgorithm.id}/complexity">Complexity</a>
+            <a role="tab" aria-selected={algorithmView === 'growth'} class:active={algorithmView === 'growth'} href="#/algorithms/{selectedAlgorithm.id}/growth">Growth</a>
           </div>
-          <iframe class="walkthrough-frame" class:hidden-material={algorithmView !== 'walkthrough'} title="{selectedAlgorithm.name} step-by-step walkthrough" src="./walkthroughs/{selectedAlgorithm.walkthrough}" onload={bindWalkthroughKeyboard}></iframe>
+          {#if algorithmView === 'walkthrough'}
+            {#key selectedAlgorithm.id}
+              <iframe class="walkthrough-frame" title="{selectedAlgorithm.name} step-by-step walkthrough" src="./walkthroughs/{selectedAlgorithm.walkthrough}" onload={bindWalkthroughKeyboard}></iframe>
+            {/key}
+          {/if}
           {#if algorithmView === 'understand'}
             <section class="learning-view understand-view" aria-labelledby="understand-title">
               <header class="understand-intro">
@@ -478,6 +485,8 @@
               <p class="complexity-note">{selectedLesson.note}</p>
               {#if selectedAlgorithm.id === 'quick'}<p class="complexity-note">{selectedAlgorithm.extra}</p>{/if}
             </section>
+          {:else if algorithmView === 'growth'}
+            <GrowthChart algorithmId={selectedAlgorithm.id} algorithmName={selectedAlgorithm.name} />
           {:else if algorithmView === 'implementation' && pythonLoading}
             <p class="code-status">Loading the implementation…</p>
           {:else if algorithmView === 'implementation' && pythonError}
@@ -557,4 +566,3 @@
     </dialog>
   </div>
 {/if}
-

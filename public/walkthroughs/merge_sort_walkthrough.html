@@ -18,7 +18,7 @@
     button { width:96px; height:28px; display:inline-flex; align-items:center; justify-content:center; padding:0 4px; border:1px solid var(--border); border-radius:8px; background:#303036; color:var(--text); font:11px Arial,sans-serif; white-space:nowrap; cursor:pointer; }
     button:hover:not(:disabled) { border-color:var(--blue); background:#3f3f46; }
     button:disabled { opacity:.45; cursor:default; }
-    .stage { height:calc(100vh - 190px); min-height:330px; border:1px solid var(--border); background:#1f1f22; overflow-y:auto; overscroll-behavior:contain; scroll-behavior:smooth; padding:18px; scrollbar-width:thin; scrollbar-color:#71717a #27272a; }
+    .stage { height:calc(100vh - 220px); min-height:300px; border:1px solid var(--border); background:#1f1f22; overflow-y:auto; overscroll-behavior:contain; scroll-behavior:smooth; padding:18px; scrollbar-width:thin; scrollbar-color:#71717a #27272a; }
     .stage::-webkit-scrollbar { width:12px; }
     .stage::-webkit-scrollbar-track { background:#27272a; }
     .stage::-webkit-scrollbar-thumb { background:#71717a; border:3px solid #27272a; border-radius:999px; }
@@ -40,6 +40,7 @@
     .position.leaf .cell { border-color:var(--blue); background:#24405f; }
     .position.done .cell { border-color:var(--purple); background:#42265f; }
     .index { color:var(--sub); font-size:9px; line-height:1; }
+    .pointer-markers { min-height:11px; color:#bfdbfe; font-size:9px; line-height:1; font-weight:700; }
     .visual { min-width:0; }
     .run-strips { display:flex; flex-wrap:wrap; gap:4px 8px; margin-top:7px; }
     .run-strip { display:inline-flex; align-items:center; gap:2px; color:var(--sub); font-size:10px; }
@@ -53,15 +54,16 @@
     .reason { color:var(--sub); font-size:13px; line-height:1.5; }
     .row.current .reason { color:var(--text); }
     .badge { display:inline-block; margin-bottom:4px; padding:2px 7px; border:1px solid #6b7280; border-radius:999px; color:#d4d4d8; font-size:10px; }
-    @media(max-width:1100px) { main { padding:18px 20px; } .controls { position:static; width:max-content; max-width:100%; flex-wrap:wrap; margin:9px 0; } .stage { height:calc(100vh - 230px); min-height:280px; padding:12px; } .row { grid-template-columns:82px minmax(0,1fr); gap:14px; padding:12px; } .array { padding:7px 9px; } .reason { grid-column:2; margin-top:3px; padding:8px 10px; border:1px solid #3f3f46; border-radius:7px; background:#202023; } .row-label { grid-row:1 / span 2; align-self:stretch; justify-self:stretch; padding:8px 9px 0 0; border:0; border-right:1px solid #3f3f46; border-radius:0; } }
-    @media(max-width:820px) { main { padding:14px; } .stage { height:calc(100vh - 240px); } .row { grid-template-columns:82px minmax(0,1fr); gap:14px; } .reason { grid-column:2; } .row-label { grid-row:1 / span 2; } }
+    @media(max-width:1100px) { main { padding:18px 20px; } .controls { position:static; width:max-content; max-width:100%; flex-wrap:wrap; margin:9px 0; } .stage { height:calc(100vh - 260px); min-height:250px; padding:12px; } .row { grid-template-columns:82px minmax(0,1fr); gap:14px; padding:12px; } .array { padding:7px 9px; } .reason { grid-column:2; margin-top:3px; padding:8px 10px; border:1px solid #3f3f46; border-radius:7px; background:#202023; } .row-label { grid-row:1 / span 2; align-self:stretch; justify-self:stretch; padding:8px 9px 0 0; border:0; border-right:1px solid #3f3f46; border-radius:0; } }
+    @media(max-width:820px) { main { padding:14px; } .stage { height:calc(100vh - 270px); } .row { grid-template-columns:82px minmax(0,1fr); gap:14px; } .reason { grid-column:2; } .row-label { grid-row:1 / span 2; } }
     body.embedded { overflow:hidden; }
     body.embedded main { height:100dvh; min-height:0; display:grid; grid-template-columns:142px minmax(0,1fr); grid-template-rows:auto minmax(0,1fr); gap:8px 14px; padding:12px; overflow:hidden; }
     body.embedded h1, body.embedded .memory, body.embedded .complexity, body.embedded .message { display:none; }
     body.embedded .step { grid-column:1; grid-row:1; align-self:end; margin:0; font-size:13px; }
     body.embedded .controls { position:static; grid-column:1; grid-row:2; display:flex; flex-direction:column; width:100%; max-width:none; align-self:start; gap:6px; margin:0; padding:7px; }
     body.embedded .controls button { width:100%; flex:0 0 30px; }
-    body.embedded .stage { grid-column:2; grid-row:1 / span 2; width:100%; height:auto; min-height:0; padding:12px; }
+    body.embedded .legend { grid-column:2; grid-row:1; align-self:end; margin:0; padding:4px 8px; border-bottom:1px solid #3f3f46; }
+    body.embedded .stage { grid-column:2; grid-row:2; width:100%; height:auto; min-height:0; padding:12px; }
     body.embedded .row { grid-template-columns:70px minmax(0,1fr); gap:8px; }
     body.embedded .array { max-width:100%; }
     body.embedded .controls { width:100% !important; max-width:none; align-self:stretch; border-radius:2px; }
@@ -76,8 +78,8 @@
   <div class="memory"><strong>Memory cue:</strong> Merge = split into singles → compare the fronts of sorted halves → combine. <a href="counting_sort_walkthrough.html" target="_blank" rel="noopener">Counting Sort</a> = tally → positions → place.</div>
   <div class="step" id="step">Step 1</div>
   <div class="controls"><button id="back" disabled>Back step</button><button id="next">Next step</button><button id="reset">Reset</button><button id="shuffle">Shuffle same size</button></div>
+  <div class="legend" aria-label="Color key and pointers"><span><i class="swatch" style="background:#245743;border-color:#34d399"></i>Left half</span><span><i class="swatch" style="background:#493326;border-color:#fb923c"></i>Right half</span><span><i class="swatch" style="background:#514616;border-color:#facc15"></i>Compared fronts</span><span><i class="swatch" style="background:#42265f;border-color:#c084fc"></i>Growing merged result</span><span><b>i</b> left-run cursor · <b>j</b> right-run cursor</span></div>
   <section class="stage"><div class="content"><div class="message" id="message"></div>
-    <div class="legend"><span><i class="swatch" style="background:#245743;border-color:#34d399"></i>Left half</span><span><i class="swatch" style="background:#493326;border-color:#fb923c"></i>Right half</span><span><i class="swatch" style="background:#514616;border-color:#facc15"></i>Compared fronts</span><span><i class="swatch" style="background:#42265f;border-color:#c084fc"></i>Growing merged result</span></div>
     <div class="history" id="history"></div>
   </div></section>
 </main>
@@ -101,10 +103,10 @@
       add(`Both halves are sorted. Merge left [${left.join(', ')}] with right [${right.join(', ')}].`,{...context,phase:'ready',out:out.slice()});
       let li=0,ri=0;
       while(li<left.length&&ri<right.length){
-        add(`Compare the first unused values: ${left[li]} on the left and ${right[ri]} on the right.`,{...context,phase:'compare',li,ri,out:out.slice()});
+        add(`Compare the first unused values: ${left[li]} on the left and ${right[ri]} on the right.`,{...context,phase:'compare',li,ri,i:lo+li,j:mid+1+ri,out:out.slice()});
         const fromLeft=left[li]<=right[ri];
         const chosen=fromLeft?left[li++]:right[ri++];out.push(chosen);
-        add(`Take ${chosen} from the ${fromLeft?'left':'right'} half. The merged result now begins [${out.join(', ')}].`,{...context,phase:'take',chosenSide:fromLeft?'left':'right',out:out.slice()});
+        add(`Take ${chosen} from the ${fromLeft?'left':'right'} half. The merged result now begins [${out.join(', ')}].`,{...context,phase:'take',chosenSide:fromLeft?'left':'right',i:li<left.length?lo+li:null,j:ri<right.length?mid+1+ri:null,out:out.slice()});
       }
       while(li<left.length){out.push(left[li++]);add(`Copy remaining left value ${out[out.length-1]} into the merged result.`,{...context,phase:'take',chosenSide:'left',out:out.slice()});}
       while(ri<right.length){out.push(right[ri++]);add(`Copy remaining right value ${out[out.length-1]} into the merged result.`,{...context,phase:'take',chosenSide:'right',out:out.slice()});}
@@ -135,7 +137,8 @@
         }
         const cell=document.createElement('div');cell.className='cell';cell.textContent=value;
         const indexLabel=document.createElement('span');indexLabel.className='index';indexLabel.textContent=i;
-        pos.append(cell,indexLabel);array.appendChild(pos);
+        const pointer=document.createElement('span');pointer.className='pointer-markers';pointer.textContent=[item.i===i?'i':'',item.j===i?'j':''].filter(Boolean).join(' · ');
+        pos.append(cell,indexLabel,pointer);array.appendChild(pos);
       });
       visual.appendChild(array);
       if(item.left&&item.right){
@@ -168,4 +171,3 @@
 </script>
 </body>
 </html>
-

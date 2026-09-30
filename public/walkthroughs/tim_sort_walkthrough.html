@@ -16,7 +16,7 @@
     button { font:inherit; padding:9px 14px; border:1px solid var(--border); border-radius:8px; background:#303036; color:var(--text); cursor:pointer; }
     button:hover:not(:disabled) { border-color:var(--blue); background:#3f3f46; }
     button:disabled { opacity:.45; cursor:default; }
-    .stage { height:calc(100vh - 190px); min-height:420px; border:1px solid var(--border); background:#1f1f22; overflow-y:auto; overscroll-behavior:contain; scroll-behavior:smooth; padding:22px 24px; scrollbar-width:thin; scrollbar-color:#71717a #27272a; }
+    .stage { height:calc(100vh - 220px); min-height:390px; border:1px solid var(--border); background:#1f1f22; overflow-y:auto; overscroll-behavior:contain; scroll-behavior:smooth; padding:22px 24px; scrollbar-width:thin; scrollbar-color:#71717a #27272a; }
     .stage::-webkit-scrollbar { width:12px; }
     .stage::-webkit-scrollbar-track { background:#27272a; border-left:1px solid #3f3f46; }
     .stage::-webkit-scrollbar-thumb { background:#71717a; border:3px solid #27272a; border-radius:999px; }
@@ -37,6 +37,9 @@
     .history-cell.right-run { border-color:var(--orange); background:#493326; }
     .history-cell.compare { border-color:var(--yellow); background:#514616; }
     .history-cell.write { border-color:var(--purple); background:#42265f; }
+    .pointer-markers { min-height:11px; color:#bfdbfe; font-size:9px; line-height:1; font-weight:700; }
+    .history-position { width:34px; flex:0 0 34px; display:flex; flex-direction:column; align-items:center; gap:3px; }
+    .history-index { color:var(--sub); font-size:10px; line-height:1; }
     .history-reason { color:var(--sub); font-size:13px; line-height:1.5; }
     .history-row.current .history-reason { color:var(--text); }
     .badge { color:#e9d5ff; border:1px solid #8b5cf6; border-radius:999px; padding:3px 9px; font-size:11px; white-space:nowrap; }
@@ -44,7 +47,7 @@
       #tim-sort { padding:20px; }
       .controls { position:static; width:max-content; max-width:100%; flex-wrap:wrap; margin:12px 0; padding:6px; gap:5px; }
       button { padding:7px 9px; font-size:12px; }
-      .stage { height:calc(100vh - 225px); min-height:350px; padding:16px 12px; }
+      .stage { height:calc(100vh - 255px); min-height:320px; padding:16px 12px; }
       .history-row { grid-template-columns:82px minmax(0,1fr); gap:14px; padding:12px; }
       .history-reason { grid-column:2; margin-top:3px; padding:8px 10px; border:1px solid #3f3f46; border-radius:7px; background:#202023; }
       .history-label { grid-row:1 / span 2; align-self:stretch; justify-self:stretch; min-width:0; padding:8px 9px 0 0; border:0; border-right:1px solid #3f3f46; border-radius:0; }
@@ -53,7 +56,7 @@
     }
     @media(max-width:820px) {
       #tim-sort { padding:14px; }
-      .stage { height:calc(100vh - 250px); min-height:300px; }
+      .stage { height:calc(100vh - 280px); min-height:270px; }
       .history-row { grid-template-columns:82px minmax(0,1fr); gap:14px; padding:12px; }
       .history-reason { grid-column:2; }
       .history-label { grid-row:1 / span 2; }
@@ -65,7 +68,8 @@
     body.embedded .step { grid-column:1; grid-row:1; align-self:end; margin:0; font-size:13px; }
     body.embedded .controls { position:static; grid-column:1; grid-row:2; display:flex; flex-direction:column; width:100%; max-width:none; align-self:start; gap:6px; margin:0; padding:7px; }
     body.embedded #tim-sort .controls button { width:100% !important; height:30px; flex:0 0 auto; }
-    body.embedded .stage { grid-column:2; grid-row:1 / span 2; width:100%; height:auto; min-height:0; padding:12px; }
+    body.embedded .legend { grid-column:2; grid-row:1; align-self:end; margin:0; padding:4px 8px; border-bottom:1px solid #3f3f46; }
+    body.embedded .stage { grid-column:2; grid-row:2; width:100%; height:auto; min-height:0; padding:12px; }
     body.embedded .history-row { grid-template-columns:68px minmax(0,1fr); gap:8px; }
     body.embedded .history-array { min-width:0; flex-wrap:wrap; }
     body.embedded .history-reason { grid-column:2; }
@@ -80,9 +84,9 @@
   <h1>Tim Sort: find runs, extend, merge</h1>
   <div class="step" id="step">Step 1</div>
   <div class="controls"><button id="back" disabled>Back step</button><button id="next">Next step</button><button id="reset">Reset</button><button id="shuffle">Shuffle same size</button></div>
+  <div class="legend" aria-label="Color key and pointers"><span><i class="swatch" style="background:#24405f;border-color:#60a5fa"></i>Run being scanned</span><span><i class="swatch" style="background:#245743;border-color:#34d399"></i>Left run</span><span><i class="swatch" style="background:#493326;border-color:#fb923c"></i>Right run</span><span><i class="swatch" style="background:#514616;border-color:#facc15"></i>Compared values</span><span><i class="swatch" style="background:#42265f;border-color:#c084fc"></i>Written merge result</span><span><b>i</b> current run/key · <b>j</b> compare cursor</span></div>
   <section class="stage"><div class="content">
     <div class="message" id="message"></div>
-    <div class="legend"><span><i class="swatch" style="background:#24405f;border-color:#60a5fa"></i>Run being scanned</span><span><i class="swatch" style="background:#245743;border-color:#34d399"></i>Left run</span><span><i class="swatch" style="background:#493326;border-color:#fb923c"></i>Right run</span><span><i class="swatch" style="background:#514616;border-color:#facc15"></i>Compared values</span><span><i class="swatch" style="background:#42265f;border-color:#c084fc"></i>Written merge result</span></div>
     <div class="history" id="history"></div>
   </div></section>
 </main>
@@ -95,17 +99,17 @@
   let states=[],step=0;
   function build(values) {
     const a=values.slice(),trace=[];
-    const add=(msg,tags={},badge='')=>trace.push({a:a.slice(),msg,tags,badge});
+    const add=(msg,tags={},badge='',i=null,j=null)=>trace.push({a:a.slice(),msg,tags,badge,i,j});
     add(`Start with ${a.length} values. This teaching version uses a small minimum run of ${MIN_RUN}, so short runs are extended with insertion sort before merging.`);
     const runs=[];
     let start=0;
     while(start<a.length) {
       let end=start+1;
       let descending=end<a.length && a[end]<a[start];
-      add(`Find a natural run starting at index ${start}. The first pair determines whether this run is ascending or strictly descending.`,Object.fromEntries([[start,'run'],...(end<a.length?[[end,'compare']]:[])]),'run scan');
+      add(`Find a natural run starting at index ${start}. The first pair determines whether this run is ascending or strictly descending.`,Object.fromEntries([[start,'run'],...(end<a.length?[[end,'compare']]:[])]),'run scan',start,end<a.length?end:null);
       while(end<a.length && (descending ? a[end]<a[end-1] : a[end]>=a[end-1])) {
         const tags=Object.fromEntries(Array.from({length:end-start},(_,i)=>[start+i,'run'])); tags[end]='compare';
-        add(`Continue scanning: ${a[end]} keeps the ${descending?'descending':'ascending'} run going.`,tags,'run scan');
+        add(`Continue scanning: ${a[end]} keeps the ${descending?'descending':'ascending'} run going.`,tags,'run scan',end-1,end);
         end++;
       }
       if(descending) {
@@ -124,14 +128,14 @@
         add(`This run has length ${end-start}, below the minimum run length ${MIN_RUN}. Extend it through index ${targetEnd-1} using insertion sort.`,Object.fromEntries(Array.from({length:targetEnd-start},(_,i)=>[start+i,'run'])),'extend run');
         for(let i=end;i<targetEnd;i++) {
           const key=a[i]; let j=i-1;
-          add(`Take ${key} at index ${i} as the insertion key for this run.`,{[i]:'write'},'insertion extension');
+          add(`Take ${key} at index ${i} as the insertion key for this run.`,{[i]:'write'},'insertion extension',i,i-1);
           while(j>=start && a[j]>key) {
             const tags=Object.fromEntries(Array.from({length:i-start},(_,k)=>[start+k,'run'])); tags[j]='compare'; tags[j+1]='write';
-            add(`${a[j]} is greater than ${key}. Shift ${a[j]} one position right within this run.`,tags,'insertion extension');
+            add(`${a[j]} is greater than ${key}. Shift ${a[j]} one position right within this run.`,tags,'insertion extension',i,j);
             a[j+1]=a[j];j--;
           }
           a[j+1]=key;
-          add(`Insert ${key} at index ${j+1}. The extended run is now ${a.slice(start,targetEnd).join(', ')}.`,Object.fromEntries(Array.from({length:targetEnd-start},(_,k)=>[start+k,'run'])),'extended run');
+          add(`Insert ${key} at index ${j+1}. The extended run is now ${a.slice(start,targetEnd).join(', ')}.`,Object.fromEntries(Array.from({length:targetEnd-start},(_,k)=>[start+k,'run'])),'extended run',i,j>=start?j:null);
         }
         end=targetEnd;
       }
@@ -155,11 +159,11 @@
           for(let x=left.start;x<left.end;x++) tags[x]='left-run';
           for(let x=right.start;x<right.end;x++) tags[x]='right-run';
           tags[left.start+i]='compare';tags[right.start+j]='compare';
-          add(`Compare left value ${leftValues[i]} with right value ${rightValues[j]}. Copy the smaller value into the next merge position, index ${k}.`,tags,'merge compare');
+          add(`Compare left value ${leftValues[i]} with right value ${rightValues[j]}. Copy the smaller value into the next merge position, index ${k}.`,tags,'merge compare',left.start+i,right.start+j);
           if(leftValues[i]<=rightValues[j]) out.push(leftValues[i++]); else out.push(rightValues[j++]);
           const snapshot=a.slice(); snapshot.splice(left.start,out.length,...out);
           const writeTags={}; for(let x=left.start;x<left.start+out.length;x++)writeTags[x]='write';
-          trace.push({a:snapshot,msg:`Write ${out[out.length-1]} into index ${k}; the merged prefix is ${out.join(', ')}.`,tags:writeTags,badge:'merge write'});
+          trace.push({a:snapshot,msg:`Write ${out[out.length-1]} into index ${k}; the merged prefix is ${out.join(', ')}.`,tags:writeTags,badge:'merge write',i:k,j:i<leftValues.length?left.start+i:j<rightValues.length?right.start+j:null});
           k++;
         }
         while(i<leftValues.length){out.push(leftValues[i++]);const snapshot=a.slice();snapshot.splice(left.start,out.length,...out);trace.push({a:snapshot,msg:`Copy remaining left-run value ${out[out.length-1]} into the merge.`,tags:Object.fromEntries(Array.from({length:out.length},(_,x)=>[left.start+x,'write'])),badge:'merge remainder'});}
@@ -182,7 +186,7 @@
       const row=document.createElement('article');row.className='history-row'+(index===step?' current':'');
       const label=document.createElement('div');label.className='history-label';label.textContent=`Step ${index+1}`;
       const values=document.createElement('div');values.className='history-array';
-      item.a.forEach((value,i)=>{const cell=document.createElement('div');cell.className=`history-cell ${item.tags?.[i]||''}`;cell.textContent=value;values.appendChild(cell);});
+      item.a.forEach((value,i)=>{const position=document.createElement('div');position.className='history-position';const cell=document.createElement('div');cell.className=`history-cell ${item.tags?.[i]||''}`;cell.textContent=value;const indexLabel=document.createElement('span');indexLabel.className='history-index';indexLabel.textContent=i;const pointer=document.createElement('span');pointer.className='pointer-markers';pointer.textContent=[item.i===i?'i':'',item.j===i?'j':''].filter(Boolean).join(' · ');position.append(cell,indexLabel,pointer);values.appendChild(position);});
       if(item.badge){const badge=document.createElement('span');badge.className='badge';badge.textContent=item.badge;values.appendChild(badge);}
       const reason=document.createElement('div');reason.className='history-reason';reason.textContent=item.msg;
       row.append(label,values,reason);history.appendChild(row);
@@ -202,4 +206,3 @@
 </script>
 </body>
 </html>
-

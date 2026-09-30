@@ -5,13 +5,17 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "npm run build:motion && vite build",
+    "build:motion": "vite build --config vite.motion.config.js",
     "preview": "vite preview"
   },
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "7.3.1",
     "svelte": "5.57.1",
     "vite": "8.3.1"
+  },
+  "dependencies": {
+    "chart.js": "^4.5.1",
+    "motion": "^13.4.6"
   }
 }
-
