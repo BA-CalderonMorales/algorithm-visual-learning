@@ -286,12 +286,12 @@
         <div class="breadcrumbs"><span>Learning library</span><span class="crumb-separator">/</span><strong>{pageTitle}</strong></div>
       </div>
       <div class="topbar-actions">
+        <button class="fullscreen-toggle" aria-label={fullscreenActive ? 'Exit fullscreen' : 'Enter fullscreen'} title={fullscreenActive ? 'Exit fullscreen' : 'Enter fullscreen'} onclick={toggleFullscreen}>
+          {#if fullscreenActive}<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M7 3v4H3M13 3v4h4M7 17v-4H3m10 4v-4h4"></path></svg>{:else}<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 7V3h4M17 7V3h-4M3 13v4h4m10-4v4h-4"></path></svg>{/if}
+        </button>
         <button class="global-search-trigger" aria-label="Search topics (Ctrl+K)" onclick={() => { activeSearchIndex = 0; globalSearchOpen = true; requestAnimationFrame(() => globalSearchInput?.focus()); }}>
           <svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="8.5" cy="8.5" r="5.5"></circle><path d="m13 13 4 4"></path></svg>
           <span>Search topics</span><kbd>Ctrl K</kbd>
-        </button>
-        <button class="fullscreen-toggle" aria-label={fullscreenActive ? 'Exit fullscreen' : 'Enter fullscreen'} title={fullscreenActive ? 'Exit fullscreen' : 'Enter fullscreen'} onclick={toggleFullscreen}>
-          {#if fullscreenActive}<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M7 3v4H3M13 3v4h4M7 17v-4H3m10 4v-4h4"></path></svg>{:else}<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 7V3h4M17 7V3h-4M3 13v4h4m10-4v4h-4"></path></svg>{/if}
         </button>
         <a class="repository-link" href="https://github.com/BA-CalderonMorales/algorithm-visual-learning" target="_blank" rel="noopener noreferrer" aria-label="View the project on GitHub">
           <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 1.7a8.3 8.3 0 0 0-2.63 16.18c.42.08.57-.18.57-.4v-1.55c-2.32.5-2.81-.98-2.81-.98-.38-.96-.93-1.22-.93-1.22-.76-.52.06-.51.06-.51.84.06 1.28.86 1.28.86.75 1.28 1.96.91 2.44.7.08-.54.29-.91.53-1.12-1.85-.21-3.79-.93-3.79-4.12 0-.91.33-1.65.86-2.24-.09-.21-.37-1.06.08-2.2 0 0 .7-.22 2.29.86a7.95 7.95 0 0 1 4.17 0c1.59-1.08 2.29-.86 2.29-.86.45 1.14.17 1.99.08 2.2.54.59.86 1.33.86 2.24 0 3.2-1.94 3.9-3.8 4.11.3.26.57.77.57 1.55v2.28c0 .22.15.48.58.4A8.3 8.3 0 0 0 10 1.7Z"></path></svg>
