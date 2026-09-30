@@ -4,6 +4,8 @@
   import { algorithmLessons } from './algorithm-lessons.js';
 
   let query = $state('');
+  let sortBy = $state('');
+  let sortDirection = $state(1);
   let domain = $state('overview');
   let topic = $state('home');
   let navOpen = $state(false);
@@ -19,9 +21,31 @@
   let pythonLoading = $state(false);
   let pythonError = $state('');
   let items = $derived(visibleAlgorithms(query));
+  let catalogItems = $derived([...items].sort((a, b) => a.difficulty - b.difficulty));
+  let displayedAlgorithms = $derived.by(() => {
+    if (!sortBy) return catalogItems;
+    return [...catalogItems].sort((a, b) => {
+      const comparison = sortBy === 'divide'
+        ? Number(a.divide.startsWith('Yes')) - Number(b.divide.startsWith('Yes'))
+        : sortBy === 'difficulty'
+          ? a.difficulty - b.difficulty
+          : String(a[sortBy]).localeCompare(String(b[sortBy]), undefined, { numeric: true, sensitivity: 'base' });
+      return comparison * sortDirection;
+    });
+  });
   let selectedAlgorithm = $derived(algorithms.find((algorithm) => algorithm.id === selectedAlgorithmId));
   let selectedLesson = $derived(algorithmLessons[selectedAlgorithmId]);
   let highlightedLines = $derived(highlightCode(implementationSource, implementationLanguage));
+
+  function sortCatalog(field) {
+    if (sortBy === field) {
+      if (sortDirection === 1) sortDirection = -1;
+      else { sortBy = ''; sortDirection = 1; }
+      return;
+    }
+    sortBy = field;
+    sortDirection = 1;
+  }
 
   const baseSearchEntries = [
     { title: 'Study home', group: 'Start here', description: 'A visual study guide for algorithms, discrete mathematics, and complexity.', href: '#/home', terms: 'learn study guide start overview' },
@@ -334,22 +358,36 @@
           <p class="eyebrow">{pageKicker}</p>
           <h1>Sorting, one move at a time.</h1>
           <p class="intro">See the array change, read why each move happens, then compare beginner-friendly and typed implementations across languages.</p>
-          <div class="memory-cue"><span class="cue-label">Quick recall</span><span>Quick / Merge / Tim split or merge ranges</span><span>Insertion grows a sorted prefix</span><span>Selection chooses the next minimum</span><span>Shell narrows its gaps</span><span>Counting turns frequencies into positions</span></div>
         </section>
         <section class="catalog" aria-labelledby="catalog-title">
-          <div class="catalog-heading"><div><p class="eyebrow">The collection</p><h2 id="catalog-title">Choose an algorithm</h2></div>
+          <div class="catalog-heading"><div><p class="eyebrow">The collection</p><h2 id="catalog-title">Compare the sorting algorithms</h2><p class="catalog-intro">Difficulty is a learning estimate (1 = gentlest, 7 = most involved). Choose a column heading to sort.</p></div>
             <label class="search"><span>Filter</span><input bind:value={query} placeholder="Try ‘divide and conquer’" /></label>
           </div>
-          <div class="cards">
-            {#each items as algorithm (algorithm.id)}
-              <article class="card">
-                <div class="card-top"><h3>{algorithm.name}</h3><span class:yes={algorithm.divide.startsWith('Yes')} class="dnc">D&C: {algorithm.divide}</span></div>
-                <p class="cue">{algorithm.cue}</p>
-                <dl class="bounds"><div><dt>Runtime lower bound</dt><dd>{algorithm.lower}</dd></div><div><dt>Runtime upper bound</dt><dd>{algorithm.upper}</dd></div></dl>
-                <p class="extra">{algorithm.extra}</p>
-                <div class="actions"><a class="primary" href="#/algorithms/{algorithm.id}/walkthrough">Step-by-step</a><a class="secondary" href="#/algorithms/{algorithm.id}/python">Python implementation</a></div>
-              </article>
-            {:else}<p class="empty">No matches. Try a sort name or a memory cue.</p>{/each}
+          <div class="catalog-table-wrap">
+            <table class="catalog-table">
+              <thead><tr>
+                <th scope="col" aria-sort={sortBy === 'name' ? (sortDirection === 1 ? 'ascending' : 'descending') : 'none'}><button class="sort-button" onclick={() => sortCatalog('name')}>Algorithm <span aria-hidden="true">{sortBy === 'name' ? (sortDirection === 1 ? '↑' : '↓') : '↕'}</span></button></th>
+                <th scope="col" aria-sort={sortBy === 'difficulty' ? (sortDirection === 1 ? 'ascending' : 'descending') : 'none'}><button class="sort-button" onclick={() => sortCatalog('difficulty')}>Difficulty <span aria-hidden="true">{sortBy === 'difficulty' ? (sortDirection === 1 ? '↑' : '↓') : '↕'}</span></button></th>
+                <th scope="col">Core idea</th>
+                <th scope="col" aria-sort={sortBy === 'divide' ? (sortDirection === 1 ? 'ascending' : 'descending') : 'none'}><button class="sort-button" onclick={() => sortCatalog('divide')}>Divide &amp; conquer <span aria-hidden="true">{sortBy === 'divide' ? (sortDirection === 1 ? '↑' : '↓') : '↕'}</span></button></th>
+                <th scope="col" aria-sort={sortBy === 'lower' ? (sortDirection === 1 ? 'ascending' : 'descending') : 'none'}><button class="sort-button" onclick={() => sortCatalog('lower')}>Lower bound <span aria-hidden="true">{sortBy === 'lower' ? (sortDirection === 1 ? '↑' : '↓') : '↕'}</span></button></th>
+                <th scope="col" aria-sort={sortBy === 'upper' ? (sortDirection === 1 ? 'ascending' : 'descending') : 'none'}><button class="sort-button" onclick={() => sortCatalog('upper')}>Upper bound <span aria-hidden="true">{sortBy === 'upper' ? (sortDirection === 1 ? '↑' : '↓') : '↕'}</span></button></th>
+                <th scope="col"><span class="visually-hidden">Study links</span></th>
+              </tr></thead>
+              <tbody>
+            {#each displayedAlgorithms as algorithm (algorithm.id)}
+              <tr>
+                <th scope="row" data-label="Algorithm"><a class="catalog-algorithm-link" href="#/algorithms/{algorithm.id}/understand">{algorithm.name}<span aria-hidden="true">↗</span></a></th>
+                <td data-label="Difficulty"><span class="difficulty-rating" aria-label="Difficulty {algorithm.difficulty} out of 7">{algorithm.difficulty}<small>/7</small></span></td>
+                <td data-label="Core idea"><span class="catalog-cue">{algorithm.cue}</span><span class="catalog-note">{algorithm.extra}</span></td>
+                <td data-label="Divide &amp; conquer"><span class:yes={algorithm.divide.startsWith('Yes')} class="dnc">{algorithm.divide}</span></td>
+                <td data-label="Lower bound" class="catalog-bound">{algorithm.lower}</td>
+                <td data-label="Upper bound" class="catalog-bound">{algorithm.upper}</td>
+                <td data-label="Study links"><div class="catalog-actions"><a class="catalog-step-link" href="#/algorithms/{algorithm.id}/walkthrough">Trace steps</a><a class="catalog-code-link" href="#/algorithms/{algorithm.id}/python">Python</a></div></td>
+              </tr>
+            {:else}<tr><td colspan="7"><p class="empty">No matches. Try a sort name or a memory cue.</p></td></tr>{/each}
+              </tbody>
+            </table>
           </div>
           <p class="section-footnote">These are quick per-algorithm reminders. The <button class="inline-link" onclick={() => openPage('complexity', 'time')}>Complexity domain</button> teaches how to analyze bounds and cases in general.</p>
         </section>
@@ -374,15 +412,16 @@
           </div>
           <iframe class="walkthrough-frame" class:hidden-material={algorithmView !== 'walkthrough'} title="{selectedAlgorithm.name} step-by-step walkthrough" src="./walkthroughs/{selectedAlgorithm.walkthrough}" onload={bindWalkthroughKeyboard}></iframe>
           {#if algorithmView === 'understand'}
-            <section class="learning-view" aria-labelledby="understand-title">
-              <p class="eyebrow">Start with the idea</p>
-              <h2 id="understand-title">What {selectedAlgorithm.name} is doing</h2>
-              <p class="learning-lead">{selectedLesson.idea}</p>
-              <div class="learning-grid">
-                <article class="learning-card invariant-card"><span class="learning-label">What stays true</span><p>{selectedLesson.invariant}</p></article>
-                <article class="learning-card"><span class="learning-label">Follow this in the trace</span><p>{selectedLesson.watch}</p></article>
+            <section class="learning-view understand-view" aria-labelledby="understand-title">
+              <header class="understand-intro">
+                <div class="understand-heading"><p class="eyebrow">The core idea</p><h2 id="understand-title">What {selectedAlgorithm.name} is doing</h2></div>
+                <p class="learning-lead">{selectedLesson.idea}</p>
+              </header>
+              <div class="understand-grid" aria-label="How to reason through {selectedAlgorithm.name}">
+                <article class="understand-point invariant-point"><span class="understand-index">01</span><div><span class="learning-label">What stays true</span><p>{selectedLesson.invariant}</p></div></article>
+                <article class="understand-point"><span class="understand-index">02</span><div><span class="learning-label">What to watch</span><p>{selectedLesson.watch}</p></div></article>
+                <article class="understand-point example-point"><span class="understand-index">03</span><div><span class="learning-label">A small example</span><p>{selectedLesson.example}</p></div></article>
               </div>
-              <article class="worked-example learning-example"><span class="learning-label">A small example</span><p>{selectedLesson.example}</p></article>
               {#if selectedAlgorithm.id === 'quick'}
                 <article class="worked-example reasoning-card">
                   <div class="example-head"><span>Read a partition like an exam trace</span><span class="example-tag">Pivot = 4</span></div>

@@ -3,6 +3,7 @@ export const algorithms = [
   {
     id: 'quick',
     name: 'Quick Sort',
+    difficulty: 5,
     cue: 'Choose a pivot → partition → recurse on each side.',
     divide: 'Yes',
     lower: 'Ω(n log n), balanced partitions',
@@ -17,6 +18,7 @@ export const algorithms = [
   {
     id: 'merge',
     name: 'Merge Sort',
+    difficulty: 3,
     cue: 'Split to singles → compare the fronts → merge.',
     divide: 'Yes',
     lower: 'Ω(n log n)',
@@ -31,6 +33,7 @@ export const algorithms = [
   {
     id: 'tim',
     name: 'Tim Sort',
+    difficulty: 7,
     cue: 'Find ordered runs → extend short runs → merge.',
     divide: 'Yes, while merging runs',
     lower: 'Ω(n), when the data is already one ordered run',
@@ -45,6 +48,7 @@ export const algorithms = [
   {
     id: 'insertion',
     name: 'Insertion Sort',
+    difficulty: 2,
     cue: 'Grow a sorted prefix → shift larger values → insert the key.',
     divide: 'No',
     lower: 'Ω(n), already ordered input',
@@ -59,6 +63,7 @@ export const algorithms = [
   {
     id: 'selection',
     name: 'Selection Sort',
+    difficulty: 1,
     cue: 'Scan the unsorted suffix → choose its minimum → swap.',
     divide: 'No',
     lower: 'Ω(n²) comparisons',
@@ -73,6 +78,7 @@ export const algorithms = [
   {
     id: 'shell',
     name: 'Shell Sort',
+    difficulty: 6,
     cue: 'Compare within gap groups → shrink the gap → finish at gap one.',
     divide: 'No',
     lower: 'Θ(n log n), already ordered input with halving gaps',
@@ -87,6 +93,7 @@ export const algorithms = [
   {
     id: 'counting',
     name: 'Counting Sort',
+    difficulty: 4,
     cue: 'Count values → cumulative positions → place right-to-left.',
     divide: 'No',
     lower: 'Θ(n + k)',
