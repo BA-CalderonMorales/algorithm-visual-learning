@@ -179,9 +179,9 @@
       #quick-sort-walkthrough .controls > button { white-space:normal; }
       #quick-sort-walkthrough .controls .preset-menu { display:flex; }
       #quick-sort-walkthrough .controls .preset-menu summary { display:flex; width:100% !important; min-width:0 !important; max-width:none !important; height:32px !important; flex:1 1 auto !important; align-items:center; justify-content:center; box-sizing:border-box; }
-      #quick-sort-walkthrough .phases { grid-column:1; grid-row:2; display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:6px; max-width:none; margin:2px 0; padding:0; overflow:visible; }
+      #quick-sort-walkthrough .phases { grid-column:1; grid-row:2; display:grid; grid-template-columns:minmax(0,1fr); gap:4px; min-width:0; max-width:none; margin:2px 0; padding:0; overflow:visible; }
       #quick-sort-walkthrough .phase { min-width:0; align-items:center; white-space:normal; }
-      #quick-sort-walkthrough .phase-label { white-space:normal; line-height:1.2; }
+      #quick-sort-walkthrough .phase-label { min-width:0; overflow-wrap:anywhere; white-space:normal; line-height:1.2; }
       #quick-sort-walkthrough .connector { display:none; }
       #quick-sort-walkthrough > #qs-step { grid-column:1; grid-row:3; align-self:end; margin:0; font-size:12px; }
       #quick-sort-walkthrough > .study-stage { grid-column:2; grid-row:1 / 8; align-self:stretch; display:block; width:100%; height:auto; min-height:0; max-height:none; margin:0; padding:10px; overflow-x:hidden; overflow-y:auto; overscroll-behavior:contain; }
@@ -215,7 +215,7 @@
       #quick-sort-walkthrough .controls .preset-menu { grid-column:1; }
       #quick-sort-walkthrough .controls > button,#quick-sort-walkthrough .controls > .preset-menu { width:100% !important; min-width:0 !important; min-height:32px; }
       #quick-sort-walkthrough .controls .preset-menu summary { width:100% !important; }
-      #quick-sort-walkthrough .phases { order:4; grid-template-columns:repeat(3,minmax(0,1fr)); margin:2px 0; }
+      #quick-sort-walkthrough .phases { order:4; grid-template-columns:minmax(0,1fr); margin:2px 0; }
       #quick-sort-walkthrough > #qs-step { order:5; align-self:start; }
       #quick-sort-walkthrough > .study-stage { order:6; display:block; width:auto; min-height:0; flex:1 1 0; margin:0; padding:8px; }
       #quick-sort-walkthrough .history-row { grid-template-columns:34px minmax(0,1fr); }
