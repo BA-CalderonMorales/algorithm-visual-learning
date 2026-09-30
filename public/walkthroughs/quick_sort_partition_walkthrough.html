@@ -127,11 +127,45 @@
     #quick-sort-walkthrough .controls > button, #quick-sort-walkthrough .preset-menu, #quick-sort-walkthrough .preset-menu summary { width:96px !important; min-width:96px !important; max-width:96px !important; flex:0 0 96px !important; height:28px !important; box-sizing:border-box; }
     #quick-sort-walkthrough .controls > button, #quick-sort-walkthrough .preset-menu summary { display:inline-flex; align-items:center; justify-content:center; padding:0 4px !important; font-size:11px !important; line-height:1 !important; white-space:nowrap; }
     #quick-sort-walkthrough .preset-menu summary { cursor:pointer; }
-    @media(max-width:900px) { #quick-sort-walkthrough .controls { position:static; width:max-content; max-width:100%; flex-wrap:wrap; margin:12px 0; } #quick-sort-walkthrough .study-stage { height:calc(100vh - 260px); min-height:250px; } }
+    @media(max-width:1100px) {
+      #quick-sort-walkthrough { height:100dvh; min-height:100dvh; padding:16px clamp(14px,3vw,24px); overflow:hidden; }
+      #quick-sort-walkthrough .title { max-width:100%; margin:0 0 8px; font-size:clamp(19px,3vw,26px); line-height:1.2; }
+      #quick-sort-walkthrough .step { margin-bottom:12px; }
+      #quick-sort-walkthrough .phases { max-width:100%; padding-bottom:4px; }
+      #quick-sort-walkthrough .phases { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:7px; overflow:visible; }
+      #quick-sort-walkthrough .phase { min-width:0; align-items:flex-start; white-space:normal; }
+      #quick-sort-walkthrough .phase-label { white-space:normal; line-height:1.25; }
+      #quick-sort-walkthrough .connector { display:none; }
+      #quick-sort-walkthrough .study-stage { height:calc(100dvh - 300px); min-height:220px; padding:12px; margin:12px 0; }
+      #quick-sort-walkthrough .history-row { grid-template-columns:46px minmax(0,1fr); gap:7px 10px; min-width:0; padding:9px; }
+      #quick-sort-walkthrough .history-stack { min-width:0; overflow:visible; }
+      #quick-sort-walkthrough .history-array { max-width:100%; }
+      #quick-sort-walkthrough .history-description { grid-column:2; }
+      #quick-sort-walkthrough .history-label { grid-row:1 / span 2; }
+      #quick-sort-walkthrough .history-cell { width:clamp(22px,3vw,28px); height:clamp(22px,3vw,28px); flex-basis:clamp(22px,3vw,28px); font-size:12px; }
+      #quick-sort-walkthrough .history-index { width:clamp(22px,3vw,28px); flex-basis:clamp(22px,3vw,28px); }
+      #quick-sort-walkthrough .study-stage::-webkit-scrollbar { width:6px; }
+      #quick-sort-walkthrough .legend { position:static; margin:8px 0 0; font-size:11px; line-height:1.4; }
+    }
+    @media(max-width:900px) {
+      #quick-sort-walkthrough { display:flex; flex-direction:column; }
+      #quick-sort-walkthrough .title { order:0; }
+      #quick-sort-walkthrough .complexity { order:1; }
+      #quick-sort-walkthrough .controls { order:2; }
+      #quick-sort-walkthrough .phases { order:3; margin:4px 0 8px; }
+      #quick-sort-walkthrough #qs-step { order:4; margin:0 0 4px; font-size:12px; }
+      #quick-sort-walkthrough .study-stage { order:5; flex:1 1 0; min-height:0; height:auto; margin:4px 0; }
+      #quick-sort-walkthrough .legend { order:6; }
+      #quick-sort-walkthrough .controls { position:static; display:flex; width:100%; max-width:none; flex-wrap:wrap; justify-content:flex-start; margin:0 0 10px; padding:5px; }
+      #quick-sort-walkthrough .controls > button, #quick-sort-walkthrough .preset-menu, #quick-sort-walkthrough .preset-menu summary { width:auto !important; min-width:0 !important; max-width:none !important; flex:1 1 86px !important; }
+      #quick-sort-walkthrough .controls .preset-menu { display:flex; flex:1 1 130px !important; min-width:130px !important; }
+      #quick-sort-walkthrough .controls .preset-menu summary { display:flex; width:100% !important; min-width:0 !important; flex:1 1 auto !important; align-items:center; justify-content:center; box-sizing:border-box; }
+      #quick-sort-walkthrough .controls > button { white-space:normal; }
+    }
   </style>
   <div class="title">Quick Sort: partition, recursion, and insertion-sort cutoff</div>
   <div class="complexity"><strong>Time complexity:</strong> Best Θ(n log n) · Average Θ(n log n) · Worst Θ(n²)</div>
-  <div class="complexity"><strong>Divide and conquer:</strong> Yes · <strong>Runtime lower bound (best):</strong> Ω(n log n) with balanced partitions · <strong>Runtime upper bound (worst):</strong> O(n²) · <a href="quick_sort.py" target="_blank" rel="noopener">Python implementation</a></div>
+  <div class="complexity"><strong>Divide and conquer:</strong> Yes · <strong>Runtime lower bound (best):</strong> Ω(n log n) with balanced partitions · <strong>Runtime upper bound (worst):</strong> O(n²)</div>
   <div class="step" id="qs-step">Step 1 of 8</div>
   <div class="controls"><button type="button" id="qs-back">Back step</button><button type="button" id="qs-next">Next step</button><button type="button" id="qs-reset">Reset</button><button type="button" id="qs-shuffle">Shuffle same size</button><details class="preset-menu"><summary>Predefined</summary><div class="preset-options"><button type="button" data-preset="[4,7,8,2,9,5,6,3,1]">Worksheet A</button><button type="button" data-preset="[7,2,3,8,9,1,4,5,6]">Worksheet B</button></div></details></div>
   <div class="phases" id="qs-phases" aria-label="Quick Sort phases"></div>
@@ -339,7 +373,11 @@
           history.appendChild(row);
         });
         const activeHistoryRow = history.querySelector('.history-row.current');
-        if (activeHistoryRow) requestAnimationFrame(() => activeHistoryRow.scrollIntoView({behavior:'smooth', block:'center', inline:'nearest'}));
+        if (activeHistoryRow) requestAnimationFrame(() => {
+          const scroller = document.querySelector('.study-stage');
+          const rowTop = activeHistoryRow.getBoundingClientRect().top - scroller.getBoundingClientRect().top + scroller.scrollTop;
+          scroller.scrollTo({top:rowTop - (scroller.clientHeight - activeHistoryRow.offsetHeight) / 2, behavior:'smooth'});
+        });
         const el = document.getElementById('qs-array');
         el.replaceChildren();
         s.a.forEach((value, index) => {

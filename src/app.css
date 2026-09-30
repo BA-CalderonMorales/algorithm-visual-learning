@@ -185,7 +185,21 @@ h3 { margin: 0; font-size: 16px; letter-spacing: -.02em; }
 .math-display.result-display { border-color: #35624f; background: linear-gradient(135deg,#1d2925,#202c29); color: #a7efd1; }
 .math-display.result-display math { font-size: 1.55rem; }
 .math-display.mini-math { min-height: auto; justify-content: flex-start; margin-top: 12px; padding: 12px 9px; background: #191a20; }
-.math-display.mini-math math { font-size: .9rem; }
+.math-display.mini-math { overflow-x: auto; }
+.math-display.mini-math math { width: max-content; max-width: none; min-width: max-content; font-size: .9rem; }
+.math-display.mini-math { display: flex; flex-direction: column; align-items: flex-start; }
+.math-display.mini-math math > :not(mtable) { display: none; }
+.math-display.mini-math::after { display: block; width: 100%; margin-top: 8px; padding-top: 9px; border-top: 1px solid #393744; color: #a7efd1; content: "= F(1) − F(n + 1)"; font: 600 15px/1.4 Cambria, "STIX Two Math", "Times New Roman", serif; }
+.math-display.mini-math math mtr { height: 1.65em; }
+.telescoping-aside .cancellation-pattern { display: grid; gap: 6px; margin-top: 14px; padding: 12px; border: 1px solid #393744; border-radius: 10px; background: #191a20; font: 15px/1.5 Cambria, "STIX Two Math", "Times New Roman", serif; }
+.pattern-term { display: flex; min-height: 24px; align-items: center; gap: 7px; white-space: nowrap; }
+.pattern-term .endpoint { color: #a7efd1; font-weight: 700; }
+.pattern-term .operator { color: #b9a8f2; }
+.pattern-term .cancelled { color: #858995; text-decoration: line-through; text-decoration-color: #c28c72; text-decoration-thickness: 1px; }
+.pattern-ellipsis { justify-content: center; color: #858995; }
+.pattern-result { display: grid; gap: 5px; margin-top: 5px; padding-top: 10px; border-top: 1px solid #393744; }
+.pattern-result span { color: #a1a4b1; font-size: 10px; line-height: 1.4; }
+.pattern-result strong { color: #a7efd1; font-size: 16px; }
 .math-display.compact-math { min-height: 48px; margin: 7px 0 0; padding: 9px; background: #191a20; }
 .math-display.compact-math math { font-size: 1rem; }
 .worked-example > .math-display:first-of-type { margin-top: 9px; }
@@ -195,13 +209,34 @@ h3 { margin: 0; font-size: 16px; letter-spacing: -.02em; }
 .algorithm-view-heading h2 { font-size: 17px; }
 .close-view { width: 30px; height: 30px; border: 1px solid #3d404a; border-radius: 7px; background: #24252b; color: #b7bac6; cursor: pointer; font-size: 20px; }
 .material-tabs { display: flex; gap: 4px; padding: 0 18px; border-bottom: 1px solid #363842; }
-.material-tabs button { position: relative; padding: 10px 12px; border: 0; border-radius: 7px 7px 0 0; background: transparent; color: #9296a4; cursor: pointer; font-size: 11px; }
-.material-tabs button:hover { color: #e6e7ee; background: #282a31; }
-.material-tabs button.active { color: #b8d9ff; background: #242a33; }
-.material-tabs button.active::after { position: absolute; right: 9px; bottom: -1px; left: 9px; height: 2px; border-radius: 2px; background: var(--blue); content: ""; }
+.material-tabs button,.material-tabs a { position: relative; display: inline-flex; align-items: center; padding: 10px 12px; border: 0; border-radius: 7px 7px 0 0; background: transparent; color: #9296a4; cursor: pointer; font-size: 11px; text-decoration: none; }
+.material-tabs button:hover,.material-tabs a:hover { color: #e6e7ee; background: #282a31; }
+.material-tabs button.active,.material-tabs a.active { color: #b8d9ff; background: #242a33; }
+.material-tabs button.active::after,.material-tabs a.active::after { position: absolute; right: 9px; bottom: -1px; left: 9px; height: 2px; border-radius: 2px; background: var(--blue); content: ""; }
+.implementation-tabs { display: flex; flex-wrap: wrap; gap: 5px; padding: 11px 14px 0; border-bottom: 1px solid #363842; }
+.implementation-tabs a { padding: 8px 10px; border: 1px solid transparent; border-bottom: 0; border-radius: 7px 7px 0 0; color: #a4a7b3; font-size: 11px; text-decoration: none; }
+.implementation-tabs a:hover { background: #272930; color: #eef0f5; }
+.implementation-tabs a.active { border-color: #3b4250; background: #252832; color: #b8d9ff; }
+.code-language-label { padding: 10px 16px; border-bottom: 1px solid #30323b; color: #9da2af; font-size: 11px; }
+.back-link { display: inline-block; margin-bottom: 16px; color: #a9cfff; font-size: 11px; text-decoration: none; }
+.back-link:hover { text-decoration: underline; }
+.algorithm-hero { padding-bottom: 18px; }
+.standalone-view { margin-top: 0; }
 .walkthrough-frame { display: block; width: 100%; height: min(76vh,780px); min-height: 560px; border: 0; background: #171719; }
 .python-code { max-height: min(76vh,780px); overflow: auto; margin: 0; padding: 20px; background: #17191e; color: #d8e5da; font: 12px/1.7 ui-monospace,SFMono-Regular,Consolas,monospace; tab-size: 4; scrollbar-color: #52675d #202127; scrollbar-width: thin; }
-.python-code code { font: inherit; white-space: pre; }
+.python-code pre { min-width: 100%; width: max-content; margin: 0; font: inherit; white-space: pre; }
+.code-line { display: flex; min-height: 1.7em; padding-right: 20px; }
+.code-line:hover { background: #ffffff08; }
+.line-number { position: sticky; left: -20px; display: inline-block; width: 3.4em; flex: 0 0 3.4em; margin: 0 1.15em 0 -20px; padding-right: .9em; border-right: 1px solid #353842; background: #17191e; color: #737987; text-align: right; user-select: none; }
+.code-line:hover .line-number { background: #202127; color: #aeb5c2; }
+.code-line code { display: inline-block; min-width: 0; color: #d8e5da; font: inherit; white-space: pre; }
+.token-keyword { color: #c6a0ff; }
+.token-builtin { color: #80c8ff; }
+.token-string,.token-triple { color: #a6d99a; }
+.token-comment { color: #818b87; font-style: italic; }
+.token-number,.token-constant { color: #ffc783; }
+.token-operator { color: #e3a9bc; }
+.token-punct { color: #b9c1d1; }
 .code-status { margin: 0; padding: 25px 20px; color: var(--muted); font-size: 12px; }
 .code-status.error { color: #ffbd82; }
 .actions button { font: inherit; cursor: pointer; }
@@ -229,8 +264,15 @@ h3 { margin: 0; font-size: 16px; letter-spacing: -.02em; }
   .topbar { height: 48px; }
   .topbar-status { display: none; }
   .page-content { padding: 20px 15px; }
-  .math-display { justify-content: flex-start; padding: 12px; }
+  .math-display { justify-content: center; padding: 12px; text-align: center; }
+  .math-display.math-wide { justify-content: flex-start; text-align: left; }
   .math-display math { font-size: 1.2rem; }
   .walkthrough-frame { min-height: 480px; height: 70vh; }
+  .telescoping-aside .cancellation-pattern { grid-template-columns: minmax(0,1fr) auto; }
+}
+@media (min-width: 721px) and (max-width: 900px) {
+  .lesson-layout { grid-template-columns: minmax(0,1fr); }
+  .lesson-aside { position: static; }
+  .math-display.mini-math math { font-size: 1rem; }
 }
 

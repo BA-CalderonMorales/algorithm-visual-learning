@@ -1,17 +1,43 @@
-# DSA Study Studio
+<div align="center">
 
-An offline-friendly study guide with interactive walkthroughs, Python examples, discrete-math lessons, and a dedicated complexity domain.
+# Algorithm Visual Learning
 
-The Pages workflow in .github/workflows/pages.yml builds the site and publishes it on every push to the default branch (currently develop). In repository Settings → Pages, choose GitHub Actions as the publishing source. The hosted Pages site is public.
+**A visual study guide for understanding algorithms, discrete mathematics, and complexity.**
 
-## Start here
+[![Live site](https://img.shields.io/badge/site-live-1f9d8b?style=flat-square)](https://ba-calderonmorales.github.io/algorithm-visual-learning/)
+[![Pages build](https://img.shields.io/github/actions/workflow/status/BA-CalderonMorales/algorithm-visual-learning/pages.yml?branch=develop&label=build&style=flat-square)](https://github.com/BA-CalderonMorales/algorithm-visual-learning/actions)
 
-1. Install Node.js 20.19+ or 22.12+.
-2. Run npm install.
-3. Run npm run dev to view the site locally.
-4. Run npm run build to create a static site in dist/.
+</div>
 
-The algorithm walkthrough HTML pages and Python implementations live in public/walkthroughs/, separate from the Svelte learning hub. Algorithm facts and their search projection live in src/algorithms.js; src/App.svelte renders the navigation and domain lessons. The tab-like domain links are hash routes, so a selected lesson can be bookmarked or shared.
+## Quick Start
 
-The Tim Sort Python file is a teaching implementation of run detection, short-run extension, and merging; it is not CPython's production Tim Sort.
+```bash
+npm ci
+npm run dev
+```
+
+Open the local URL printed by Vite. To verify the production build:
+
+```bash
+npm run build
+```
+
+## Publish to GitHub Pages
+
+Publishing is automatic: push or merge changes to `develop`. The Pages workflow builds the site and deploys it. Check the [Actions runs](https://github.com/BA-CalderonMorales/algorithm-visual-learning/actions) for the result; the live site updates after a successful run.
+
+To deploy the current `develop` branch again without a new change, open **Actions → Build and publish Sorting Walkthroughs → Run workflow**. GitHub Pages should use **GitHub Actions** as its source under **Settings → Pages**. No release tag is needed for a site deployment.
+
+## Project Layout
+
+```text
+src/                    # Svelte learning hub and algorithm catalogue
+public/walkthroughs/    # walkthroughs plus simple/typed Python, JS, and TS examples
+public/study-mark.svg   # site favicon
+.github/workflows/      # GitHub Pages build and deployment
+```
+
+The walkthrough pages are standalone HTML so they also work independently. Tim Sort's Python file is an educational implementation, not CPython's production sort.
+
+Each algorithm page starts with a plain Python version for learning the core idea, then offers typed Python, JavaScript, and TypeScript examples. These are teaching references; some, including Tim Sort, intentionally favor clarity over production-level optimizations.
 

@@ -8,24 +8,43 @@
   let navOpen = $state(false);
   let selectedAlgorithmId = $state('');
   let algorithmView = $state('walkthrough');
-  let pythonSource = $state('');
+  let implementationLanguage = $state('python-simple');
+  let implementationSource = $state('');
   let pythonLoading = $state(false);
   let pythonError = $state('');
   let items = $derived(visibleAlgorithms(query));
   let selectedAlgorithm = $derived(algorithms.find((algorithm) => algorithm.id === selectedAlgorithmId));
+  let highlightedLines = $derived(highlightCode(implementationSource, implementationLanguage));
 
-  const selectAlgorithm = async (algorithm, view = 'walkthrough') => {
-    selectedAlgorithmId = algorithm.id;
-    algorithmView = view;
+  const pythonTokenPattern = /(?<triple>"""[\s\S]*?"""|'''[\s\S]*?''')|(?<comment>\#[^\n]*)|(?<string>"(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*')|(?<number>\b(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][+-]?\d+)?\b)|(?<constant>\b(?:True|False|None)\b)|(?<keyword>\b(?:and|as|assert|async|await|break|class|continue|def|del|elif|else|except|finally|for|from|global|if|import|in|is|lambda|nonlocal|not|or|pass|raise|return|try|while|with|yield)\b)|(?<builtin>\b(?:bool|dict|enumerate|filter|float|int|isinstance|len|list|map|max|min|print|range|reversed|set|sorted|str|sum|tuple|type|zip|super|property|staticmethod|classmethod)\b)|(?<operator>[-+*/%=<>!&|^~]+)|(?<punct>[()[\]{}.,:;])|(?<space>\s)|(?<identifier>[A-Za-z_]\w*)|(?<other>.)/g;
+
+  function highlightCode(source, language) {
+    const isPython = language.startsWith('python');
+    const tokens = isPython ? pythonTokenPattern : /(?<comment>\/\/[^\n]*|\/\*[\s\S]*?\*\/)|(?<string>"(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*')|(?<number>\b\d+(?:\.\d+)?\b)|(?<constant>\b(?:true|false|null|undefined)\b)|(?<keyword>\b(?:as|async|await|break|case|catch|class|const|continue|default|else|export|extends|for|from|function|if|import|interface|let|new|of|return|static|throw|try|type|typeof|var|while)\b)|(?<builtin>\b(?:Array|Boolean|console|Error|Map|Math|Number|Object|Set|String)\b)|(?<operator>[-+*/%=<>!&|^~?:]+)|(?<punct>[()[\]{}.,;])|(?<space>\s)|(?<identifier>[A-Za-z_$][\w$]*)|(?<other>.)/g;
+    const lines = [[]];
+    for (const match of source.matchAll(tokens)) {
+      const type = Object.keys(match.groups).find((key) => match.groups[key] !== undefined) ?? 'other';
+      const chunks = match[0].split('\n');
+      chunks.forEach((text, index) => {
+        if (text) lines[lines.length - 1].push({ text, type });
+        if (index < chunks.length - 1) lines.push([]);
+      });
+    }
+    return lines;
+  }
+
+  const returnToTop = () => requestAnimationFrame(() => requestAnimationFrame(() => window.scrollTo(0, 0)));
+
+  const loadImplementation = async (algorithm, language) => {
     pythonError = '';
-    if (view !== 'python') return;
     pythonLoading = true;
     try {
-      const response = await fetch(`./walkthroughs/${algorithm.python}`);
+      const files = { 'python-simple': algorithm.simplePython, 'python-typed': algorithm.python, javascript: algorithm.javascript, typescript: algorithm.typescript };
+      const response = await fetch(`./walkthroughs/${files[language]}`);
       if (!response.ok) throw new Error(`Could not load the implementation (${response.status}).`);
-      pythonSource = await response.text();
+      implementationSource = await response.text();
     } catch (error) {
-      pythonError = error.message || 'Could not load this Python implementation.';
+      pythonError = error.message || 'Could not load this implementation.';
     } finally {
       pythonLoading = false;
     }
@@ -44,17 +63,36 @@
   const openPage = (nextDomain, nextTopic) => {
     domain = nextDomain;
     topic = nextTopic;
+    selectedAlgorithmId = '';
     query = '';
     navOpen = false;
+    returnToTop();
     const route = Object.entries(routeTopics).find(([, page]) => page[0] === nextDomain && page[1] === nextTopic)?.[0];
     if (route && window.location.hash !== route) window.location.hash = route;
   };
 
   onMount(() => {
     const applyRoute = () => {
+      const algorithmRoute = window.location.hash.match(/^#\/algorithms\/([^/]+)\/(walkthrough|python(?:\/(?:simple|typed))?|javascript|typescript)$/);
+      if (algorithmRoute) {
+        const algorithm = algorithms.find((entry) => entry.id === decodeURIComponent(algorithmRoute[1]));
+        if (algorithm) {
+          domain = 'algorithms';
+          topic = 'algorithm';
+          selectedAlgorithmId = algorithm.id;
+          const view = algorithmRoute[2];
+          algorithmView = view === 'walkthrough' ? 'walkthrough' : 'implementation';
+          implementationLanguage = view === 'javascript' || view === 'typescript' ? view : view === 'python/typed' ? 'python-typed' : 'python-simple';
+          navOpen = false;
+          returnToTop();
+          if (algorithmView === 'implementation') void loadImplementation(algorithm, implementationLanguage);
+          return;
+        }
+      }
       const [nextDomain, nextTopic] = routeTopics[window.location.hash] ?? routeTopics['#/home'];
       domain = nextDomain;
       topic = nextTopic;
+      selectedAlgorithmId = '';
     };
     applyRoute();
     window.addEventListener('hashchange', applyRoute);
@@ -64,7 +102,7 @@
   const isActive = (nextDomain, nextTopic) => domain === nextDomain && topic === nextTopic;
 
   const pageTitle = $derived(
-    domain === 'algorithms' ? 'Algorithms' :
+    domain === 'algorithms' ? (topic === 'algorithm' ? selectedAlgorithm?.name ?? 'Algorithm' : 'Algorithms') :
     domain === 'discrete' ? ({ induction: 'Proof by induction', telescoping: 'Telescoping sums', master: 'Master theorem' }[topic] ?? 'Discrete mathematics') :
     domain === 'complexity' ? ({ time: 'Time complexity', space: 'Space complexity' }[topic] ?? 'Complexity') :
     'A visual DSA study guide',
@@ -97,7 +135,7 @@
 
     <nav>
       <p class="nav-group-title">Algorithms</p>
-      <button class:active={isActive('algorithms', 'catalog')} class="nav-link" onclick={() => openPage('algorithms', 'catalog')}>
+      <button class:active={domain === 'algorithms'} class="nav-link" onclick={() => openPage('algorithms', 'catalog')}>
         <span class="nav-icon">↗</span> Sorting algorithms <span class="nav-count">7</span>
       </button>
 
@@ -162,11 +200,11 @@
           <p>When a step feels surprising, pause and ask: what did we know before it, what changed, and why is that change safe? This guide is built to make those answers visible.</p>
         </section>
 
-      {:else if domain === 'algorithms'}
+      {:else if domain === 'algorithms' && topic === 'catalog'}
         <section class="page-hero compact-hero">
           <p class="eyebrow">{pageKicker}</p>
           <h1>Sorting, one move at a time.</h1>
-          <p class="intro">See the array change, read why each move happens, then open the Python version alongside it.</p>
+          <p class="intro">See the array change, read why each move happens, then compare beginner-friendly and typed implementations across languages.</p>
           <div class="memory-cue"><span class="cue-label">Quick recall</span><span>Quick / Merge / Tim split or merge ranges</span><span>Insertion grows a sorted prefix</span><span>Selection chooses the next minimum</span><span>Shell narrows its gaps</span><span>Counting turns frequencies into positions</span></div>
         </section>
         <section class="catalog" aria-labelledby="catalog-title">
@@ -180,31 +218,42 @@
                 <p class="cue">{algorithm.cue}</p>
                 <dl class="bounds"><div><dt>Runtime lower bound</dt><dd>{algorithm.lower}</dd></div><div><dt>Runtime upper bound</dt><dd>{algorithm.upper}</dd></div></dl>
                 <p class="extra">{algorithm.extra}</p>
-                <div class="actions"><button class="primary" onclick={() => selectAlgorithm(algorithm, 'walkthrough')}>Step-by-step</button><button class="secondary" onclick={() => selectAlgorithm(algorithm, 'python')}>Python implementation</button></div>
+                <div class="actions"><a class="primary" href="#/algorithms/{algorithm.id}/walkthrough">Step-by-step</a><a class="secondary" href="#/algorithms/{algorithm.id}/python">Python implementation</a></div>
               </article>
             {:else}<p class="empty">No matches. Try a sort name or a memory cue.</p>{/each}
           </div>
-          {#if selectedAlgorithm}
-            <section class="algorithm-view" aria-label="{selectedAlgorithm.name} materials">
-              <div class="algorithm-view-heading"><div><p class="eyebrow">{selectedAlgorithm.name}</p><h2>Learn it, then inspect the code.</h2></div><button class="close-view" onclick={() => (selectedAlgorithmId = '')} aria-label="Close algorithm view">×</button></div>
-              <div class="material-tabs" role="tablist" aria-label="{selectedAlgorithm.name} learning materials">
-                <button role="tab" aria-selected={algorithmView === 'walkthrough'} class:active={algorithmView === 'walkthrough'} onclick={() => selectAlgorithm(selectedAlgorithm, 'walkthrough')}>Step-by-step</button>
-                <button role="tab" aria-selected={algorithmView === 'python'} class:active={algorithmView === 'python'} onclick={() => selectAlgorithm(selectedAlgorithm, 'python')}>Python implementation</button>
-              </div>
-              {#if algorithmView === 'walkthrough'}
-                <iframe class="walkthrough-frame" title="{selectedAlgorithm.name} step-by-step walkthrough" src="./walkthroughs/{selectedAlgorithm.walkthrough}"></iframe>
-              {:else if pythonLoading}
-                <p class="code-status">Loading the implementation…</p>
-              {:else if pythonError}
-                <p class="code-status error">{pythonError}</p>
-              {:else}
-                <pre class="python-code"><code>{pythonSource}</code></pre>
-              {/if}
-            </section>
-          {/if}
           <p class="section-footnote">These are quick per-algorithm reminders. The <button class="inline-link" onclick={() => openPage('complexity', 'time')}>Complexity domain</button> teaches how to analyze bounds and cases in general.</p>
         </section>
-        <footer>Counting Sort depends on input length n and range width k. Shell Sort depends on its gap sequence.</footer>
+      {:else if domain === 'algorithms' && topic === 'algorithm' && selectedAlgorithm}
+        <section class="page-hero compact-hero algorithm-hero">
+          <a class="back-link" href="#/algorithms/sorting">← All sorting algorithms</a>
+          <p class="eyebrow">Algorithm walkthrough · code references</p>
+          <h1>{selectedAlgorithm.name}</h1>
+          <p class="intro">{selectedAlgorithm.cue} Start with the simple version, then compare typed Python, JavaScript, and TypeScript.</p>
+        </section>
+        <section class="algorithm-view standalone-view" aria-label="{selectedAlgorithm.name} materials">
+          <div class="material-tabs" role="tablist" aria-label="{selectedAlgorithm.name} learning materials">
+            <a role="tab" aria-selected={algorithmView === 'walkthrough'} class:active={algorithmView === 'walkthrough'} href="#/algorithms/{selectedAlgorithm.id}/walkthrough">Step-by-step</a>
+            <a role="tab" aria-selected={algorithmView === 'implementation'} class:active={algorithmView === 'implementation'} href="#/algorithms/{selectedAlgorithm.id}/python/simple">Implementations</a>
+          </div>
+          {#if algorithmView === 'walkthrough'}
+            <iframe class="walkthrough-frame" title="{selectedAlgorithm.name} step-by-step walkthrough" src="./walkthroughs/{selectedAlgorithm.walkthrough}"></iframe>
+          {:else if pythonLoading}
+            <p class="code-status">Loading the implementation…</p>
+          {:else if pythonError}
+            <p class="code-status error">{pythonError}</p>
+          {:else}
+            <nav class="implementation-tabs" aria-label="Choose implementation language">
+              <a class:active={implementationLanguage === 'python-simple'} href="#/algorithms/{selectedAlgorithm.id}/python/simple">Python (simple)</a>
+              <a class:active={implementationLanguage === 'python-typed'} href="#/algorithms/{selectedAlgorithm.id}/python/typed">Python (typed)</a>
+              <a class:active={implementationLanguage === 'javascript'} href="#/algorithms/{selectedAlgorithm.id}/javascript">JavaScript</a>
+              <a class:active={implementationLanguage === 'typescript'} href="#/algorithms/{selectedAlgorithm.id}/typescript">TypeScript</a>
+            </nav>
+            <div class="code-language-label">{implementationLanguage === 'python-simple' ? 'Python · intuition-first' : implementationLanguage === 'python-typed' ? 'Python · typed reference' : implementationLanguage === 'javascript' ? 'JavaScript · implementation' : 'TypeScript · typed implementation'}</div>
+            <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
+            <div class="python-code" role="region" aria-label="{selectedAlgorithm.name} {implementationLanguage} source" tabindex="0"><pre>{#each highlightedLines as line, index}<span class="code-line"><span class="line-number" aria-hidden="true">{index + 1}</span><code>{#each line as token}<span class="token-{token.type}">{token.text}</span>{/each}{#if line.length === 0}<span aria-hidden="true"> </span>{/if}</code></span>{/each}</pre></div>
+          {/if}
+        </section>
 
       {:else if domain === 'discrete' && topic === 'induction'}
         <section class="page-hero compact-hero"><p class="eyebrow">{pageKicker}</p><h1>Proof by induction</h1><p class="intro">Prove a whole family of statements by checking the first case, then showing each true case carries the next one with it.</p></section>
