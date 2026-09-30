@@ -1,0 +1,125 @@
+/* Shared visual language for every sorting walkthrough. Keep layout and sizing
+   local to each algorithm; this file standardizes only animation/state styling. */
+:root {
+  --walk-blue: #60a5fa;
+  --walk-blue-fill: #24405f;
+  --walk-green: #34d399;
+  --walk-green-fill: #245743;
+  --walk-yellow: #facc15;
+  --walk-yellow-fill: #514616;
+  --walk-orange: #fb923c;
+  --walk-orange-fill: #493326;
+  --walk-violet: #c084fc;
+  --walk-violet-fill: #42265f;
+  --walk-current: #22252b;
+}
+
+/* One crisp frame marks the step currently being studied. */
+.history-row.current,
+.row.active,
+.row.current,
+#quick-sort-walkthrough .history-row.current {
+  border: 1px solid var(--walk-blue) !important;
+  border-radius: 0 !important;
+  background: var(--walk-current) !important;
+  box-shadow: 0 0 0 1px #60a5fa33 !important;
+  opacity: 1 !important;
+  transition: background-color 160ms ease, border-color 160ms ease, box-shadow 160ms ease;
+}
+
+.history-row:not(.current),
+.row:not(.active):not(.current) {
+  transition: background-color 160ms ease, border-color 160ms ease, box-shadow 160ms ease;
+}
+
+/* Matching cell geometry; responsive dimensions remain defined by each page. */
+.history-cell,
+.cell,
+.item .box,
+.position .cell,
+#quick-sort-walkthrough .history-cell {
+  border-radius: 0 !important;
+  transition: background-color 160ms ease, border-color 160ms ease, color 160ms ease,
+    transform 180ms cubic-bezier(.2,.75,.25,1), box-shadow 160ms ease;
+}
+
+/* Blue = active item/key/pivot; yellow = comparison; orange = movement;
+   green = completed/placed; violet = auxiliary output or grouping. */
+.history-cell.minimum,
+.history-cell.key,
+.history-cell.run,
+.cell.hit,
+.item.key .box,
+.item.pivot .box,
+.item.context-pivot .box,
+#quick-sort-walkthrough .history-cell.pivot {
+  border-color: var(--walk-blue) !important;
+  background: var(--walk-blue-fill) !important;
+}
+
+.history-cell.scan,
+.history-cell.compare,
+.history-cell.focus,
+.item.compare .box,
+.item.focus .box,
+#quick-sort-walkthrough .history-cell.focus {
+  border-color: var(--walk-yellow) !important;
+  background: var(--walk-yellow-fill) !important;
+}
+
+.history-cell.swap,
+.history-cell.shift,
+.history-cell.hole,
+.history-cell.right-run,
+.item.shift .box,
+.item.swap .box,
+#quick-sort-walkthrough .history-cell.swap {
+  border-color: var(--walk-orange) !important;
+  background: var(--walk-orange-fill) !important;
+}
+
+.history-cell.sorted,
+.history-cell.inserted,
+.history-cell.left-run,
+.cell.placed,
+.item.sorted .box,
+.item.inserted .box {
+  border-color: var(--walk-green) !important;
+  background: var(--walk-green-fill) !important;
+}
+
+.history-cell.write,
+.cell.bucket,
+.position.done .cell,
+.item .box.write {
+  border-color: var(--walk-violet) !important;
+  background: var(--walk-violet-fill) !important;
+}
+
+/* Preserve the named halves in merge/partition views while keeping their
+   established green-left / orange-right identity. */
+.position.left .cell,
+#quick-sort-walkthrough .history-cell.S1 {
+  border-color: var(--walk-green) !important;
+  background: var(--walk-green-fill) !important;
+}
+.position.right .cell,
+#quick-sort-walkthrough .history-cell.S2 {
+  border-color: var(--walk-orange) !important;
+  background: var(--walk-orange-fill) !important;
+}
+.position.leaf .cell {
+  border-color: var(--walk-blue) !important;
+  background: var(--walk-blue-fill) !important;
+}
+
+/* Keep color-key markers in sync with the shared semantic palette. */
+.legend-swatch.pivot { background: var(--walk-blue-fill) !important; border-color: var(--walk-blue) !important; }
+.legend-swatch.compare { background: var(--walk-yellow-fill) !important; border-color: var(--walk-yellow) !important; }
+.legend-swatch.swap { background: var(--walk-orange-fill) !important; border-color: var(--walk-orange) !important; }
+@media (prefers-reduced-motion: reduce) {
+  .history-row, .row, .history-cell, .cell, .item .box,
+  #quick-sort-walkthrough .history-cell {
+    transition: none !important;
+  }
+}

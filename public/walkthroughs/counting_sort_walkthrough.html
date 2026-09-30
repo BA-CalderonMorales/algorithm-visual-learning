@@ -26,12 +26,13 @@ body.embedded .row { grid-template-columns:minmax(0,1fr); gap:8px; padding:10px;
 body.embedded .reason { grid-column:1; border-left:0; border-top:1px solid #45454e; padding:8px 0 0; font-size:12px; }
 @media(max-width:600px) { body.embedded main { grid-template-columns:112px minmax(0,1fr); gap:7px; padding:8px; } body.embedded .toolbar { padding:5px; } body.embedded .toolbar button { font-size:10px; } }
 </style>
+  <link rel="stylesheet" href="walkthrough-theme.css">
 </head>
 <body>
 <main>
  <div class="top"><div><h1>Counting Sort Walkthrough</h1><div class="complexity">Best, average, worst: Θ(n + k) time; Θ(n + k) extra space. k = max − min + 1 distinct integer buckets.</div><div class="complexity"><b>Divide and conquer:</b> No · <b>Runtime lower bound:</b> Θ(n + k) · <b>Runtime upper bound:</b> O(n + k)</div><div class="cue">Recall: <b>count → cumulative positions → place right-to-left</b>. Unlike <a href="merge_sort_walkthrough.html" target="_blank">Merge Sort</a>, this does not compare pairs of values.</div></div><div class="toolbar"><button id="back">Back step</button><button id="next">Next step</button><button id="reset">Reset</button><button id="shuffle">Shuffle</button></div></div>
  <div id="status" class="status"></div>
- <div class="legend" aria-label="Color key and pointers"><span><i style="background:#ffa661"></i>Input being read</span><span><i style="background:#bd9bff"></i>Count / position bucket</span><span><i style="background:#55d8a7"></i>Output placement</span><span><b>i</b> input cursor · <b>j</b> bucket/destination</span></div>
+ <div class="legend" aria-label="Color key and pointers"><span><i style="background:#60a5fa"></i>Input being read</span><span><i style="background:#c084fc"></i>Count / position bucket</span><span><i style="background:#34d399"></i>Output placement</span><span><b>i</b> input cursor · <b>j</b> bucket/destination</span></div>
  <div id="ledger" class="ledger" aria-live="polite"></div>
 </main>
 <script>if(window.self!==window.top)document.body.classList.add('embedded');</script>

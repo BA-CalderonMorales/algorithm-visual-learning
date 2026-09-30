@@ -75,13 +75,14 @@
     @media(max-width:600px) { body.embedded #insertion-sort { grid-template-columns:112px minmax(0,1fr); gap:7px; padding:8px; } body.embedded .controls { padding:5px; } body.embedded .controls button { font-size:10px; } body.embedded .history-row { grid-template-columns:1fr; } body.embedded .history-reason { grid-column:1; } }
     @media(min-width:901px) { #insertion-sort .history-label { align-self:stretch; display:flex; align-items:center; justify-content:center; padding:8px 12px 8px 0; border:0; border-right:1px solid #3f3f46; border-radius:0; } body.embedded #insertion-sort .history-label { grid-row:1 / span 2; } }
   </style>
+  <link rel="stylesheet" href="walkthrough-theme.css">
 </head>
 <body>
 <main id="insertion-sort">
   <h1>Insertion Sort: key, compare, shift, insert</h1>
   <div class="step" id="step">Step 1</div>
   <div class="controls"><button id="back" disabled>Back step</button><button id="next">Next step</button><button id="reset">Reset</button><button id="shuffle">Shuffle same size</button></div>
-  <div class="legend" aria-label="Color key and pointers"><span><i style="background:#34d399"></i>Sorted portion</span><span><i style="background:#60a5fa"></i>Key</span><span><i style="background:#fb923c"></i>Compare, shift, or open slot</span><span><b>i</b> key being inserted · <b>j</b> leftward comparison</span></div>
+  <div class="legend" aria-label="Color key and pointers"><span><i style="background:#34d399"></i>Sorted portion</span><span><i style="background:#60a5fa"></i>Key</span><span><i style="background:#facc15"></i>Compared value</span><span><i style="background:#fb923c"></i>Shift / open slot</span><span><b>i</b> key being inserted · <b>j</b> leftward comparison</span></div>
   <section class="stage"><div class="content"><div class="message" id="message"></div><div class="array-card"><div class="label">Current array</div><div class="array-line"><div class="index-label">indices</div><div class="array" id="array"></div></div></div><div class="history" id="history"></div></div></section>
 </main>
 <script>if(window.self!==window.top)document.body.classList.add('embedded');</script>
