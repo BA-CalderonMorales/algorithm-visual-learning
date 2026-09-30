@@ -39,7 +39,7 @@ button { color: inherit; }
 .nav-count { margin-left: auto; padding: 2px 6px; border: 1px solid #3e414b; border-radius: 99px; color: #8e93a1; font-size: 10px; }
 .sidebar-note { display: flex; align-items: center; gap: 9px; margin-top: auto; padding: 13px 10px 4px; border-top: 1px solid #30313a; color: #888d9a; font-size: 10px; line-height: 1.55; }
 .note-dot,.status-dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--green); box-shadow: 0 0 12px #65d9b066; }
-.content-column { min-height: 100vh; margin-left: 264px; }
+.content-column { display:flex; min-height:100vh; flex-direction:column; margin-left:264px; }
 .topbar { position: sticky; top: 0; z-index: 4; display: flex; height: 55px; align-items: center; justify-content: space-between; padding: 0 34px; border-bottom: 1px solid #30313a; background: #191a1fcc; backdrop-filter: blur(16px); }
 .breadcrumbs { display: flex; align-items: center; gap: 9px; color: #858996; font-size: 11px; }
 .breadcrumbs strong { color: #d4d6de; font-weight: 550; }
@@ -104,7 +104,7 @@ h3 { margin: 0; font-size: 16px; letter-spacing: -.02em; }
 .empty,.section-footnote { color: var(--muted); font-size: 11px; }
 .section-footnote { margin: 16px 0 0; }
 .inline-link { padding: 0; border: 0; background: none; cursor: pointer; }
-.site-footer { display: flex; justify-content: space-between; gap: 12px; padding: 15px 34px 19px; border-top: 1px solid #30313a; color: #727683; font-size: 9px; }
+.site-footer { display:flex; min-height:40px; flex:0 0 auto; justify-content:space-between; gap:12px; padding:9px 34px; border-top:1px solid #30313a; color:#727683; font-size:9px; }
 .lesson-layout { display: grid; grid-template-columns: minmax(0,1fr) 230px; gap: 14px; align-items: start; }
 .lesson-main { display: grid; gap: 12px; min-width: 0; }
 .lesson-aside,.concept-card,.worked-example { border: 1px solid var(--line); border-radius: 12px; background: linear-gradient(150deg,#24252b,#1e1f24); }
@@ -168,11 +168,16 @@ h3 { margin: 0; font-size: 16px; letter-spacing: -.02em; }
 /* Navigation: domain tabs on roomy screens; collapsible topic drawer on every size. */
 .sidebar { position: fixed; inset: 0 auto 0 0; z-index: 12; width: 264px; height: 100dvh; transform: translateX(calc(-100% - 12px)); transition: transform .22s ease; box-shadow: 18px 0 48px #0005; }
 .sidebar.nav-open { transform: translateX(0); }
-.content-column { margin-left: 0; }
+.content-column { margin-left:0; }
+.content-column > .page-content { width:100%; flex:1 0 auto; }
 .topbar-leading { display: flex; min-width: 0; align-items: center; gap: 13px; }
 .topbar-actions { display:flex; min-width:0; flex:1 1 auto; align-items:center; justify-content:flex-end; gap:8px; }
 .global-search-trigger,.fullscreen-toggle,.repository-link { display:inline-flex; height:34px; align-items:center; justify-content:center; gap:8px; border:1px solid #3d404b; border-radius:7px; background:#202127; color:#c5c8d2; text-decoration:none; cursor:pointer; }
-.global-search-trigger { min-width:130px; flex:1 1 auto; justify-content:flex-start; padding:0 10px; color:#9ea3b1; font-size:11px; }
+.global-search-trigger { width:min(250px,24vw); min-width:0; flex:0 1 250px; justify-content:flex-start; padding:0 10px; color:#9ea3b1; font-size:11px; }
+.repository-link { flex:0 0 auto; }
+html:fullscreen .content-column { min-height:100dvh; }
+html:fullscreen .page-content { padding-block:clamp(48px,5vh,72px); }
+html:fullscreen .site-footer { min-height:38px; padding-block:8px; background:#171719d9; }
 .global-search-trigger:hover,.fullscreen-toggle:hover,.repository-link:hover { border-color:#638cb0; background:#282b33; color:#f1f3f8; }
 .global-search-trigger:focus-visible,.fullscreen-toggle:focus-visible,.repository-link:focus-visible,.site-search-result:focus-visible { outline:2px solid var(--blue); outline-offset:2px; }
 .global-search-trigger svg,.fullscreen-toggle svg,.repository-link svg,.site-search-field svg { width:16px; height:16px; flex:0 0 auto; fill:none; stroke:currentColor; stroke-linecap:round; stroke-linejoin:round; stroke-width:1.6; }
@@ -355,7 +360,7 @@ h3 { margin: 0; font-size: 16px; letter-spacing: -.02em; }
   .topbar { height: 48px; }
   .topbar-status { display: none; }
   .topbar-actions { gap:5px; }
-  .global-search-trigger { min-width:0; padding-inline:8px; }
+  .global-search-trigger { width:min(190px,30vw); min-width:0; flex:0 1 190px; padding-inline:8px; }
   .repository-link { gap:5px; padding-inline:7px; }
   .page-content { padding: 20px 15px; }
   .math-display { justify-content: center; padding: 12px; text-align: center; }

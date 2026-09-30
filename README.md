@@ -7,6 +7,8 @@
 [![Live site](https://img.shields.io/badge/site-live-1f9d8b?style=flat-square)](https://ba-calderonmorales.github.io/algorithm-visual-learning/)
 [![Pages build](https://img.shields.io/github/actions/workflow/status/BA-CalderonMorales/algorithm-visual-learning/pages.yml?branch=develop&label=build&style=flat-square)](https://github.com/BA-CalderonMorales/algorithm-visual-learning/actions)
 
+
+![Fullscreen home page of Algorithm Visual Learning](screenshots/study-home.png)
 </div>
 
 ## Quick Start
