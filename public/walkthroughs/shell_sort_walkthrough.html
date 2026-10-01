@@ -31,6 +31,11 @@
     .history-row.current { border-color:var(--blue); background:#22252b; box-shadow:0 0 0 1px #60a5fa33; }
     .history-label { justify-self:center; padding:4px 6px; border:1px solid #3f3f46; border-radius:999px; color:var(--sub); text-align:center; font-size:clamp(11px,.8vw,13px); line-height:1.2; white-space:nowrap; }
     .history-array { display:grid; grid-template-columns:repeat(10,minmax(0,1fr)); gap:clamp(2px,.35vw,5px); align-items:center; width:min(100%,390px); min-width:0; padding:4px 7px; border-radius:7px; background:#151518; }
+    .history-array-stack { width:min(100%,390px); min-width:0; }
+    .history-array-stack .history-array { width:100%; }
+    .held-key-track { display:grid; grid-template-columns:repeat(10,minmax(0,1fr)); gap:clamp(2px,.35vw,5px); align-items:center; margin-top:4px; }
+    .held-key-caption { grid-column:1 / -1; color:var(--sub); font-size:10px; line-height:1.2; }
+    .held-key-value { justify-self:center; min-width:24px; padding:2px 4px; border:1px solid var(--blue); background:#24405f; color:#dbeafe; font-size:11px; font-weight:700; text-align:center; }
     .history-position { display:flex; min-width:0; flex-direction:column; align-items:center; gap:3px; }
     .history-index { color:var(--sub); font-size:10px; line-height:1; }
     .pointer-markers { min-height:11px; color:#bfdbfe; font-size:9px; line-height:1; font-weight:700; }
@@ -112,7 +117,7 @@
 
   function build(values) {
     const a=values.slice(), trace=[];
-    const add=(msg,{tags={},gap=null,heldKey=null,lane=null,kind='',from=null,to=null,moving=null,i=null,j=null}={})=>trace.push({a:a.slice(),tags,gap,heldKey,lane,kind,from,to,moving,i,j,msg});
+    const add=(msg,{tags={},gap=null,heldKey=null,keyOrigin=null,lane=null,kind='',from=null,to=null,moving=null,i=null,j=null}={})=>trace.push({a:a.slice(),tags,gap,heldKey,keyOrigin,lane,kind,from,to,moving,i,j,msg});
     add(`Start with the original array. Shell Sort will sort elements that are ${Math.floor(a.length/2)} positions apart, then reduce the gap.`,{gap:Math.floor(a.length/2)});
     for(let gap=Math.floor(a.length/2);gap>0;gap=Math.floor(gap/2)) {
       add(`Begin a gap-${gap} pass. Each index follows only positions ${gap} apart in its own group.`,{gap,kind:'pass-start'});
@@ -121,14 +126,14 @@
         a[i]=null;
         let j=i;
         const lane=i%gap;
-        add(`Hold key ${key} from index ${i}. Compare it with A[${j-gap}], ${gap} positions to the left in this same group.`,{gap,heldKey:key,lane,kind:'hold',from:j-gap,to:i,i,j:j-gap,tags:{[i]:'key',[j-gap]:'compare'}});
+        add(`Hold key ${key} from index ${i}. Its value stays visible in the held-key track below the array while the open slot is shown in the array. Compare it with A[${j-gap}], ${gap} positions to the left in this same group.`,{gap,heldKey:key,keyOrigin:i,lane,kind:'hold',from:j-gap,to:i,i,j:j-gap,tags:{[i]:'key',[j-gap]:'compare'}});
         while(j>=gap && a[j-gap]>key) {
           const from=j-gap, moving=a[from];
           a[j]=moving;
           a[from]=null;
-          add(`${moving} is greater than held key ${key}. Shift ${moving} from index ${from} to index ${j}; the open position moves left to index ${from}.`,{gap,heldKey:key,lane,kind:'shift',from,to:j,moving,i,j:from,tags:{[from]:'hole',[j]:'shift'}});
+          add(`${moving} is greater than held key ${key}. Shift ${moving} from index ${from} to index ${j}; the open position moves left to index ${from}. The held key remains visible below at its original index ${i}.`,{gap,heldKey:key,keyOrigin:i,lane,kind:'shift',from,to:j,moving,i,j:from,tags:{[from]:'hole',[j]:'shift'}});
           j=from;
-          if(j>=gap) add(`Stay in this gap-group. Compare held key ${key} with A[${j-gap}] next; it is ${gap} positions left of the open slot.`,{gap,heldKey:key,lane,kind:'continue',from:j-gap,to:j,i,j:j-gap,tags:{[j]:'hole',[j-gap]:'compare'}});
+          if(j>=gap) add(`Stay in this gap-group. Compare held key ${key} with A[${j-gap}] next; it is ${gap} positions left of the open slot. The held key is still shown below at its original index ${i}.`,{gap,heldKey:key,keyOrigin:i,lane,kind:'continue',from:j-gap,to:j,i,j:j-gap,tags:{[j]:'hole',[j-gap]:'compare'}});
         }
         if(j>=gap) add(`A[${j-gap}] = ${a[j-gap]} is not greater than held key ${key}. Stop shifting; the key belongs in the open slot at index ${j}.`,{gap,heldKey:key,lane,kind:'stop',from:j-gap,to:j,i,j:j-gap,tags:{[j-gap]:'compare',[j]:'hole'}});
         else add(`No earlier index exists in this gap-group. Put held key ${key} into the open slot at index ${j}.`,{gap,heldKey:key,lane,kind:'first',to:j,i,j:null,tags:{[j]:'hole'}});
@@ -149,6 +154,7 @@
     states.slice(0,step+1).forEach((item,index)=>{
       const row=document.createElement('article'); row.className='history-row'+(index===step?' current':'');
       const label=document.createElement('div'); label.className='history-label'; label.textContent=`Step ${index+1}`;
+      const arrayStack=document.createElement('div'); arrayStack.className='history-array-stack';
       const values=document.createElement('div'); values.className='history-array';
       item.a.forEach((value,i)=>{
         const position=document.createElement('div');
@@ -158,10 +164,17 @@
         const marker=document.createElement('span');marker.className='pointer-markers';marker.textContent=[item.i===i?'i':'',item.j===i?'j':''].filter(Boolean).join(' · ');
         position.append(cell,indexLabel,marker); values.appendChild(position);
       });
+      arrayStack.appendChild(values);
+      if(item.heldKey!==null && item.keyOrigin!==null){
+        const keyTrack=document.createElement('div'); keyTrack.className='held-key-track';
+        const caption=document.createElement('span'); caption.className='held-key-caption'; caption.textContent='Held key remains visible here (tracked from its original index):';
+        const keyValue=document.createElement('span'); keyValue.className='held-key-value'; keyValue.style.gridColumn=String(item.keyOrigin+1); keyValue.textContent=item.heldKey; keyValue.title=`Held key ${item.heldKey}, originally at index ${item.keyOrigin}`;
+        keyTrack.append(caption,keyValue); arrayStack.appendChild(keyTrack);
+      }
       const reason=document.createElement('div'); reason.className='history-reason';
       const badges=document.createElement('div'); badges.className='history-badges';
       if(item.gap!==null){const pill=document.createElement('span');pill.className='gap-pill';pill.textContent=`gap ${item.gap}`;badges.appendChild(pill);}
-      if(item.heldKey!==null){const held=document.createElement('span');held.className='gap-pill key-pill';held.textContent=`held key ${item.heldKey}`;badges.appendChild(held);}
+      if(item.heldKey!==null){const held=document.createElement('span');held.className='gap-pill key-pill';held.textContent=`held key ${item.heldKey} · from index ${item.keyOrigin}`;badges.appendChild(held);}
       if(badges.childElementCount)reason.appendChild(badges);
       const rules={
         hold:`Compare A[${item.from}] = ${item.a[item.from]} with held key ${item.heldKey}`,
@@ -184,7 +197,7 @@
         if(lane.textContent)reason.appendChild(lane);
       }
       const explanation=document.createElement('div');explanation.textContent=item.msg;reason.appendChild(explanation);
-      row.append(label,values,reason); history.appendChild(row);
+      row.append(label,arrayStack,reason); history.appendChild(row);
     });
     document.getElementById('back').disabled=step===0;
     document.getElementById('next').disabled=step===states.length-1;
