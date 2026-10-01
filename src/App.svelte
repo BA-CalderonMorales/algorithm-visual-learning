@@ -3,6 +3,7 @@
   import { algorithms, visibleAlgorithms } from './algorithms.js';
   import { algorithmLessons } from './algorithm-lessons.js';
   import GrowthChart from './GrowthChart.svelte';
+  import { getGrowthModel } from './growth-models.js';
 
   let query = $state('');
   let sortBy = $state('');
@@ -17,6 +18,7 @@
   let fullscreenActive = $state(false);
   let selectedAlgorithmId = $state('');
   let algorithmView = $state('walkthrough');
+  let shellGapSequence = $state('halving');
   let implementationLanguage = $state('python-simple');
   let implementationSource = $state('');
   let pythonLoading = $state(false);
@@ -36,6 +38,7 @@
   });
   let selectedAlgorithm = $derived(algorithms.find((algorithm) => algorithm.id === selectedAlgorithmId));
   let selectedLesson = $derived(algorithmLessons[selectedAlgorithmId]);
+  let selectedGrowthModel = $derived(getGrowthModel(selectedAlgorithmId, shellGapSequence));
   let highlightedLines = $derived(highlightCode(implementationSource, implementationLanguage));
 
   function sortCatalog(field) {
@@ -471,22 +474,32 @@
             <section class="learning-view complexity-view" aria-labelledby="algorithm-complexity-title">
               <p class="eyebrow">Connect the work to the bound</p>
               <h2 id="algorithm-complexity-title">Time and space</h2>
+              {#if selectedAlgorithm.id === 'shell'}
+                <label class="growth-select">Gap sequence
+                  <select bind:value={shellGapSequence} aria-label="Shell Sort gap sequence">
+                    <option value="halving">Halving: n/2, n/4, …, 1</option>
+                    <option value="knuth">Knuth: 1, 4, 13, …</option>
+                  </select>
+                </label>
+              {/if}
               <div class="case-grid algorithm-case-grid">
-                <article><span class="case-label">Best case</span><p>{selectedLesson.best}</p></article>
-                <article><span class="case-label">Average case</span><p>{selectedLesson.average}</p></article>
-                <article><span class="case-label">Worst case</span><p>{selectedLesson.worst}</p></article>
+                {#each Object.entries(selectedGrowthModel.cases) as [key, definition]}
+                  <article><span class="case-label">{key === 'best' ? 'Best case' : key === 'average' ? 'Average case' : 'Worst case'}</span><p><strong>{definition.bound}</strong></p><p>{definition.assumption}</p></article>
+                {/each}
               </div>
               <div class="complexity-facts" aria-label="Algorithmic bounds and approach">
                 <article class="learning-card"><span class="learning-label">Divide and conquer</span><p>{selectedAlgorithm.divide}</p></article>
-                <article class="learning-card"><span class="learning-label">Runtime lower bound</span><p>{selectedAlgorithm.lower}</p></article>
-                <article class="learning-card"><span class="learning-label">Runtime upper bound</span><p>{selectedAlgorithm.upper}</p></article>
+                <article class="learning-card"><span class="learning-label">Runtime lower bound</span><p>{selectedAlgorithm.id === 'shell' && shellGapSequence === 'knuth' ? 'Ω(n log n), sorted input with Knuth gaps' : selectedAlgorithm.lower}</p></article>
+                <article class="learning-card"><span class="learning-label">Runtime upper bound</span><p>{selectedAlgorithm.id === 'shell' && shellGapSequence === 'knuth' ? 'O(n^1.5), Knuth gaps' : selectedAlgorithm.upper}</p></article>
               </div>
               <article class="learning-card space-card"><span class="learning-label">Auxiliary space</span><p>{selectedLesson.space}</p></article>
               <p class="complexity-note">{selectedLesson.note}</p>
+              <p class="complexity-note">{selectedGrowthModel.note}</p>
               {#if selectedAlgorithm.id === 'quick'}<p class="complexity-note">{selectedAlgorithm.extra}</p>{/if}
+              <a class="secondary learning-link" href="#/algorithms/{selectedAlgorithm.id}/growth">See these same cases on the Growth chart →</a>
             </section>
           {:else if algorithmView === 'growth'}
-            <GrowthChart algorithmId={selectedAlgorithm.id} algorithmName={selectedAlgorithm.name} />
+            <GrowthChart algorithmId={selectedAlgorithm.id} algorithmName={selectedAlgorithm.name} bind:gapSequence={shellGapSequence} />
           {:else if algorithmView === 'implementation' && pythonLoading}
             <p class="code-status">Loading the implementation…</p>
           {:else if algorithmView === 'implementation' && pythonError}
