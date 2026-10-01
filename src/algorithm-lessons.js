@@ -1,4 +1,5 @@
-// Short, algorithm-specific explanations shared by the Understand, Practice, and Complexity views.
+import { growthModels } from './growth-models.js';
+// Algorithm cues with runtime cases projected from shared growth models.
 export const algorithmLessons = {
   quick: {
     idea: 'Choose a pivot, move smaller values to its left and larger values to its right, then sort the two sides independently.',
@@ -84,4 +85,10 @@ export const algorithmLessons = {
     note: 'Counting Sort is useful when the integer range is not too large relative to the input.'
   }
 };
+
+for (const [id, lesson] of Object.entries(algorithmLessons)) {
+  for (const [key, definition] of Object.entries(growthModels[id].cases)) {
+    lesson[key] = `${definition.bound} · ${definition.assumption}`;
+  }
+}
 
