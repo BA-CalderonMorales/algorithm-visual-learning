@@ -399,6 +399,8 @@ html:fullscreen .site-footer { min-height:38px; padding-block:8px; background:#1
 .growth-formula { display: flex; min-width: 0; align-items: flex-start; gap: 9px; padding: 10px; border: 1px solid #383b45; background: #202127; }
 .growth-formula > div { display: grid; min-width: 0; gap: 5px; }
 .growth-formula strong { color: #cdd1db; font-size: 10px; }
+.growth-assumption { color: #b9bec9; font-size: 10px; line-height: 1.55; }
+.growth-model-label { color: #9298a6; font-size: 9px; }
 .growth-formula code { overflow-wrap: anywhere; color: #aeb8c9; font: 10px/1.45 ui-monospace,SFMono-Regular,Consolas,monospace; }
 .growth-formula.case-muted { opacity: .45; }
 .growth-note { margin: 0; padding: 10px 12px; border-left: 2px solid #f3bf5f; background: #302a1f66; color: #bdc1ca; font-size: 10px; line-height: 1.65; }
