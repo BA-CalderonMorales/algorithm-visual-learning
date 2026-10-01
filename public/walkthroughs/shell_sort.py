@@ -30,4 +30,3 @@ def shell_sort(values: MutableSequence[T]) -> MutableSequence[T]:
 if __name__ == "__main__":
     sample = [9, 8, 7, 6, 5, 4, 3, 2, 1, 0]
     print(shell_sort(sample))
-

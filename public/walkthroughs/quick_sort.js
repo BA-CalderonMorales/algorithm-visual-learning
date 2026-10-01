@@ -8,4 +8,3 @@ function quickSort(values) {
 }
 
 console.log(quickSort([4, 7, 8, 2, 9, 5, 6, 3, 1]));
-

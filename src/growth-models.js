@@ -92,4 +92,3 @@ export function getGrowthModel(id, sequence = 'halving') {
     },
   };
 }
-

@@ -113,6 +113,28 @@
   background: var(--walk-blue-fill) !important;
 }
 
+/* Purple consistently marks pointer locations (i/j), independent of the
+   value's algorithm-specific role color. Keep the fill visible underneath. */
+.pointer-markers,
+.history-index.history-pointer:not(:empty),
+.item-pointer {
+  color: #e9d5ff !important;
+  font-weight: 700;
+}
+.history-position:has(> .pointer-markers:not(:empty)) .history-cell,
+.cell:has(> .pointer-markers:not(:empty)),
+.history-cell.pointer,
+.item:has(> .item-pointer:not(:empty)) .box {
+  outline: 2px solid var(--walk-violet) !important;
+  outline-offset: 2px;
+  position: relative;
+  z-index: 2;
+}
+.history-position:has(> .pointer-markers:not(:empty)) .history-index {
+  color: #e9d5ff !important;
+  font-weight: 700;
+}
+
 /* Keep color-key markers in sync with the shared semantic palette. */
 .legend-swatch.pivot { background: var(--walk-blue-fill) !important; border-color: var(--walk-blue) !important; }
 .legend-swatch.compare { background: var(--walk-yellow-fill) !important; border-color: var(--walk-yellow) !important; }

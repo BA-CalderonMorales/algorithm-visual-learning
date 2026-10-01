@@ -4,12 +4,22 @@
   import { algorithmLessons } from './algorithm-lessons.js';
   import GrowthChart from './GrowthChart.svelte';
   import { getGrowthModel } from './growth-models.js';
+  import WalkthroughFrame from './WalkthroughFrame.svelte';
+  import ConceptFilm from './ConceptFilm.svelte';
+  import { playFilms } from './play-models.js';
+  import StudyLesson from './StudyLesson.svelte';
+  import StudyLibrary from './StudyLibrary.svelte';
+  import StudyTabs from './StudyTabs.svelte';
+  import { studyLessons, studyDomains, lessonTabs, lessonHref } from './study-lessons.js';
 
   let query = $state('');
   let sortBy = $state('');
   let sortDirection = $state(1);
   let domain = $state('overview');
   let topic = $state('home');
+  let studyView = $state('understand');
+  let homeView = $state('explore');
+  let selectedStudyLesson = $derived(studyLessons[topic]);
   let navOpen = $state(false);
   let globalSearchOpen = $state(false);
   let globalSearchQuery = $state('');
@@ -19,6 +29,7 @@
   let selectedAlgorithmId = $state('');
   let algorithmView = $state('walkthrough');
   let shellGapSequence = $state('halving');
+  let selectedGrowthModel = $derived(getGrowthModel(selectedAlgorithmId, shellGapSequence));
   let implementationLanguage = $state('python-simple');
   let implementationSource = $state('');
   let pythonLoading = $state(false);
@@ -38,7 +49,6 @@
   });
   let selectedAlgorithm = $derived(algorithms.find((algorithm) => algorithm.id === selectedAlgorithmId));
   let selectedLesson = $derived(algorithmLessons[selectedAlgorithmId]);
-  let selectedGrowthModel = $derived(getGrowthModel(selectedAlgorithmId, shellGapSequence));
   let highlightedLines = $derived(highlightCode(implementationSource, implementationLanguage));
 
   function sortCatalog(field) {
@@ -53,7 +63,11 @@
 
   const baseSearchEntries = [
     { title: 'Study home', group: 'Start here', description: 'A visual study guide for algorithms, discrete mathematics, and complexity.', href: '#/home', terms: 'learn study guide start overview' },
+    { title: 'More learning resources', group: 'Start here', description: 'AlgoMaster, NeetCode, and free MIT OpenCourseWare courses.', href: '#/home/resources', terms: 'resources courses paid free external learning' },
+    { title: 'A note from the author', group: 'Start here', description: 'Why this free, open-source study guide exists and how to contribute.', href: '#/home/author', terms: 'author about contribute open source MIT fork' },
     { title: 'Sorting algorithms', group: 'Algorithms', description: 'Browse and compare the sorting algorithm collection.', href: '#/algorithms/sorting', terms: 'sort catalogue sorting' },
+    { title: 'Discrete mathematics', group: 'Learning domains', description: 'Choose a proof, sum, or recurrence to explore.', href: '#/discrete', terms: 'math proofs sums recurrences' },
+    { title: 'Complexity', group: 'Learning domains', description: 'Choose time or space analysis.', href: '#/complexity', terms: 'time space work memory' },
     { title: 'Proof by induction', group: 'Discrete mathematics', description: 'Base case, inductive hypothesis, inductive step, and the bridge to the next case.', href: '#/discrete/induction', terms: 'proof base case hypothesis inductive step mathematical induction' },
     { title: 'Telescoping sums', group: 'Discrete mathematics', description: 'Rewrite terms as differences, cancel neighbors, and keep the endpoints.', href: '#/discrete/telescoping', terms: 'sum series cancellation endpoints partial fractions' },
     { title: 'Master theorem', group: 'Discrete mathematics', description: 'Classify divide-and-conquer recurrences with the standard cases.', href: '#/discrete/master-theorem', terms: 'recurrence divide conquer cases a b f(n) log' },
@@ -62,12 +76,18 @@
   ];
   const searchIndex = [
     ...baseSearchEntries,
+    ...Object.values(studyLessons).flatMap(lesson => lessonTabs.map(tab => ({
+      title: `${lesson.title} · ${tab.label}`, group: studyDomains[lesson.domain].title,
+      description: tab.id === 'visualize' ? playFilms[lesson.id].takeaway : lesson.intro,
+      href: lessonHref(lesson, tab.id), terms: `${lesson.idea} ${lesson.caution} ${lesson.examples.map(example => example.title).join(' ')} ${tab.id}`,
+    }))),
     ...algorithms.flatMap((algorithm) => {
       const lesson = algorithmLessons[algorithm.id];
       const context = [algorithm.cue, algorithm.extra, lesson?.idea, lesson?.invariant, lesson?.example, lesson?.watch, lesson?.practice, lesson?.answer, ...(lesson?.practiceChecks ?? []).flatMap((check) => [check.title, check.prompt, check.answer])].filter(Boolean).join(' ');
       return [
         { title: `${algorithm.name} · Understand`, group: 'Algorithms', description: `${algorithm.cue} ${lesson?.idea ?? ''} ${lesson?.watch ?? ''}`, href: `#/algorithms/${algorithm.id}/understand`, terms: context },
         { title: `${algorithm.name} · Step-by-step`, group: 'Algorithms', description: `Follow the ${algorithm.name} walkthrough one action at a time.`, href: `#/algorithms/${algorithm.id}/walkthrough`, terms: context },
+        { title: `${algorithm.name} · Play`, group: 'Algorithms', description: playFilms[algorithm.id].takeaway, href: `#/algorithms/${algorithm.id}/play`, terms: `${context} animation film motion replay reverse` },
         { title: `${algorithm.name} · Implementations`, group: 'Algorithms', description: 'Simple Python, typed Python, JavaScript, and TypeScript code.', href: `#/algorithms/${algorithm.id}/python/simple`, terms: context },
         { title: `${algorithm.name} · Practice`, group: 'Algorithms', description: lesson?.practice ?? 'Practice the key decisions in this algorithm.', href: `#/algorithms/${algorithm.id}/practice`, terms: context },
         { title: `${algorithm.name} · Complexity`, group: 'Algorithms', description: `Best: ${lesson?.best ?? ''}; average: ${lesson?.average ?? ''}; worst: ${lesson?.worst ?? ''}; space: ${lesson?.space ?? ''}`, href: `#/algorithms/${algorithm.id}/complexity`, terms: `${context} ${lesson?.best ?? ''} ${lesson?.average ?? ''} ${lesson?.worst ?? ''} ${lesson?.space ?? ''} ${algorithm.lower} ${algorithm.upper}` },
@@ -110,9 +130,14 @@
     pythonLoading = true;
     try {
       const files = { 'python-simple': algorithm.simplePython, 'python-typed': algorithm.python, javascript: algorithm.javascript, typescript: algorithm.typescript };
-      const response = await fetch(`./walkthroughs/${files[language]}`);
+      const sourceUrl = new URL(`${import.meta.env.BASE_URL}walkthroughs/${files[language]}`, window.location.href);
+      const response = await fetch(sourceUrl);
       if (!response.ok) throw new Error(`Could not load the implementation (${response.status}).`);
-      implementationSource = await response.text();
+      const source = await response.text();
+      if (response.headers.get('content-type')?.includes('text/html')) {
+        throw new Error('The implementation URL returned the site page instead of source code. Check the site base path.');
+      }
+      implementationSource = source;
     } catch (error) {
       pythonError = error.message || 'Could not load this implementation.';
     } finally {
@@ -120,9 +145,18 @@
     }
   };
 
+  function walkthroughUrl(algorithm) {
+    const publicBase = new URL(import.meta.env.BASE_URL, window.location.href);
+    return new URL(`walkthroughs/${algorithm.walkthrough}`, publicBase).href;
+  }
+
   const routeTopics = {
     '#/home': ['overview', 'home'],
+    '#/home/resources': ['overview', 'home'],
+    '#/home/author': ['overview', 'home'],
     '#/algorithms/sorting': ['algorithms', 'catalog'],
+    '#/discrete': ['discrete', 'index'],
+    '#/complexity': ['complexity', 'index'],
     '#/discrete/induction': ['discrete', 'induction'],
     '#/discrete/telescoping': ['discrete', 'telescoping'],
     '#/discrete/master-theorem': ['discrete', 'master'],
@@ -133,6 +167,7 @@
   const openPage = (nextDomain, nextTopic) => {
     domain = nextDomain;
     topic = nextTopic;
+    studyView = 'understand';
     selectedAlgorithmId = '';
     query = '';
     navOpen = false;
@@ -163,7 +198,7 @@
     window.addEventListener('keydown', handleGlobalKeydown);
     document.addEventListener('fullscreenchange', syncFullscreen);
     const applyRoute = () => {
-      const algorithmRoute = window.location.hash.match(/^#\/algorithms\/([^/]+)\/(understand|walkthrough|practice|complexity|growth|python(?:\/(?:simple|typed))?|javascript|typescript)$/);
+      const algorithmRoute = window.location.hash.match(/^#\/algorithms\/([^/]+)\/(understand|play|walkthrough|practice|complexity|growth|python(?:\/(?:simple|typed))?|javascript|typescript)$/);
       if (algorithmRoute) {
         const algorithm = algorithms.find((entry) => entry.id === decodeURIComponent(algorithmRoute[1]));
         if (algorithm) {
@@ -173,7 +208,7 @@
           topic = 'algorithm';
           selectedAlgorithmId = algorithm.id;
           const view = algorithmRoute[2];
-          algorithmView = ['understand', 'walkthrough', 'practice', 'complexity', 'growth'].includes(view) ? view : 'implementation';
+          algorithmView = ['understand', 'play', 'walkthrough', 'practice', 'complexity', 'growth'].includes(view) ? view : 'implementation';
           implementationLanguage = view === 'javascript' || view === 'typescript' ? view : view === 'python/typed' ? 'python-typed' : 'python-simple';
           navOpen = false;
           if (!switchingViewForSameAlgorithm) returnToTop();
@@ -181,7 +216,22 @@
           return;
         }
       }
+      const studyRoute = window.location.hash.match(/^#\/(discrete|complexity)\/([^/]+)(?:\/(understand|visualize|examples|practice))?$/);
+      if (studyRoute) {
+        const lesson = Object.values(studyLessons).find(entry => entry.domain === studyRoute[1] && entry.slug === studyRoute[2]);
+        if (lesson) {
+          const sameLesson = domain === lesson.domain && topic === lesson.id;
+          domain = lesson.domain;
+          topic = lesson.id;
+          studyView = studyRoute[3] || 'understand';
+          selectedAlgorithmId = '';
+          navOpen = false;
+          if (!sameLesson) returnToTop();
+          return;
+        }
+      }
       const [nextDomain, nextTopic] = routeTopics[window.location.hash] ?? routeTopics['#/home'];
+      homeView = window.location.hash === '#/home/resources' ? 'resources' : window.location.hash === '#/home/author' ? 'author' : 'explore';
       domain = nextDomain;
       topic = nextTopic;
       selectedAlgorithmId = '';
@@ -214,14 +264,6 @@
     window.location.hash = result.href;
   }
 
-  function bindWalkthroughKeyboard(event) {
-    try {
-      event.currentTarget.contentWindow?.addEventListener('keydown', handleFrameShortcut);
-    } catch {
-      // A cross-origin walkthrough should never prevent the main site from working.
-    }
-  }
-
   function handleFrameShortcut(event) {
     if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'k') {
       event.preventDefault();
@@ -244,7 +286,7 @@
 
   const pageTitle = $derived(
     domain === 'algorithms' ? (topic === 'algorithm' ? selectedAlgorithm?.name ?? 'Algorithm' : 'Algorithms') :
-    domain === 'discrete' ? ({ induction: 'Proof by induction', telescoping: 'Telescoping sums', master: 'Master theorem' }[topic] ?? 'Discrete mathematics') :
+    domain === 'discrete' ? (selectedStudyLesson?.title ?? 'Discrete mathematics') :
     domain === 'complexity' ? ({ time: 'Time complexity', space: 'Space complexity' }[topic] ?? 'Complexity') :
     'A visual DSA study guide',
   );
@@ -281,6 +323,7 @@
       </button>
 
       <p class="nav-group-title">Discrete mathematics</p>
+      <a class="nav-link" class:active={isActive('discrete', 'index')} href="#/discrete" onclick={() => (navOpen = false)}><span class="nav-icon">∑</span> All math topics</a>
       <button class:active={isActive('discrete', 'induction')} class="nav-link" onclick={() => openPage('discrete', 'induction')}>
         <span class="nav-icon">∴</span> Proof by induction
       </button>
@@ -292,6 +335,7 @@
       </button>
 
       <p class="nav-group-title">Complexity</p>
+      <a class="nav-link" class:active={isActive('complexity', 'index')} href="#/complexity" onclick={() => (navOpen = false)}><span class="nav-icon">◷</span> Time and space</a>
       <button class:active={isActive('complexity', 'time')} class="nav-link" onclick={() => openPage('complexity', 'time')}>
         <span class="nav-icon">◷</span> Time complexity
       </button>
@@ -331,32 +375,13 @@
 
     <div class="domain-tabs" aria-label="Learning domains">
       <button class:active={domain === 'algorithms'} onclick={() => openPage('algorithms', 'catalog')}>Algorithms</button>
-      <button class:active={domain === 'discrete'} onclick={() => openPage('discrete', 'induction')}>Discrete math</button>
-      <button class:active={domain === 'complexity'} onclick={() => openPage('complexity', 'time')}>Complexity</button>
+      <button class:active={domain === 'discrete'} onclick={() => openPage('discrete', 'index')}>Discrete math</button>
+      <button class:active={domain === 'complexity'} onclick={() => openPage('complexity', 'index')}>Complexity</button>
     </div>
 
     <main class="page-content" class:wide-algorithm-page={domain === 'algorithms' && topic === 'algorithm'}>
       {#if domain === 'overview'}
-        <section class="page-hero home-hero">
-          <p class="eyebrow">{pageKicker}</p>
-          <h1>Learn the moves.<br /><span>Understand the reason.</span></h1>
-          <p class="intro">A calm, visual place to work through DSA ideas—not just memorize the final answer. Follow each step, inspect examples, and build the reasoning you can explain on an exam.</p>
-        </section>
-        <section class="domain-grid" aria-label="Study domains">
-          <button class="domain-card algorithm-domain" onclick={() => openPage('algorithms', 'catalog')}>
-            <span class="domain-icon">↗</span><span class="domain-label">01 · Algorithms</span><strong>Watch the data move.</strong><span>Interactive walkthroughs, matching Python implementations, and per-algorithm runtime notes.</span><i>Explore algorithms →</i>
-          </button>
-          <button class="domain-card math-domain" onclick={() => openPage('discrete', 'induction')}>
-            <span class="domain-icon">∑</span><span class="domain-label">02 · Discrete mathematics</span><strong>Make the proof click.</strong><span>Induction, telescoping sums, and recurrences explained with worked examples.</span><i>Explore the math →</i>
-          </button>
-          <button class="domain-card complexity-domain" onclick={() => openPage('complexity', 'time')}>
-            <span class="domain-icon">◷</span><span class="domain-label">03 · Complexity</span><strong>Reason about resources.</strong><span>Learn time and space analysis as concepts, separate from the quick notes on algorithm cards.</span><i>Explore complexity →</i>
-          </button>
-        </section>
-        <section class="welcome-panel">
-          <div><p class="eyebrow">A useful habit</p><h2>Trace it. Explain it. Then prove it.</h2></div>
-          <p>When a step feels surprising, pause and ask: what did we know before it, what changed, and why is that change safe? This guide is built to make those answers visible.</p>
-        </section>
+        <StudyLibrary libraryDomain="home" view={homeView} />
 
       {:else if domain === 'algorithms' && topic === 'catalog'}
         <section class="page-hero compact-hero">
@@ -407,21 +432,16 @@
             <p class="intro">{selectedAlgorithm.cue} Start with the simple version, then compare typed Python, JavaScript, and TypeScript.</p>
           {/if}
         </section>
-        <section class="algorithm-view standalone-view" aria-label="{selectedAlgorithm.name} materials">
-          <div class="material-tabs" role="tablist" aria-label="{selectedAlgorithm.name} learning materials">
-            <a role="tab" aria-selected={algorithmView === 'understand'} class:active={algorithmView === 'understand'} href="#/algorithms/{selectedAlgorithm.id}/understand">Understand</a>
-            <a role="tab" aria-selected={algorithmView === 'walkthrough'} class:active={algorithmView === 'walkthrough'} href="#/algorithms/{selectedAlgorithm.id}/walkthrough">Step-by-step</a>
-            <a role="tab" aria-selected={algorithmView === 'implementation'} class:active={algorithmView === 'implementation'} href="#/algorithms/{selectedAlgorithm.id}/python/simple">Implementations</a>
-            <a role="tab" aria-selected={algorithmView === 'practice'} class:active={algorithmView === 'practice'} href="#/algorithms/{selectedAlgorithm.id}/practice">Practice</a>
-            <a role="tab" aria-selected={algorithmView === 'complexity'} class:active={algorithmView === 'complexity'} href="#/algorithms/{selectedAlgorithm.id}/complexity">Complexity</a>
-            <a role="tab" aria-selected={algorithmView === 'growth'} class:active={algorithmView === 'growth'} href="#/algorithms/{selectedAlgorithm.id}/growth">Growth</a>
-          </div>
+        <section class="algorithm-view standalone-view" class:play-view={algorithmView === 'play'} aria-label="{selectedAlgorithm.name} materials">
+          <StudyTabs tabs={[['understand','Understand'],['play','Play'],['walkthrough','Step-by-step'],['implementation','Implementations'],['practice','Practice'],['complexity','Complexity'],['growth','Growth']].map(([id,label]) => ({ id, label, href:`#/algorithms/${selectedAlgorithm.id}/${id === 'implementation' ? 'python/simple' : id}` }))} selected={algorithmView} label="{selectedAlgorithm.name} learning materials" idPrefix="algorithm-tab" />
           {#if algorithmView === 'walkthrough'}
             {#key selectedAlgorithm.id}
-              <iframe class="walkthrough-frame" title="{selectedAlgorithm.name} step-by-step walkthrough" src="./walkthroughs/{selectedAlgorithm.walkthrough}" onload={bindWalkthroughKeyboard}></iframe>
+              <WalkthroughFrame name={selectedAlgorithm.name} src={walkthroughUrl(selectedAlgorithm)} onShortcut={handleFrameShortcut} />
             {/key}
           {/if}
-          {#if algorithmView === 'understand'}
+          {#if algorithmView === 'play'}
+            {#key selectedAlgorithm.id}<ConceptFilm film={playFilms[selectedAlgorithm.id]} />{/key}
+          {:else if algorithmView === 'understand'}
             <section class="learning-view understand-view" aria-labelledby="understand-title">
               <header class="understand-intro">
                 <div class="understand-heading"><p class="eyebrow">The core idea</p><h2 id="understand-title">What {selectedAlgorithm.name} is doing</h2></div>
@@ -495,8 +515,8 @@
               <article class="learning-card space-card"><span class="learning-label">Auxiliary space</span><p>{selectedLesson.space}</p></article>
               <p class="complexity-note">{selectedLesson.note}</p>
               <p class="complexity-note">{selectedGrowthModel.note}</p>
-              {#if selectedAlgorithm.id === 'quick'}<p class="complexity-note">{selectedAlgorithm.extra}</p>{/if}
               <a class="secondary learning-link" href="#/algorithms/{selectedAlgorithm.id}/growth">See these same cases on the Growth chart →</a>
+              {#if selectedAlgorithm.id === 'quick'}<p class="complexity-note">{selectedAlgorithm.extra}</p>{/if}
             </section>
           {:else if algorithmView === 'growth'}
             <GrowthChart algorithmId={selectedAlgorithm.id} algorithmName={selectedAlgorithm.name} bind:gapSequence={shellGapSequence} />
@@ -505,51 +525,22 @@
           {:else if algorithmView === 'implementation' && pythonError}
             <p class="code-status error">{pythonError}</p>
           {:else if algorithmView === 'implementation'}
-            <nav class="implementation-tabs" aria-label="Choose implementation language">
-              <a class:active={implementationLanguage === 'python-simple'} href="#/algorithms/{selectedAlgorithm.id}/python/simple">Python (simple)</a>
-              <a class:active={implementationLanguage === 'python-typed'} href="#/algorithms/{selectedAlgorithm.id}/python/typed">Python (typed)</a>
-              <a class:active={implementationLanguage === 'javascript'} href="#/algorithms/{selectedAlgorithm.id}/javascript">JavaScript</a>
-              <a class:active={implementationLanguage === 'typescript'} href="#/algorithms/{selectedAlgorithm.id}/typescript">TypeScript</a>
-            </nav>
+            <StudyTabs tabs={[['python-simple','Python (simple)','python/simple'],['python-typed','Python (typed)','python/typed'],['javascript','JavaScript','javascript'],['typescript','TypeScript','typescript']].map(([id,label,path]) => ({ id,label,href:`#/algorithms/${selectedAlgorithm.id}/${path}` }))} selected={implementationLanguage} label="Choose implementation language" idPrefix="code-tab" />
             <div class="code-language-label">{implementationLanguage === 'python-simple' ? 'Python · intuition-first' : implementationLanguage === 'python-typed' ? 'Python · typed reference' : implementationLanguage === 'javascript' ? 'JavaScript · implementation' : 'TypeScript · typed implementation'}</div>
             <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
             <div class="python-code" role="region" aria-label="{selectedAlgorithm.name} {implementationLanguage} source" tabindex="0"><pre>{#each highlightedLines as line, index}<span class="code-line"><span class="line-number" aria-hidden="true">{index + 1}</span><code>{#each line as token}<span class="token-{token.type}">{token.text}</span>{/each}{#if line.length === 0}<span aria-hidden="true"> </span>{/if}</code></span>{/each}</pre></div>
           {/if}
         </section>
 
-      {:else if domain === 'discrete' && topic === 'induction'}
-        <section class="page-hero compact-hero"><p class="eyebrow">{pageKicker}</p><h1>Proof by induction</h1><p class="intro">Prove a whole family of statements by checking the first case, then showing each true case carries the next one with it.</p></section>
-        <div class="lesson-layout"><article class="lesson-main">
-          <article class="worked-example"><div class="example-head"><span>Worked example A</span><span class="example-tag">Sum of first n integers</span></div><div class="math-display"><math display="block"><mrow><munderover><mo>∑</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>n</mi></munderover><mi>i</mi><mo>=</mo><mfrac><mrow><mi>n</mi><mo>(</mo><mi>n</mi><mo>+</mo><mn>1</mn><mo>)</mo></mrow><mn>2</mn></mfrac></mrow></math></div><ol class="proof-steps"><li><b>Base case, n = 1.</b><p>Left side = 1. Right side = 1(2)/2 = 1. The claim holds.</p></li><li><b>Inductive hypothesis.</b><p>Assume 1 + 2 + ··· + k = k(k + 1)/2.</p></li><li><b>Prove the next case.</b><p>Add k + 1 to both sides of the assumed sum:</p><div class="math-display"><math display="block"><mtable columnalign="left"><mtr><mtd><mrow><mn>1</mn><mo>+</mo><mo>⋯</mo><mo>+</mo><mi>k</mi><mo>+</mo><mo>(</mo><mi>k</mi><mo>+</mo><mn>1</mn><mo>)</mo></mrow></mtd><mtd><mo>=</mo></mtd><mtd><mrow><mfrac><mrow><mi>k</mi><mo>(</mo><mi>k</mi><mo>+</mo><mn>1</mn><mo>)</mo></mrow><mn>2</mn></mfrac><mo>+</mo><mo>(</mo><mi>k</mi><mo>+</mo><mn>1</mn><mo>)</mo></mrow></mtd></mtr><mtr><mtd></mtd><mtd><mo>=</mo></mtd><mtd><mfrac><mrow><mo>(</mo><mi>k</mi><mo>+</mo><mn>1</mn><mo>)</mo><mo>(</mo><mi>k</mi><mo>+</mo><mn>2</mn><mo>)</mo></mrow><mn>2</mn></mfrac></mtd></mtr></mtable></math></div></li><li><b>Conclusion.</b><p>That is the formula with n = k + 1, so the statement holds for every positive integer n.</p></li></ol></article>
-          <article class="worked-example"><div class="example-head"><span>Worked example B</span><span class="example-tag">Powers of two</span></div><div class="math-display"><math display="block"><mrow><msup><mn>2</mn><mi>n</mi></msup><mo>≥</mo><mi>n</mi><mo>+</mo><mn>1</mn><mo>,</mo><mspace width="0.6em"/><mi>n</mi><mo>≥</mo><mn>0</mn></mrow></math></div><ol class="proof-steps"><li><b>Base case, n = 0.</b><p>2⁰ = 1 ≥ 1.</p></li><li><b>Assume the claim at k.</b><p>Suppose 2ᵏ ≥ k + 1.</p></li><li><b>Use the assumption.</b><p>Multiply by 2: 2ᵏ⁺¹ ≥ 2(k + 1) ≥ k + 2, since k ≥ 0.</p></li><li><b>Conclusion.</b><p>Therefore 2ⁿ ≥ n + 1 for all n ≥ 0.</p></li></ol></article>
-        </article><aside class="lesson-aside"><p class="eyebrow">Proof checklist</p><h3>Keep the logic honest</h3><ul><li>State exactly where n starts.</li><li>Assume only P(k)—not the result you need to prove.</li><li>Show the algebraic bridge to P(k + 1).</li><li>Finish with a sentence that closes the induction.</li></ul><button class="aside-link" onclick={() => openPage('discrete', 'telescoping')}>Next: telescoping sums →</button></aside></div>
-
-        <section class="reasoning-card induction-bridge"><div class="example-head"><span>The algebra bridge</span><span class="example-tag">Why the hypothesis helps</span></div><p>We need the sum through k + 1. Separate its last term, then substitute the expression the inductive hypothesis gives for the sum through k:</p><div class="equation-trail"><p><span>Start with the next sum</span><code>(1 + ··· + k) + (k + 1)</code></p><p><span>Substitute the hypothesis</span><code>k(k + 1)/2 + (k + 1)</code></p><p><span>Use a common denominator</span><code>[k(k + 1) + 2(k + 1)] / 2</code></p><p><span>Factor the shared (k + 1)</span><code>(k + 1)(k + 2) / 2</code></p></div><p class="caution"><strong>What this proves:</strong> the expression becomes the original formula with n replaced by k + 1. We have shown P(k) implies P(k + 1); together with the base case, induction completes the proof.</p><details class="answer-reveal"><summary>Check your understanding</summary><p>Why is the term 2(k + 1) introduced? Because we rewrote (k + 1) with denominator 2 so it can be added to k(k + 1)/2.</p></details></section>
-        <section class="review-check"><p class="eyebrow">Quick recall</p><h2>Where does the inductive hypothesis enter?</h2><p>To prove 1 + 2 + ··· + (k + 1) = (k + 1)(k + 2)/2, what expression can you replace using the hypothesis?</p><details class="answer-reveal"><summary>Show the reasoning</summary><p>Replace 1 + 2 + ··· + k with k(k + 1)/2, then add k + 1 and simplify.</p></details></section>
-
-      {:else if domain === 'discrete' && topic === 'telescoping'}
-        <section class="page-hero compact-hero"><p class="eyebrow">{pageKicker}</p><h1>Telescoping sums</h1><p class="intro">Rewrite each term as a difference. The middle terms cancel in pairs, leaving only the endpoints.</p></section>
-        <div class="lesson-layout"><article class="lesson-main"><article class="worked-example"><div class="example-head"><span>Worked example</span><span class="example-tag">A cancellation pattern</span></div><h2>Evaluate</h2><div class="math-display"><math display="block"><mrow><munderover><mo>∑</mo><mrow><mi>k</mi><mo>=</mo><mn>1</mn></mrow><mi>n</mi></munderover><mfrac><mn>1</mn><mrow><mi>k</mi><mo>(</mo><mi>k</mi><mo>+</mo><mn>1</mn><mo>)</mo></mrow></mfrac></mrow></math></div><div class="derivation"><p><span class="step-label">1 · Split the fraction</span></p><div class="math-display"><math display="block"><mrow><mfrac><mn>1</mn><mrow><mi>k</mi><mo>(</mo><mi>k</mi><mo>+</mo><mn>1</mn><mo>)</mo></mrow></mfrac><mo>=</mo><mfrac><mn>1</mn><mi>k</mi></mfrac><mo>−</mo><mfrac><mn>1</mn><mrow><mi>k</mi><mo>+</mo><mn>1</mn></mrow></mfrac></mrow></math></div><p><span class="step-label">2 · Expand a few terms</span></p><div class="math-display math-wide"><math display="block"><mrow><mo>(</mo><mn>1</mn><mo>−</mo><mfrac><mn>1</mn><mn>2</mn></mfrac><mo>)</mo><mo>+</mo><mo>(</mo><mfrac><mn>1</mn><mn>2</mn></mfrac><mo>−</mo><mfrac><mn>1</mn><mn>3</mn></mfrac><mo>)</mo><mo>+</mo><mo>(</mo><mfrac><mn>1</mn><mn>3</mn></mfrac><mo>−</mo><mfrac><mn>1</mn><mn>4</mn></mfrac><mo>)</mo><mo>+</mo><mo>⋯</mo><mo>+</mo><mo>(</mo><mfrac><mn>1</mn><mi>n</mi></mfrac><mo>−</mo><mfrac><mn>1</mn><mrow><mi>n</mi><mo>+</mo><mn>1</mn></mrow></mfrac><mo>)</mo></mrow></math></div><p><span class="step-label">3 · Cancel matching neighbors</span></p><div class="math-display math-wide"><math display="block"><mrow><mstyle mathcolor="#9ce8c9"><mn>1</mn></mstyle><mo>−</mo><mstyle mathcolor="#777b88"><mfrac><mn>1</mn><mn>2</mn></mfrac></mstyle><mo>+</mo><mstyle mathcolor="#777b88"><mfrac><mn>1</mn><mn>2</mn></mfrac></mstyle><mo>−</mo><mstyle mathcolor="#777b88"><mfrac><mn>1</mn><mn>3</mn></mfrac></mstyle><mo>+</mo><mstyle mathcolor="#777b88"><mfrac><mn>1</mn><mn>3</mn></mfrac></mstyle><mo>+</mo><mo>⋯</mo><mo>−</mo><mstyle mathcolor="#777b88"><mfrac><mn>1</mn><mi>n</mi></mfrac></mstyle><mo>+</mo><mstyle mathcolor="#777b88"><mfrac><mn>1</mn><mi>n</mi></mfrac></mstyle><mo>−</mo><mstyle mathcolor="#9ce8c9"><mfrac><mn>1</mn><mrow><mi>n</mi><mo>+</mo><mn>1</mn></mrow></mfrac></mstyle></mrow></math></div><p><span class="step-label">4 · Keep the endpoints</span></p><div class="math-display result-display"><math display="block"><mrow><munderover><mo>∑</mo><mrow><mi>k</mi><mo>=</mo><mn>1</mn></mrow><mi>n</mi></munderover><mfrac><mn>1</mn><mrow><mi>k</mi><mo>(</mo><mi>k</mi><mo>+</mo><mn>1</mn><mo>)</mo></mrow></mfrac><mo>=</mo><mn>1</mn><mo>−</mo><mfrac><mn>1</mn><mrow><mi>n</mi><mo>+</mo><mn>1</mn></mrow></mfrac><mo>=</mo><mfrac><mi>n</mi><mrow><mi>n</mi><mo>+</mo><mn>1</mn></mrow></mfrac></mrow></math></div></div></article><section class="concept-card"><span class="concept-number">↻</span><div><h2>How to spot one</h2><p>Look for adjacent terms that can be written as F(k) − F(k + 1). When expanded, each negative copy is canceled by the next positive copy.</p></div></section></article><aside class="lesson-aside"><p class="eyebrow">The pattern</p><h3>Neighbor cancels neighbor</h3><div class="math-display mini-math"><math display="block"><mtable columnalign="right"><mtr><mtd><mi>F</mi><mo>(</mo><mn>1</mn><mo>)</mo><mo>−</mo><mi>F</mi><mo>(</mo><mn>2</mn><mo>)</mo></mtd></mtr><mtr><mtd><mo>+</mo><mi>F</mi><mo>(</mo><mn>2</mn><mo>)</mo><mo>−</mo><mi>F</mi><mo>(</mo><mn>3</mn><mo>)</mo></mtd></mtr><mtr><mtd><mo>+</mo><mi>F</mi><mo>(</mo><mn>3</mn><mo>)</mo><mo>−</mo><mi>F</mi><mo>(</mo><mn>4</mn><mo>)</mo></mtd></mtr><mtr><mtd><mo>+</mo><mo>⋯</mo></mtd></mtr><mtr><mtd><mo>+</mo><mi>F</mi><mo>(</mo><mi>n</mi><mo>)</mo><mo>−</mo><mi>F</mi><mo>(</mo><mi>n</mi><mo>+</mo><mn>1</mn><mo>)</mo></mtd></mtr></mtable><mo>=</mo><mi>F</mi><mo>(</mo><mn>1</mn><mo>)</mo><mo>−</mo><mi>F</mi><mo>(</mo><mi>n</mi><mo>+</mo><mn>1</mn><mo>)</mo></math></div><button class="aside-link" onclick={() => openPage('discrete', 'master')}>Next: Master theorem →</button></aside></div>
-
-        <section class="review-check"><p class="eyebrow">Quick recall</p><h2>Keep only the endpoints</h2><p>For n = 3, evaluate the sum of 1/(k(k + 1)) from k = 1 to 3. Which two terms survive cancellation?</p><details class="answer-reveal"><summary>Show the reasoning</summary><p>Rewrite each term as 1/k − 1/(k + 1). The middle terms cancel, leaving 1 − 1/4 = 3/4.</p></details></section>
-
-      {:else if domain === 'discrete' && topic === 'master'}
-        <section class="page-hero compact-hero"><p class="eyebrow">{pageKicker}</p><h1>Master theorem</h1><p class="intro">A shortcut for the time complexity of many divide-and-conquer recurrences.</p></section>
-        <article class="worked-example theorem-card"><div class="example-head"><span>Start with the recurrence</span><span class="example-tag">Recurrence form</span></div><div class="math-display"><math display="block"><mrow><mi>T</mi><mo>(</mo><mi>n</mi><mo>)</mo><mo>=</mo><mi>a</mi><mi>T</mi><mo>(</mo><mfrac><mi>n</mi><mi>b</mi></mfrac><mo>)</mo><mo>+</mo><mi>f</mi><mo>(</mo><mi>n</mi><mo>)</mo></mrow></math></div><div class="theorem-terms"><div><b>a</b><span>number of subproblems</span></div><div><b>b</b><span>factor each subproblem shrinks by</span></div><div><b>f(n)</b><span>work outside the recursive calls</span></div></div><p class="theorem-anchor">Compare f(n) with this benchmark:</p><div class="math-display"><math display="block"><mrow><msup><mi>n</mi><mfrac><mrow><mi>log</mi><mi>a</mi></mrow><mrow><mi>log</mi><mi>b</mi></mrow></mfrac></msup></mrow></math></div><div class="case-grid"><section><span class="case-label">Case 1 · recursion dominates</span><p>f(n) is polynomially smaller than the benchmark.</p><div class="math-display compact-math"><math display="block"><mrow><mi>T</mi><mo>(</mo><mi>n</mi><mo>)</mo><mo>=</mo><mi>Θ</mi><mo>(</mo><msup><mi>n</mi><mfrac><mrow><mi>log</mi><mi>a</mi></mrow><mrow><mi>log</mi><mi>b</mi></mrow></mfrac></msup><mo>)</mo></mrow></math></div></section><section><span class="case-label">Case 2 · levels balance</span><p>f(n) is asymptotically equal to the benchmark.</p><div class="math-display compact-math"><math display="block"><mrow><mi>T</mi><mo>(</mo><mi>n</mi><mo>)</mo><mo>=</mo><mi>Θ</mi><mo>(</mo><msup><mi>n</mi><mfrac><mrow><mi>log</mi><mi>a</mi></mrow><mrow><mi>log</mi><mi>b</mi></mrow></mfrac></msup><mi>log</mi><mi>n</mi><mo>)</mo></mrow></math></div></section><section><span class="case-label">Case 3 · outside work dominates</span><p>f(n) is polynomially larger, with the regularity condition satisfied.</p><div class="math-display compact-math"><math display="block"><mrow><mi>T</mi><mo>(</mo><mi>n</mi><mo>)</mo><mo>=</mo><mi>Θ</mi><mo>(</mo><mi>f</mi><mo>(</mo><mi>n</mi><mo>)</mo><mo>)</mo></mrow></math></div></section></div></article>
-        <div class="example-grid"><article class="worked-example"><div class="example-head"><span>Example 1</span><span class="example-tag">Merge Sort</span></div><h2>T(n) = 2T(n/2) + n</h2><p>a = 2, b = 2, so n<sup>log₂2</sup> = n. The outside work f(n) = n matches: Case 2.</p><div class="formula result">T(n) = Θ(n log n)</div></article><article class="worked-example"><div class="example-head"><span>Example 2</span><span class="example-tag">Two recursive halves</span></div><h2>T(n) = 2T(n/2) + 1</h2><p>The recursion contributes n leaves; constant work at each internal node is smaller. Case 1.</p><div class="formula result">T(n) = Θ(n)</div></article><article class="worked-example"><div class="example-head"><span>Example 3</span><span class="example-tag">Outside work dominates</span></div><h2>T(n) = 2T(n/2) + n²</h2><p>n² is polynomially larger than n, and the regularity condition holds. Case 3.</p><div class="formula result">T(n) = Θ(n²)</div></article></div>
-        <p class="caution"><strong>Check the assumptions:</strong> the basic Master theorem does not cover every recurrence. Uneven splits, multiple non-recursive terms, and irregular subproblem sizes may need a recursion tree or another theorem. This page shows the standard three cases; if f(n) includes an extra logarithmic power, the matching result gains a corresponding power of log n.</p>
-        <section class="review-check"><p class="eyebrow">Quick recall</p><h2>Classify a recurrence</h2><p>For T(n) = 2T(n/2) + n, what are a, b, and f(n), and which case applies?</p><details class="answer-reveal"><summary>Show the reasoning</summary><p>a = 2, b = 2, and f(n) = n. The benchmark n^(log₂2) is n, so this is the standard Case 2: Θ(n log n).</p></details></section>
-
-      {:else if domain === 'complexity' && topic === 'time'}
-        <section class="page-hero compact-hero"><p class="eyebrow">{pageKicker}</p><h1>Time complexity</h1><p class="intro">Describe how the amount of work grows with input size—not how many seconds one particular computer takes.</p></section>
-        <div class="lesson-layout"><article class="lesson-main"><section class="concept-card"><span class="concept-number">f(n)</span><div><h2>Count growth, not clock time</h2><p>Choose a basic operation, count how often it happens as the input grows, then keep the dominant growth. Constants and lower-order terms matter less at large n.</p><div class="formula">3n² + 8n + 12  →  Θ(n²)</div></div></section><div class="case-grid"><section><span class="case-label">Best case</span><p>Most favorable input of size n.</p></section><section><span class="case-label">Average case</span><p>Expected work under a stated input distribution.</p></section><section><span class="case-label">Worst case</span><p>Maximum work over inputs of size n.</p></section></div><article class="worked-example"><div class="example-head"><span>Notation is a different question</span><span class="example-tag">Growth bounds</span></div><div class="notation-list"><p><b>O(g(n))</b><span>Asymptotic upper bound: growth no faster than g, up to a constant.</span></p><p><b>Ω(g(n))</b><span>Asymptotic lower bound: growth at least as fast as g, up to a constant.</span></p><p><b>Θ(g(n))</b><span>Tight bound: both O(g(n)) and Ω(g(n)).</span></p></div><p class="caution">Best / average / worst describes which inputs you analyze. O / Ω / Θ describes the mathematical bound you prove. They are related, but they are not interchangeable.</p></article></article><aside class="lesson-aside"><p class="eyebrow">Useful growth order</p><h3>Slow to fast</h3><div class="growth-list"><span>1</span><span>log n</span><span>n</span><span>n log n</span><span>n²</span><span>2ⁿ</span><span>n!</span></div><button class="aside-link" onclick={() => openPage('complexity', 'space')}>Next: space complexity →</button></aside></div>
-
-        <section class="review-check"><p class="eyebrow">Quick recall</p><h2>Separate the input case from the bound</h2><p>Insertion Sort makes about n comparisons on already sorted input and about n² on reverse order. Which is the best case, and what does Θ(n²) describe?</p><details class="answer-reveal"><summary>Show the reasoning</summary><p>Already sorted is the best input case, with Θ(n) work. Θ(n²) describes tight growth for average and worst-case inputs here; it is not the definition of “worst case.”</p></details></section>
-
-      {:else if domain === 'complexity' && topic === 'space'}
-        <section class="page-hero compact-hero"><p class="eyebrow">{pageKicker}</p><h1>Space complexity</h1><p class="intro">Track how memory use grows with input size. Be explicit about whether you count the input itself.</p></section>
-        <div class="lesson-layout"><article class="lesson-main"><section class="concept-card"><span class="concept-number">RAM</span><div><h2>Input space vs. auxiliary space</h2><p><strong>Total space</strong> includes the input and everything the algorithm allocates. <strong>Auxiliary space</strong> counts only the extra working memory beyond the input.</p></div></section><div class="example-grid"><article class="worked-example"><div class="example-head"><span>In place</span><span class="example-tag">Insertion Sort</span></div><h2>Θ(1) auxiliary space</h2><p>It keeps a few indices and one key value, shifting items inside the original array.</p></article><article class="worked-example"><div class="example-head"><span>Needs a buffer</span><span class="example-tag">Merge Sort</span></div><h2>Θ(n) auxiliary space</h2><p>Merging typically uses a temporary array proportional to the number of values being merged.</p></article></div><article class="worked-example"><div class="example-head"><span>Ask these questions</span><span class="example-tag">A quick checklist</span></div><ol class="proof-steps"><li><b>What grows with n?</b><p>Count arrays, stacks, maps, recursion frames, and other stored values.</p></li><li><b>Is the input counted?</b><p>State total space or auxiliary space; do not switch definitions halfway through.</p></li><li><b>What is the peak?</b><p>Memory is about the maximum live storage at one time, not every allocation added together.</p></li></ol></article></article><aside class="lesson-aside"><p class="eyebrow">Compare</p><h3>Same time, different memory</h3><p>Two algorithms can both run in Θ(n log n) time yet use different auxiliary space. Runtime and memory are separate resources; analyze each one explicitly.</p><button class="aside-link" onclick={() => openPage('complexity', 'time')}>← Time complexity</button></aside></div>
-        <section class="review-check"><p class="eyebrow">Quick recall</p><h2>Count the extra memory</h2><p>An in-place insertion sort keeps one key and a few indices. Does its auxiliary space grow with n?</p><details class="answer-reveal"><summary>Show the reasoning</summary><p>No. The number of extra variables stays constant, so auxiliary space is Θ(1). The input array is not counted as auxiliary space.</p></details></section>
+      {:else if (domain === 'discrete' || domain === 'complexity') && topic === 'index'}
+        <StudyLibrary libraryDomain={domain} />
+      {:else if (domain === 'discrete' || domain === 'complexity') && selectedStudyLesson}
+        <section class="page-hero compact-hero study-page-heading">
+          <a class="study-back" href="#/{domain}">← {studyDomains[domain].title}</a>
+          <h1>{selectedStudyLesson.title}</h1>
+          <p class="intro">{selectedStudyLesson.intro}</p>
+        </section>
+        {#key selectedStudyLesson.id}<StudyLesson lesson={selectedStudyLesson} view={studyView} />{/key}
       {/if}
     </main>
     <footer class="site-footer"><span>DSA Study Studio</span><span>Clear steps · careful reasoning · keep learning</span></footer>

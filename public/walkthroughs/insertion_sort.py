@@ -27,4 +27,3 @@ def insertion_sort(values: MutableSequence[T]) -> MutableSequence[T]:
 if __name__ == "__main__":
     sample = [4, 7, 8, 2, 9, 5, 6, 3, 1]
     print(insertion_sort(sample))
-

@@ -153,12 +153,12 @@ h3 { margin: 0; font-size: 16px; letter-spacing: -.02em; }
 .concept-card strong { color: #f0eef9; }
 .formula { overflow-x: auto; margin: 11px 0; padding: 11px 13px; border: 1px solid #353744; border-radius: 8px; background: #191a20; color: #dcd4ff; font-family: ui-monospace,SFMono-Regular,Consolas,monospace; font-size: 12px; line-height: 1.8; white-space: normal; }
 .formula.result { border-color: #35624f; background: #1d2925; color: #a7efd1; font-size: 15px; }
-.worked-example { padding: 16px; }
+.worked-example { min-width: 0; padding: 16px; }
 .example-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 11px; color: #aeb2bf; font-size: 10px; }
 .example-tag { padding: 4px 7px; border: 1px solid #4d4665; border-radius: 999px; color: #c6b5ff; font-size: 9px; }
 .worked-example h2 { margin: 0 0 10px; font-size: 16px; }
 .proof-steps { display: grid; gap: 7px; margin: 10px 0 0; padding-left: 23px; color: var(--green); }
-.proof-steps li { padding-left: 2px; font-size: 11px; }
+.proof-steps li { min-width: 0; padding-left: 2px; font-size: 11px; }
 .proof-steps li::marker { color: #79d9b6; font-weight: 700; }
 .proof-steps b { color: #ececf2; }
 .proof-steps p { margin: 4px 0 0; color: #b9bbc6; font-size: 11px; line-height: 1.7; }
@@ -299,7 +299,7 @@ html:fullscreen .site-footer { min-height:38px; padding-block:8px; background:#1
 .math-display.compact-math { min-height: 48px; margin: 7px 0 0; padding: 9px; background: #191a20; }
 .math-display.compact-math math { font-size: 1rem; }
 .worked-example > .math-display:first-of-type { margin-top: 9px; }
-.algorithm-view { display: flex; height: clamp(430px,calc(100dvh - 300px),760px); min-height: 0; flex-direction: column; margin-top: 18px; overflow: hidden; border: 1px solid #3a3d48; border-radius: 13px; background: #1c1d22; box-shadow: 0 14px 36px #0003; }
+.algorithm-view { position: relative; display: flex; height: clamp(430px,calc(100dvh - 300px),760px); min-height: 0; flex-direction: column; margin-top: 18px; overflow: hidden; border: 1px solid #3a3d48; border-radius: 13px; background: #1c1d22; box-shadow: 0 14px 36px #0003; }
 .algorithm-view-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 16px 18px 10px; }
 .algorithm-view-heading .eyebrow { margin-bottom: 4px; }
 .algorithm-view-heading h2 { font-size: 17px; }
@@ -320,8 +320,28 @@ html:fullscreen .site-footer { min-height:38px; padding-block:8px; background:#1
 .back-link:hover { text-decoration: underline; }
 .algorithm-hero { padding-bottom: 18px; }
 .standalone-view { margin-top: 0; }
-.walkthrough-frame { display: block; width: 100%; height: auto; min-height: 0; flex: 1 1 auto; border: 0; background: #171719; }
+.algorithm-view.play-view { height:auto; }
+.study-page-heading { padding-bottom:24px; }
+.study-page-heading h1 { margin-top:14px; }
+.study-back { color:#9ac8ff; font-size:12px; text-decoration:none; }
+.study-back:hover { text-decoration:underline; }
+.domain-tabs button { border-radius:0; font-size:13px; }
+.domain-tabs button.active { background:#252d38; color:#d1e6ff; }
+.idea-paths { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:16px 28px; margin-top:30px; padding:22px 0; border-top:1px solid var(--line); }
+.idea-paths h2 { grid-column:1 / -1; font-size:16px; }
+.idea-paths a { display:grid; gap:7px; color:#d5e4f4; text-decoration:none; font-size:13px; line-height:1.6; }
+.idea-paths small { color:#94aecb; font-size:11px; }
+.idea-paths a:hover span { text-decoration:underline; }
+@media(max-width:720px) { .idea-paths { grid-template-columns:1fr; gap:16px; } }
+.walkthrough-host { position: relative; min-width: 0; min-height: 0; flex: 1 1 0%; }
+.walkthrough-frame { display: block; width: 100%; height: 100%; min-width: 0; min-height: 0; border: 0; background: #171719; }
 .walkthrough-frame.hidden-material { display: none; }
+.walkthrough-status { position: absolute; z-index: 2; inset: 0; display: grid; align-content: center; justify-items: center; gap: 10px; padding: 24px; background: #1c1d22; color: #aeb4c2; text-align: center; }
+.walkthrough-status strong { color: #f2f3f7; }
+.walkthrough-status span { max-width: 42ch; line-height: 1.6; }
+.walkthrough-status a { color: var(--blue); }
+.walkthrough-status button { min-height: 36px; padding: 7px 12px; border: 1px solid #464b57; border-radius: 2px; background: #282a31; color: #e5e7eb; cursor: pointer; }
+.walkthrough-status button:hover { border-color: var(--blue); }
 .learning-view { display: grid; min-height: 0; flex: 1 1 auto; align-content: start; gap: 13px; overflow-y: auto; padding: clamp(16px,3vw,28px); scrollbar-color: #52675d #202127; scrollbar-width: thin; }
 .learning-view > * { width: min(100%,1040px); justify-self: center; }
 .learning-view > .eyebrow { margin: 0; }
@@ -486,7 +506,7 @@ html:fullscreen .site-footer { min-height:38px; padding-block:8px; background:#1
   .learning-view { gap: 11px; }
   .learning-lead { font-size: 13px; }
   .algorithm-view { height: clamp(400px,calc(100dvh - 260px),720px); }
-  .walkthrough-frame { min-height: 0; height: auto; }
+  .walkthrough-frame { min-height: 0; height: 100%; }
   .practice-check-grid { grid-template-columns: 1fr; }
   .growth-chart-layout { grid-template-columns: minmax(0,1fr); }
   .growth-key { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 8px 12px; }

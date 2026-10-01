@@ -31,4 +31,3 @@ def counting_sort(values: Sequence[int]) -> list[int]:
 
 if __name__ == "__main__":
     print(counting_sort([4, 2, 2, 8, 3, 3, 1, 4, 0, 2]))
-

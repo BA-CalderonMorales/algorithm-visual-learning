@@ -28,4 +28,3 @@ GitHub Pages deploys automatically when changes are merged into `develop`. A for
 - Include screenshots or a concise before/after note for visual changes.
 
 If you are unsure whether an idea fits, open an issue first. Please do not include private student information, course materials you do not have permission to share, or copyrighted material without authorization.
-

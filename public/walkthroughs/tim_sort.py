@@ -71,4 +71,3 @@ def tim_sort(values: Sequence[T], min_run: int = 4) -> list[T]:
 if __name__ == "__main__":
     sample = [8, 1, 4, 9, 5, 3, 7, 2, 6, 0]
     print(tim_sort(sample))
-

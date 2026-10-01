@@ -1,5 +1,5 @@
 import { growthModels } from './growth-models.js';
-// Algorithm cues with runtime cases projected from shared growth models.
+// Short explanations; time cases come from the shared Complexity/Growth model.
 export const algorithmLessons = {
   quick: {
     idea: 'Choose a pivot, move smaller values to its left and larger values to its right, then sort the two sides independently.',
@@ -14,7 +14,6 @@ export const algorithmLessons = {
       { title: '3 · Predict the swaps', prompt: 'The first stopped pair is 7 and 3. After swapping them, what pair stops the scans next?', answer: 'The array becomes [1, 3, 8, 2, 7, 5, 6, 4, 9]. I stops at 8 and J stops at 2, so 8 and 2 are the next pair swapped.' },
       { title: '4 · Split and recurse', prompt: 'After the pointers cross and the pivot is placed, what are S1, the pivot, and S2? Which parts still need sorting?', answer: 'The partition is [1, 3, 2] | 4 | [7, 5, 6, 8, 9]. The pivot 4 is fixed; sort S1 and S2 independently. With a cutoff of four, S1 uses insertion sort and S2 uses another quick-sort partition.' }
     ],
-    best: 'Θ(n log n) when partitions stay balanced', average: 'Θ(n log n) for typical balanced partitions', worst: 'Θ(n²) when partitions repeatedly split very unevenly',
     space: 'Θ(log n) expected recursion stack; Θ(n) worst-case stack. This walkthrough uses insertion sort for small ranges.',
     note: 'Median-of-three helps avoid some poor pivots, but does not remove the Θ(n²) worst case.'
   },
@@ -25,7 +24,6 @@ export const algorithmLessons = {
     watch: 'Keep your eyes on the first unused value of each run and the growing output. A chosen value leaves one run and joins the output.',
     practice: 'The runs are [1, 7] and [3, 5]. Which value is written first, and what are the next two front values?',
     answer: 'Write 1 first. The fronts are then 7 and 3, so 3 is written next; the fronts become 7 and 5.',
-    best: 'Θ(n)', average: 'Θ(n log n)', worst: 'Θ(n log n)',
     space: 'Θ(n) auxiliary array for the merge, plus Θ(log n) recursion stack.',
     note: 'The standard array-based version uses extra space to make the merge predictable and stable.'
   },
@@ -36,7 +34,6 @@ export const algorithmLessons = {
     watch: 'Notice where a run ends, how insertion extends a short run, and which two runs are being merged. Production TimSort also maintains merge-balance rules.',
     practice: 'If the input is already one ascending run, does TimSort need to merge multiple runs?',
     answer: 'No. It can recognize the single ordered run, so the work is linear in the input length.',
-    best: 'Θ(n) on an already ordered input', average: 'Θ(n log n)', worst: 'Θ(n log n)',
     space: 'Up to Θ(n) temporary storage when merging, depending on the implementation.',
     note: 'The walkthrough is a teaching model of run detection, insertion extension, and merging; production TimSort has additional run-stack rules.'
   },
@@ -47,7 +44,6 @@ export const algorithmLessons = {
     watch: 'Track the key, the open slot, and the sorted prefix. Each shift moves one larger value right; the key is inserted once the left neighbor is no larger.',
     practice: 'The sorted prefix is [2, 4, 7, 8] and the key is 5. Which values shift, and where does 5 go?',
     answer: 'Shift 8 and 7 right. Stop before 4 and insert 5 between 4 and 7.',
-    best: 'Θ(n) when the input is already sorted', average: 'Θ(n²)', worst: 'Θ(n²) when each key moves across the whole prefix',
     space: 'Θ(1) auxiliary space for the in-place version.',
     note: 'Insertion sort is often effective on short or nearly sorted ranges.'
   },
@@ -58,7 +54,6 @@ export const algorithmLessons = {
     watch: 'The current minimum may change several times during a pass, but only the final minimum is swapped into place.',
     practice: 'In [3, 5, 1, 4], after the first full scan, which two positions swap?',
     answer: 'The first position and the position holding 1 swap, giving [1, 5, 3, 4].',
-    best: 'Θ(n²) comparisons', average: 'Θ(n²) comparisons', worst: 'Θ(n²) comparisons',
     space: 'Θ(1) auxiliary space; at most n−1 swaps.',
     note: 'Even an already sorted input still needs the scans to prove each suffix minimum.'
   },
@@ -69,18 +64,16 @@ export const algorithmLessons = {
     watch: 'Read the gap and active group before following a key. The key compares with the index one gap to its left; it returns toward the front only through that group.',
     practice: 'For gap 3, which indices are in the same group as index 2 in a 10-element array?',
     answer: 'Indices 2, 5, and 8 share the same remainder when divided by 3.',
-    best: 'Depends on the gap sequence and input', average: 'Depends on the gap sequence and input', worst: 'For halving gaps, O(n²) is a safe upper bound',
     space: 'Θ(1) auxiliary space for the in-place version.',
     note: 'Shell Sort has no single sequence-independent runtime bound. Always name the gap sequence.'
   },
   counting: {
-    idea: 'Count each integer value, turn counts into ending positions, then place values into an output array while preserving equal-value order.',
-    invariant: 'After cumulative counts, each bucket tells the final ending index for that value. Stable placement preserves the original order of equal values.',
-    example: 'For [2, 1, 2], the counts are 1→1 and 2→2. Scanning right to left places the last 2 at index 2, then 1 at index 0, then the first 2 at index 1.',
-    watch: 'Follow one value through input → frequency → cumulative position → output destination. The range width k matters as much as n.',
+    idea: 'Counting Sort tracks two different sizes: n is how many input items we process; k is how many integer values fit in the range from minimum to maximum. The frequency array has k buckets, while the output has n positions.',
+    invariant: 'Every input item contributes to exactly one frequency bucket, so all bucket counts add up to n. The bucket array has k slots, where k = max − min + 1; it is not automatically the same length as the input.',
+    example: 'For [4, 2, 2, 8, 3, 3, 1, 4, 0, 2], n = 10. Values span 0 through 8, so k = 8 − 0 + 1 = 9 buckets. Frequencies are [1, 1, 3, 2, 2, 0, 0, 0, 1], which sum to 10; the sorted output still has 10 positions.',
+    watch: 'First calculate n = len(values). Then calculate k = max(values) − min(values) + 1. A value v uses bucket index v − min(values), so a range starting below zero still maps to bucket indexes starting at zero.',
     practice: 'If values range from −2 through 3 inclusive, what is k?',
     answer: 'k = 3 − (−2) + 1 = 6 possible integer values.',
-    best: 'Θ(n + k)', average: 'Θ(n + k)', worst: 'Θ(n + k)',
     space: 'Θ(n + k) for the stable output and frequency arrays.',
     note: 'Counting Sort is useful when the integer range is not too large relative to the input.'
   }
@@ -91,4 +84,3 @@ for (const [id, lesson] of Object.entries(algorithmLessons)) {
     lesson[key] = `${definition.bound} · ${definition.assumption}`;
   }
 }
-

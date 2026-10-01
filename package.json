@@ -4,13 +4,19 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
+    "predev": "npm run build:motion",
     "dev": "vite",
     "build": "npm run build:motion && vite build",
     "build:motion": "vite build --config vite.motion.config.js",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test:walkthroughs": "node scripts/verify-walkthroughs.mjs",
+    "test:play": "node scripts/verify-play-models.mjs && node scripts/verify-play.mjs",
+    "render:films": "node scripts/render-films.mjs",
+    "test:study": "node scripts/verify-study.mjs"
   },
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "7.3.1",
+    "playwright": "^1.62.1",
     "svelte": "5.57.1",
     "vite": "8.3.1"
   },

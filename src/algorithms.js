@@ -118,4 +118,3 @@ export function visibleAlgorithms(query) {
       .includes(term),
   );
 }
-

@@ -26,11 +26,11 @@ body.embedded .row { grid-template-columns:minmax(0,1fr); gap:8px; padding:10px;
 body.embedded .reason { grid-column:1; border-left:0; border-top:1px solid #45454e; padding:8px 0 0; font-size:12px; }
 @media(max-width:600px) { body.embedded main { grid-template-columns:112px minmax(0,1fr); gap:7px; padding:8px; } body.embedded .toolbar { padding:5px; } body.embedded .toolbar button { font-size:10px; } }
 </style>
-  <link rel="stylesheet" href="walkthrough-theme.css">
+<link rel="stylesheet" href="walkthrough-theme.css">
 </head>
 <body>
 <main>
- <div class="top"><div><h1>Counting Sort Walkthrough</h1><div class="complexity">Best, average, worst: Θ(n + k) time; Θ(n + k) extra space. k = max − min + 1 distinct integer buckets.</div><div class="complexity"><b>Divide and conquer:</b> No · <b>Runtime lower bound:</b> Θ(n + k) · <b>Runtime upper bound:</b> O(n + k)</div><div class="cue">Recall: <b>count → cumulative positions → place right-to-left</b>. Unlike <a href="merge_sort_walkthrough.html" target="_blank">Merge Sort</a>, this does not compare pairs of values.</div></div><div class="toolbar"><button id="back">Back step</button><button id="next">Next step</button><button id="reset">Reset</button><button id="shuffle">Shuffle</button></div></div>
+<div class="top"><div><h1>Counting Sort Walkthrough</h1><div class="complexity">Best, average, worst: Θ(n + k) time; Θ(n + k) extra space. <b>n</b> = input items; <b>k</b> = max − min + 1 possible integer values (frequency buckets).</div><div class="complexity"><b>Divide and conquer:</b> No · <b>Runtime lower bound:</b> Θ(n + k) · <b>Runtime upper bound:</b> O(n + k)</div><div class="cue">Recall: <b>count → cumulative positions → place right-to-left</b>. Unlike <a href="merge_sort_walkthrough.html" target="_blank">Merge Sort</a>, this does not compare pairs of values.</div></div><div class="toolbar"><button id="back">Back step</button><button id="next">Next step</button><button id="reset">Reset</button><button id="shuffle">Shuffle</button></div></div>
  <div id="status" class="status"></div>
  <div class="legend" aria-label="Color key and pointers"><span><i style="background:#60a5fa"></i>Input being read</span><span><i style="background:#c084fc"></i>Count / position bucket</span><span><i style="background:#34d399"></i>Output placement</span><span><b>i</b> input cursor · <b>j</b> bucket/destination</span></div>
  <div id="ledger" class="ledger" aria-live="polite"></div>
@@ -45,9 +45,9 @@ const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'
 function build(input){
  const min=Math.min(...input),max=Math.max(...input),n=input.length,counts=Array(max-min+1).fill(0),output=Array(n).fill(null),trace=[];
  const push=(stage,reason,focus={})=>trace.push({stage,reason,counts:counts.slice(),output:output.slice(),focus});
- push('count','Start with the original array. Each bucket begins at zero. Repeated values share a bucket.');
- input.forEach((v,i)=>{counts[v-min]++;push('count',`Read input index ${i}: ${v}. Add 1 to bucket ${v}, now ${counts[v-min]}.`,{input:i,bucket:v-min})});
- push('prefix','The counts tell how many of each value exist. Next, turn them into cumulative ending positions.');
+ push('count',`Start with n = ${n} input items. Values range from ${min} to ${max}, so k = ${max} − ${min} + 1 = ${counts.length} frequency buckets. The count array has k slots; the output array has n slots.`);
+ input.forEach((v,i)=>{counts[v-min]++;push('count',`Read input[${i}] = ${v}. Its bucket index is ${v} − (${min}) = ${v-min}. Increment that bucket to ${counts[v-min]}; counts track occurrences, and their total will be n = ${n}.`,{input:i,bucket:v-min})});
+ push('prefix',`The k = ${counts.length} buckets now store frequencies that sum to n = ${n}. Convert each frequency into a cumulative ending position for output placement.`);
  for(let b=1;b<counts.length;b++){counts[b]+=counts[b-1];push('prefix',`Values ≤ ${b+min} occupy the first ${counts[b]} output slots. Bucket ${b+min} now stores that ending position.`,{bucket:b})}
  push('place','Now read the input from right to left. This preserves the order of equal values (stable sort).');
  for(let i=n-1;i>=0;i--){const v=input[i],b=v-min,destination=counts[b]-1;output[destination]=v;counts[b]--;push('place',`Input[${i}] is ${v}. Bucket ${v} points to output[${destination}]. Place ${v} there, then move that bucket left.`,{input:i,bucket:b,output:destination})}
@@ -56,7 +56,7 @@ function build(input){
 }
 function cells(items,focus,kind,pointerIndex,pointerLabel){return items.map((v,i)=>`<div class="cell ${focus===i?kind:''}">${v===null?'·':esc(v)}<small>${i}</small><em class="pointer-markers">${pointerIndex===i?pointerLabel:''}</em></div>`).join('')}
 function buckets(items,min,focus,pointerIndex,pointerLabel){return items.map((v,i)=>`<div class="cell ${focus===i?'bucket':''}">${v}<small>${i+min}</small><em class="pointer-markers">${pointerIndex===i?pointerLabel:''}</em></div>`).join('')}
-function render(){const min=Math.min(...values);$('status').textContent=`Step ${at+1} of ${steps.length}`;$('back').disabled=at===0;$('next').disabled=at===steps.length-1;
+function render(){const min=Math.min(...values),max=Math.max(...values),n=values.length,k=max-min+1;$('status').textContent=`Step ${at+1} of ${steps.length} · n = ${n} input items · range ${min}…${max} · k = ${max} − ${min} + 1 = ${k} buckets`;$('back').disabled=at===0;$('next').disabled=at===steps.length-1;
  $('ledger').innerHTML=steps.slice(0,at+1).map((step,i)=>{const f=step.focus;const inputPointer=step.stage==='count'||step.stage==='place'?f.input:null;const bucketPointer=step.stage==='prefix'?f.bucket:(step.stage==='count'||step.stage==='place'?f.bucket:null);const outputPointer=step.stage==='place'?f.output:null;return `<section class="row ${i===at?'active':''}" ${i===at?'id="active-row"':''}><div class="number">Step ${i+1} · ${step.stage==='count'?'Count':step.stage==='prefix'?'Prefix totals':step.stage==='place'?'Stable placement':'Complete'}</div><div class="strips"><div class="strip"><div class="strip-title">Input · original values and indices</div><div class="cells">${cells(values,f.input,'hit',inputPointer,'i')}</div></div><div class="strip"><div class="strip-title">${step.stage==='count'?'Frequencies':step.stage==='prefix'?'Cumulative ending positions':'Remaining positions'} · bucket value beneath each cell</div><div class="cells">${buckets(step.counts,min,f.bucket,bucketPointer,'j')}</div></div><div class="strip"><div class="strip-title">Output · destination indices beneath each cell</div><div class="cells">${cells(step.output,f.output,'placed',outputPointer,'j')}</div></div></div><div class="reason">${esc(step.reason)}</div></section>`}).join('');
  requestAnimationFrame(()=>{const row=$('active-row'),box=$('ledger');if(row){const delta=row.getBoundingClientRect().top-box.getBoundingClientRect().top;box.scrollTo({top:box.scrollTop+delta-box.clientHeight/2+row.clientHeight/2,behavior:'smooth'})}});}
 function start(v){values=v.slice();steps=build(values);at=0;render()}

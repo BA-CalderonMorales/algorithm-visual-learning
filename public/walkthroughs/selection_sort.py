@@ -27,4 +27,3 @@ def selection_sort(values: MutableSequence[T]) -> MutableSequence[T]:
 if __name__ == "__main__":
     sample = [64, 25, 12, 22, 11]
     print(selection_sort(sample))
-

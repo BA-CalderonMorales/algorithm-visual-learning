@@ -13,4 +13,3 @@ function insertionSort(values: number[]): number[] {
 }
 
 console.log(insertionSort([4, 7, 8, 2, 9, 5, 6, 3, 1]));
-

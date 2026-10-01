@@ -7,8 +7,8 @@
 [![Live site](https://img.shields.io/badge/site-live-1f9d8b?style=flat-square)](https://ba-calderonmorales.github.io/algorithm-visual-learning/)
 [![Pages build](https://img.shields.io/github/actions/workflow/status/BA-CalderonMorales/algorithm-visual-learning/pages.yml?branch=develop&label=build&style=flat-square)](https://github.com/BA-CalderonMorales/algorithm-visual-learning/actions)
 
+![The study home page with Explore, Resources, and Author’s note tabs](screenshots/study-home.png)
 
-![Fullscreen home page of Algorithm Visual Learning](screenshots/study-home.png)
 </div>
 
 ## Quick Start
@@ -23,6 +23,15 @@ Open the local URL printed by Vite. To verify the production build:
 ```bash
 npm run build
 ```
+
+Before publishing, check the rendered walkthroughs in a browser:
+
+```bash
+npx playwright install chromium
+npm run test:walkthroughs
+```
+
+These checks cover every sorting walkthrough at desktop, tablet, and phone widths, including navigation, reloads, animations, and recovery from a failed load. They run against development and the production preview; GitHub Pages deployment waits for them to pass.
 
 ## Publish to GitHub Pages
 
@@ -46,4 +55,3 @@ Each algorithm page starts with a plain Python version for learning the core ide
 ## Contributing
 
 This project is designed to be forked, adapted for future classes, and improved by students. See [CONTRIBUTING.md](CONTRIBUTING.md) for the small local workflow and teaching-focused guidelines, and [CONTRIBUTORS.md](CONTRIBUTORS.md) for attribution. The project is licensed under the [MIT License](LICENSE).
-

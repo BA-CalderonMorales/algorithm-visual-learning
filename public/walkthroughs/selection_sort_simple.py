@@ -11,4 +11,3 @@ def selection_sort(values):
 
 
 print(selection_sort([4, 7, 8, 2, 9, 5, 6, 3, 1]))
-

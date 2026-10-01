@@ -51,4 +51,3 @@ def quick_sort(values: MutableSequence[T], cutoff: int = 4) -> MutableSequence[T
 if __name__ == "__main__":
     sample = [4, 7, 8, 2, 9, 5, 6, 3, 1]
     print(quick_sort(sample))
-

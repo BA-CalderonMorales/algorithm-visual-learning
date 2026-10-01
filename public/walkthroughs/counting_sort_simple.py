@@ -13,4 +13,3 @@ def counting_sort(values):
 
 
 print(counting_sort([4, 7, 8, 2, 9, 5, 6, 3, 1]))
-

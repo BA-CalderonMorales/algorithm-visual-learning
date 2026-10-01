@@ -229,7 +229,7 @@
       #quick-sort-walkthrough .history-row { grid-template-columns:34px minmax(0,1fr); }
     }
   </style>
-<style>@import url("./walkthrough-theme.css");</style>
+  <style>@import url("./walkthrough-theme.css");</style>
   <div class="title">Quick Sort</div>
   <div class="walkthrough-kicker">Partition · recursion · insertion-sort cutoff</div>
   <div class="step" id="qs-step">Step 1 of 8</div>
@@ -440,6 +440,7 @@
             if (tag.includes('pivot')) cell.classList.add('pivot');
             else if (tag === 's1' || tag.includes('insertion range')) cell.classList.add('S1');
             else if (tag === 's2' || tag.includes('s2')) cell.classList.add('S2');
+            if (pointers.i === valueIndex || pointers.j === valueIndex) cell.classList.add('pointer');
             if (state.swap && state.swap.includes(valueIndex)) cell.classList.add('swap');
             else if (state.focus && state.focus.includes(valueIndex)) cell.classList.add('focus');
             valuesRow.appendChild(cell);
