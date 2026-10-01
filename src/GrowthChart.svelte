@@ -1,15 +1,14 @@
 <script>
   import Chart from 'chart.js/auto';
   import { onDestroy } from 'svelte';
-  import { countShellGaps, growthModels } from './growth-models.js';
+  import { countShellGaps, getGrowthModel } from './growth-models.js';
 
-  let { algorithmId, algorithmName } = $props();
+  let { algorithmId, algorithmName, gapSequence = $bindable('halving') } = $props();
   let chartCanvas = $state(null);
   let inputSize = $state(128);
   let rangeWidth = $state(32);
-  let gapSequence = $state('halving');
   let visibleCases = $state({ best: true, average: true, worst: true });
-  let model = $derived(growthModels[algorithmId]);
+  let model = $derived(getGrowthModel(algorithmId, gapSequence));
 
   const caseNames = { best: 'Best case', average: 'Average case', worst: 'Worst case' };
   const colors = { best: '#5de0ac', average: '#f3bf5f', worst: '#ff896d' };
@@ -24,17 +23,16 @@
     const activeModel = model;
     const limit = inputSize;
     const k = rangeWidth;
-    const sequence = gapSequence;
     const shown = visibleCases;
     if (!canvas || !activeModel) return;
 
     chart?.destroy();
-    const gapCount = algorithmId === 'shell' ? countShellGaps(limit, sequence) : 1;
     const sampleCount = 48;
     const inputs = [...new Set(Array.from({ length: sampleCount }, (_, index) => Math.max(1, Math.round((index + 1) * limit / sampleCount))))];
-    const datasets = Object.entries(activeModel.cases).filter(([key]) => shown[key]).map(([key, definition]) => ({
-      label: `${caseNames[key]} · ${definition.formula}`,
-      data: inputs.map((n) => ({ x: n, y: Math.max(0, definition.value(n, k, gapCount)) })),
+    const datasets = Object.entries(activeModel.cases).filter(([key, definition]) => shown[key] && definition.value).map(([key, definition]) => ({
+      label: `${caseNames[key]} · ${definition.bound}`,
+      countKind: definition.kind,
+      data: inputs.map((n) => ({ x: n, y: Math.max(0, definition.value(n, k)) })),
       borderColor: colors[key],
       backgroundColor: colors[key],
       borderWidth: 2.5,
@@ -62,7 +60,7 @@
             bodyColor: '#c3c8d2',
             callbacks: {
               title: (items) => `Input size n = ${items[0]?.parsed.x ?? ''}`,
-              label: (item) => `${item.dataset.label.split(' · ')[0]}: ≈ ${new Intl.NumberFormat().format(Math.round(item.parsed.y))} operations`,
+              label: (item) => `${item.dataset.label}: ${new Intl.NumberFormat().format(Math.round(item.parsed.y))} ${item.dataset.countKind.startsWith('Exact') ? 'comparisons (exact)' : 'model units'}`,
             },
           },
         },
@@ -93,7 +91,7 @@
       <p class="eyebrow">Theoretical operation growth</p>
       <h2 id="growth-title">How the work scales</h2>
     </div>
-    <p>Compare cases as the input grows. These are theoretical models—not benchmark timings.</p>
+    <p>The same case bounds as Complexity, drawn as input size grows. Exact counts are labeled; other curves show the dominant term with coefficient 1.</p>
   </header>
 
   <div class="growth-controls" aria-label="Growth chart controls">
@@ -119,9 +117,9 @@
       <p class="growth-key-title">Show cases</p>
       {#each Object.keys(caseNames) as key}
         <label class="growth-case-toggle">
-          <input type="checkbox" checked={visibleCases[key]} onchange={() => toggleCase(key)} />
+          <input type="checkbox" checked={!!model.cases[key].value && visibleCases[key]} disabled={!model.cases[key].value} onchange={() => toggleCase(key)} />
           <span class="growth-swatch" class:average-swatch={key === 'average'} class:worst-swatch={key === 'worst'} style="--case-color: {colors[key]}"></span>
-          <span>{caseNames[key]}</span>
+          <span>{caseNames[key]}{!model.cases[key].value ? ' · not plotted' : ''}</span>
         </label>
       {/each}
       <p class="growth-operation"><span>Dominant operation</span><strong>{model.operation}</strong></p>
@@ -132,7 +130,7 @@
     {#each Object.entries(model.cases) as [key, definition]}
       <article class="growth-formula" class:case-muted={!visibleCases[key]}>
         <span class="growth-swatch" class:average-swatch={key === 'average'} class:worst-swatch={key === 'worst'} style="--case-color: {colors[key]}"></span>
-        <div><strong>{caseNames[key]}</strong><code>{definition.formula}</code></div>
+        <div><strong>{caseNames[key]} · {definition.bound}</strong><span class="growth-assumption">{definition.assumption}</span><span class="growth-model-label">{definition.kind}</span><code>{definition.formula}</code></div>
       </article>
     {/each}
   </div>
@@ -144,4 +142,5 @@
   {:else}
     <p class="growth-note">{model.note}</p>
   {/if}
+  <a class="secondary learning-link" href="#/algorithms/{algorithmId}/complexity">Read the reasoning in Complexity →</a>
 </section>
