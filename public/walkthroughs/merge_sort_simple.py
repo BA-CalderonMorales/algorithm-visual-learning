@@ -6,12 +6,16 @@ def merge_sort(values):
     left = merge_sort(values[:middle])
     right = merge_sort(values[middle:])
     merged = []
-    while left and right:
-        if left[0] <= right[0]:
-            merged.append(left.pop(0))
+    i = 0
+    j = 0
+    while i < len(left) and j < len(right):
+        if left[i] <= right[j]:
+            merged.append(left[i])
+            i += 1
         else:
-            merged.append(right.pop(0))
-    return merged + left + right
+            merged.append(right[j])
+            j += 1
+    return merged + left[i:] + right[j:]
 
 
 print(merge_sort([4, 7, 8, 2, 9, 5, 6, 3, 1]))
