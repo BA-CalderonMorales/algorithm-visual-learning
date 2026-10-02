@@ -268,6 +268,11 @@ html:fullscreen .site-footer { min-height:38px; padding-block:8px; background:#1
 .visually-hidden { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; clip-path:inset(50%); }
 .nav-toggle { display: grid; width: 34px; height: 34px; flex: 0 0 auto; place-items: center; border: 1px solid #41434e; border-radius: 8px; background: #24252b; color: #d6dae4; cursor: pointer; font-size: 17px; line-height: 1; }
 .nav-toggle:hover { border-color: #638cb0; background: #2b3039; }
+.hero-visibility-toggle { display:inline-flex; min-height:32px; align-items:center; gap:8px; margin-top:13px; padding:6px 10px; border:1px solid #3c4653; border-radius:2px; background:#20242b; color:#aebdd0; font:inherit; font-size:11px; cursor:pointer; }
+.hero-visibility-toggle:hover { border-color:#6087ad; color:#d8e9fa; background:#252c35; }
+.hero-visibility-toggle:focus-visible { outline:2px solid #79b7ff; outline-offset:2px; }
+.hero-collapsed-strip { display:flex; min-height:38px; align-items:center; justify-content:space-between; gap:12px; margin:0 0 16px; padding:2px 0; color:#c2cad6; font-size:12px; }
+.hero-collapsed-strip .hero-visibility-toggle { flex:none; margin:0; }
 .nav-scrim { position: fixed; inset: 0; z-index: 11; border: 0; background: #08090bb8; backdrop-filter: blur(2px); }
 .domain-tabs { display: flex; }
 .formula { overflow: visible; }

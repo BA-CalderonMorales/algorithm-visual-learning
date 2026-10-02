@@ -26,6 +26,7 @@
   let globalSearchInput = $state(null);
   let activeSearchIndex = $state(0);
   let fullscreenActive = $state(false);
+  let heroVisible = $state(false);
   let selectedAlgorithmId = $state('');
   let algorithmView = $state('walkthrough');
   let shellGapSequence = $state('halving');
@@ -78,7 +79,7 @@
     ...baseSearchEntries,
     ...Object.values(studyLessons).flatMap(lesson => lessonTabs.map(tab => ({
       title: `${lesson.title} · ${tab.label}`, group: studyDomains[lesson.domain].title,
-      description: tab.id === 'visualize' ? playFilms[lesson.id].takeaway : lesson.intro,
+      description: tab.id === 'visualize' ? (playFilms[lesson.id]?.takeaway ?? lesson.intro) : lesson.intro,
       href: lessonHref(lesson, tab.id), terms: `${lesson.idea} ${lesson.caution} ${lesson.examples.map(example => example.title).join(' ')} ${tab.id}`,
     }))),
     ...algorithms.flatMap((algorithm) => {
@@ -381,7 +382,7 @@
 
     <main class="page-content" class:wide-algorithm-page={domain === 'algorithms' && topic === 'algorithm'}>
       {#if domain === 'overview'}
-        <StudyLibrary libraryDomain="home" view={homeView} />
+        <StudyLibrary libraryDomain="home" view={homeView} bind:heroVisible />
 
       {:else if domain === 'algorithms' && topic === 'catalog'}
         <section class="page-hero compact-hero">
@@ -422,16 +423,21 @@
           <p class="section-footnote">These are quick per-algorithm reminders. The <button class="inline-link" onclick={() => openPage('complexity', 'time')}>Complexity domain</button> teaches how to analyze bounds and cases in general.</p>
         </section>
       {:else if domain === 'algorithms' && topic === 'algorithm' && selectedAlgorithm}
-        <section class="page-hero compact-hero algorithm-hero">
-          <a class="back-link" href="#/algorithms/sorting">← All sorting algorithms</a>
-          <p class="eyebrow">Algorithm walkthrough · code references</p>
-          <h1>{selectedAlgorithm.name}</h1>
-          {#if selectedAlgorithm.id === 'quick'}
-            <p class="intro">Follow the partition, then decide whether each side recurses or uses insertion sort.</p>
-          {:else}
-            <p class="intro">{selectedAlgorithm.cue} Start with the simple version, then compare typed Python, JavaScript, and TypeScript.</p>
-          {/if}
-        </section>
+        {#if heroVisible}
+          <section class="page-hero compact-hero algorithm-hero">
+            <a class="back-link" href="#/algorithms/sorting">← All sorting algorithms</a>
+            <p class="eyebrow">Algorithm walkthrough · code references</p>
+            <h1>{selectedAlgorithm.name}</h1>
+            {#if selectedAlgorithm.id === 'quick'}
+              <p class="intro">Follow the partition, then decide whether each side recurses or uses insertion sort.</p>
+            {:else}
+              <p class="intro">{selectedAlgorithm.cue} Start with the simple version, then compare typed Python, JavaScript, and TypeScript.</p>
+            {/if}
+            <button class="hero-visibility-toggle" onclick={() => heroVisible = false}>Hide intro <span aria-hidden="true">⌃</span></button>
+          </section>
+        {:else}
+          <div class="hero-collapsed-strip"><span>{selectedAlgorithm.name}</span><button class="hero-visibility-toggle" onclick={() => heroVisible = true}>Show intro <span aria-hidden="true">⌄</span></button></div>
+        {/if}
         <section class="algorithm-view standalone-view" class:play-view={algorithmView === 'play'} aria-label="{selectedAlgorithm.name} materials">
           <StudyTabs tabs={[['understand','Understand'],['play','Play'],['walkthrough','Step-by-step'],['implementation','Implementations'],['practice','Practice'],['complexity','Complexity'],['growth','Growth']].map(([id,label]) => ({ id, label, href:`#/algorithms/${selectedAlgorithm.id}/${id === 'implementation' ? 'python/simple' : id}` }))} selected={algorithmView} label="{selectedAlgorithm.name} learning materials" idPrefix="algorithm-tab" />
           {#if algorithmView === 'walkthrough'}
@@ -533,13 +539,18 @@
         </section>
 
       {:else if (domain === 'discrete' || domain === 'complexity') && topic === 'index'}
-        <StudyLibrary libraryDomain={domain} />
+        <StudyLibrary libraryDomain={domain} bind:heroVisible />
       {:else if (domain === 'discrete' || domain === 'complexity') && selectedStudyLesson}
-        <section class="page-hero compact-hero study-page-heading">
-          <a class="study-back" href="#/{domain}">← {studyDomains[domain].title}</a>
-          <h1>{selectedStudyLesson.title}</h1>
-          <p class="intro">{selectedStudyLesson.intro}</p>
-        </section>
+        {#if heroVisible}
+          <section class="page-hero compact-hero study-page-heading">
+            <a class="study-back" href="#/{domain}">← {studyDomains[domain].title}</a>
+            <h1>{selectedStudyLesson.title}</h1>
+            <p class="intro">{selectedStudyLesson.intro}</p>
+            <button class="hero-visibility-toggle" onclick={() => heroVisible = false}>Hide intro <span aria-hidden="true">⌃</span></button>
+          </section>
+        {:else}
+          <div class="hero-collapsed-strip"><span>{selectedStudyLesson.title}</span><button class="hero-visibility-toggle" onclick={() => heroVisible = true}>Show intro <span aria-hidden="true">⌄</span></button></div>
+        {/if}
         {#key selectedStudyLesson.id}<StudyLesson lesson={selectedStudyLesson} view={studyView} />{/key}
       {/if}
     </main>

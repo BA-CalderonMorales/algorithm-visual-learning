@@ -1,7 +1,7 @@
 <script>
   import { studyDomains, studyLessons, lessonHref } from './study-lessons.js';
   import StudyTabs from './StudyTabs.svelte';
-  let { libraryDomain = 'home', view = 'explore' } = $props();
+  let { libraryDomain = 'home', view = 'explore', heroVisible = $bindable(true) } = $props();
   let collection = $derived(studyDomains[libraryDomain]);
   const entries = [
     { id:'algorithms', title:'Algorithms', question:'What moves, and why?', href:'#/algorithms/sorting', description:'Compare seven sorting algorithms. Follow their decisions, then read the code.', links:[{ title:'Selection sort', href:'#/algorithms/selection/understand' },{ title:'Shell sort', href:'#/algorithms/shell/play' },{ title:'All sorting algorithms', href:'#/algorithms/sorting' }] },
@@ -17,11 +17,16 @@
 </script>
 
 {#if libraryDomain === 'home'}
-  <section class="library-heading">
-    <p class="library-label">DSA Study Studio</p>
-    <h1>A place to work things out.</h1>
-    <p>Algorithms, proofs, and complexity. Watch an idea, follow an example, then try explaining it yourself.</p>
-  </section>
+  {#if heroVisible}
+    <section class="library-heading">
+      <p class="library-label">DSA Study Studio</p>
+      <h1>A place to work things out.</h1>
+      <p>Algorithms, proofs, and complexity. Watch an idea, follow an example, then try explaining it yourself.</p>
+      <button class="hero-visibility-toggle" onclick={() => heroVisible = false}>Hide intro <span aria-hidden="true">⌃</span></button>
+    </section>
+  {:else}
+    <div class="hero-collapsed-strip"><span>DSA Study Studio</span><button class="hero-visibility-toggle" onclick={() => heroVisible = true}>Show intro <span aria-hidden="true">⌄</span></button></div>
+  {/if}
   <div class="home-workspace">
   <StudyTabs tabs={[{ id:'explore', label:'Explore', href:'#/home' }, { id:'resources', label:'Resources', href:'#/home/resources' }, { id:'author', label:'Author’s note', href:'#/home/author' }]} selected={view} label="Study home views" idPrefix="home-tab" controls="home-panel" />
   <div class="home-panel" role="tabpanel" id="home-panel" aria-labelledby="home-tab-{view}" tabindex="0">
@@ -67,10 +72,15 @@
   </div>
   </div>
 {:else}
-  <section class="library-heading domain-heading">
-    <a class="library-back" href="#/home">← Study home</a>
-    <h1>{collection.title}</h1><p>{collection.intro}</p>
-  </section>
+  {#if heroVisible}
+    <section class="library-heading domain-heading">
+      <a class="library-back" href="#/home">← Study home</a>
+      <h1>{collection.title}</h1><p>{collection.intro}</p>
+      <button class="hero-visibility-toggle" onclick={() => heroVisible = false}>Hide intro <span aria-hidden="true">⌃</span></button>
+    </section>
+  {:else}
+    <div class="hero-collapsed-strip"><span>{collection.title}</span><button class="hero-visibility-toggle" onclick={() => heroVisible = true}>Show intro <span aria-hidden="true">⌄</span></button></div>
+  {/if}
   <section class="topic-directory" aria-label="{collection.title} topics">
     {#each collection.topics as id, index}
       {@const lesson = studyLessons[id]}

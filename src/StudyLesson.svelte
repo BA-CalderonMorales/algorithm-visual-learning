@@ -55,9 +55,9 @@
 <style>
   .study-workspace { min-width:0; border:1px solid #3a3d47; background:#1b1d23; }
   .study-next:focus-visible,.study-connections a:focus-visible { outline:2px solid #79b7ff; outline-offset:-3px; }
-  .study-panel { display:flex; flex-direction:column; height:clamp(450px,68svh,780px); min-width:0; overflow:hidden; }
+  .study-panel { display:flex; flex-direction:column; height:clamp(450px,68svh,780px); min-width:0; overflow:hidden; padding:clamp(12px,1.5vw,18px); }
   .study-scroll,.study-visual-scroll { overflow-y:auto; overflow-x:hidden; min-height:0; scrollbar-width:thin; scrollbar-color:#596579 #1b1d23; overscroll-behavior:contain; }
-  .study-scroll { padding:clamp(20px,3vw,36px); }
+  .study-scroll { padding:clamp(12px,2vw,24px); }
   .study-visual-scroll :global(.concept-film.embedded) { margin:0; border:0; }
   .study-lead { max-width:760px; }
   .study-overline { margin:0 0 8px; color:#8598ad; font-size:11px; }
@@ -97,7 +97,8 @@
     .study-panel { height:clamp(460px,72svh,680px); }
     .study-flow { grid-template-columns:1fr; gap:20px; }
     .study-facts > div { grid-template-columns:1fr; gap:6px; }
-    .study-scroll { padding:21px 17px; }
+    .study-panel { padding:12px; }
+    .study-scroll { padding:15px 13px; }
     .study-connections { padding:14px 18px; font-size:11px; }
     .example-picker { padding:10px; }
     .example-picker button { font-size:11px; }
