@@ -68,7 +68,8 @@
     { title: 'A note from the author', group: 'Start here', description: 'Why this free, open-source study guide exists and how to contribute.', href: '#/home/author', terms: 'author about contribute open source MIT fork' },
     { title: 'Sorting algorithms', group: 'Algorithms', description: 'Browse and compare the sorting algorithm collection.', href: '#/algorithms/sorting', terms: 'sort catalogue sorting' },
     { title: 'Discrete mathematics', group: 'Learning domains', description: 'Choose a proof, sum, or recurrence to explore.', href: '#/discrete', terms: 'math proofs sums recurrences' },
-    { title: 'Complexity', group: 'Learning domains', description: 'Choose time or space analysis.', href: '#/complexity', terms: 'time space work memory' },
+    { title: 'Complexity', group: 'Learning domains', description: 'Learn asymptotic bounds, then analyze time and space.', href: '#/complexity', terms: 'time space work memory bounds growth' },
+    { title: 'Asymptotic bounds', group: 'Complexity', description: 'Understand Big O, little o, Theta, Omega, and little omega as relationships between functions.', href: '#/complexity/asymptotic', terms: 'big o little o theta omega little omega upper lower tight asymptotic bound notation' },
     { title: 'Proof by induction', group: 'Discrete mathematics', description: 'Base case, inductive hypothesis, inductive step, and the bridge to the next case.', href: '#/discrete/induction', terms: 'proof base case hypothesis inductive step mathematical induction' },
     { title: 'Telescoping sums', group: 'Discrete mathematics', description: 'Rewrite terms as differences, cancel neighbors, and keep the endpoints.', href: '#/discrete/telescoping', terms: 'sum series cancellation endpoints partial fractions' },
     { title: 'Master theorem', group: 'Discrete mathematics', description: 'Classify divide-and-conquer recurrences with the standard cases.', href: '#/discrete/master-theorem', terms: 'recurrence divide conquer cases a b f(n) log' },
@@ -162,6 +163,7 @@
     '#/discrete/telescoping': ['discrete', 'telescoping'],
     '#/discrete/master-theorem': ['discrete', 'master'],
     '#/complexity/time': ['complexity', 'time'],
+    '#/complexity/asymptotic': ['complexity', 'asymptotic'],
     '#/complexity/space': ['complexity', 'space'],
   };
 
@@ -339,6 +341,9 @@
       <a class="nav-link" class:active={isActive('complexity', 'index')} href="#/complexity" onclick={() => (navOpen = false)}><span class="nav-icon">◷</span> Time and space</a>
       <button class:active={isActive('complexity', 'time')} class="nav-link" onclick={() => openPage('complexity', 'time')}>
         <span class="nav-icon">◷</span> Time complexity
+      </button>
+      <button class:active={isActive('complexity', 'asymptotic')} class="nav-link" onclick={() => openPage('complexity', 'asymptotic')}>
+        <span class="nav-icon">O</span> Asymptotic bounds
       </button>
       <button class:active={isActive('complexity', 'space')} class="nav-link" onclick={() => openPage('complexity', 'space')}>
         <span class="nav-icon">▱</span> Space complexity

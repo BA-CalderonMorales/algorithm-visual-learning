@@ -12,6 +12,8 @@
     "test:walkthroughs": "node scripts/verify-walkthroughs.mjs",
     "test:play": "node scripts/verify-play-models.mjs && node scripts/verify-play.mjs && node scripts/verify-sorting-play.mjs",
     "render:films": "node scripts/render-films.mjs",
+    "generate:narration": "node scripts/generate-echo-narration.mjs",
+    "test:narration": "node scripts/verify-recorded-narration.mjs && node scripts/verify-echo-narration.mjs",
     "test:study": "node scripts/verify-study.mjs"
   },
   "devDependencies": {

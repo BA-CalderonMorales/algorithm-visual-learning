@@ -4,6 +4,7 @@
   import StudyMath from './StudyMath.svelte';
   import CancellationSum from './CancellationSum.svelte';
   import StudyTabs from './StudyTabs.svelte';
+  import AsymptoticRatio from './AsymptoticRatio.svelte';
   import { playFilms } from './play-models.js';
   import { lessonTabs, lessonHref } from './study-lessons.js';
   let { lesson, view = 'understand' } = $props();
@@ -22,7 +23,9 @@
   <StudyTabs tabs={lessonTabs.map(tab => ({ ...tab, href: lessonHref(lesson, tab.id) }))} selected={view} label="{lesson.title} views" controls="study-panel" idPrefix="study-tab" />
   <div class="study-panel" role="tabpanel" id="study-panel" aria-labelledby="study-tab-{view}" tabindex="0">
     {#if view === 'visualize'}
-      <div class="study-visual-scroll"><ConceptFilm film={playFilms[lesson.id]} embedded lessonPlayer /></div>
+      <div class="study-visual-scroll">
+        {#if lesson.id === 'asymptotic'}<AsymptoticRatio comparisons={lesson.comparisons} />{:else}<ConceptFilm film={playFilms[lesson.id]} embedded lessonPlayer />{/if}
+      </div>
     {:else}
       {#if view === 'examples'}
         <nav class="example-picker" aria-label="Worked examples">{#each lesson.examples as item, index}<button class:active={exampleIndex === index} aria-pressed={exampleIndex === index} onclick={() => chooseExample(index)}><span>{index + 1}</span>{item.title}</button>{/each}</nav>

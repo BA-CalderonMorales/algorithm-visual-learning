@@ -52,6 +52,10 @@ The walkthrough pages are standalone HTML so they also work independently. Tim S
 
 Each algorithm page starts with a plain Python version for learning the core idea, then offers typed Python, JavaScript, and TypeScript examples. These are teaching references; some, including Tim Sort, intentionally favor clarity over production-level optimizations.
 
+## Recorded narration
+
+Sorting Play tabs offer optional Echo narration, loaded one scene at a time. Students need no speech service or API key. To regenerate the recordings locally with Lemonade, see [the narration guide](public/narration/echo/README.md).
+
 ## Contributing
 
 This project is designed to be forked, adapted for future classes, and improved by students. See [CONTRIBUTING.md](CONTRIBUTING.md) for the small local workflow and teaching-focused guidelines, and [CONTRIBUTORS.md](CONTRIBUTORS.md) for attribution. The project is licensed under the [MIT License](LICENSE).
