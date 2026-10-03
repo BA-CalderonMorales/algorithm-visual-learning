@@ -39,6 +39,10 @@ Publishing is automatic: push or merge changes to `develop`. The Pages workflow 
 
 To deploy the current `develop` branch again without a new change, open **Actions → Build and publish Sorting Walkthroughs → Run workflow**. GitHub Pages should use **GitHub Actions** as its source under **Settings → Pages**. No release tag is needed for a site deployment.
 
+Exported videos are cached between deployments. Each film is checked against its scene data, shared renderer, capture code, dependencies, and file checksum. Missing, changed, or damaged videos are regenerated; narration and site-only edits reuse unchanged films. A cold or expired cache still needs a full render. The build and walkthrough checks always run.
+
+Use `npm run test:film-cache` to check cache invalidation and `npm run test:film-rendering` for a short browser recording test (with the dev server running). To deliberately re-record a film locally, run `npm run render:films -- --force selection`.
+
 ## Project Layout
 
 ```text

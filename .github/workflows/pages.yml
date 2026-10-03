@@ -29,11 +29,25 @@ jobs:
         uses: actions/configure-pages@v5
       - name: Install dependencies
         run: npm ci
+      - name: Verify film cache behavior
+        run: npm run test:film-cache
+      - name: Fingerprint exported films
+        id: film_inputs
+        run: echo "key=$(node scripts/render-films.mjs --cache-key)" >> "$GITHUB_OUTPUT"
+      - name: Restore exported films
+        uses: actions/cache/restore@v4
+        with:
+          path: public/films
+          key: films-v1-${{ runner.os }}-${{ steps.film_inputs.outputs.key }}-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: |
+            films-v1-${{ runner.os }}-${{ steps.film_inputs.outputs.key }}-
+            films-v1-${{ runner.os }}-
       - name: Install browser for walkthrough checks and film rendering
         run: npx playwright install --with-deps chromium
       - name: Start the app for film rendering
         run: nohup npm run dev -- --host 127.0.0.1 --port 5175 > /tmp/dsa-vite.log 2>&1 < /dev/null &
-      - name: Render the algorithm and concept films
+      - name: Render only missing or changed films
+        id: render_films
         run: |
           for attempt in $(seq 1 60); do
             if curl --fail --silent http://127.0.0.1:5175/ > /dev/null; then break; fi
@@ -45,6 +59,12 @@ jobs:
         run: npm run build
       - name: Verify interactive walkthroughs
         run: npm run test:walkthroughs
+      - name: Save verified exported films
+        if: steps.render_films.outputs.rendered != '0'
+        uses: actions/cache/save@v4
+        with:
+          path: public/films
+          key: films-v1-${{ runner.os }}-${{ steps.film_inputs.outputs.key }}-${{ github.run_id }}-${{ github.run_attempt }}
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
