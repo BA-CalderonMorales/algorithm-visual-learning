@@ -12,9 +12,48 @@ const text = (id, value, x, y, role = 'neutral', size = 1) => ({ id, text: value
 const lane = (id, label, start, end, y, role = 'sorted') => ({ id, label, start, end, y, role });
 const sortedRoles = (count) => Object.fromEntries(Array.from({ length: count }, (_, i) => [i, 'sorted']));
 
+// Small readouts explain the current decision; coordinates and item identities
+// remain separate so index labels stay anchored during swaps and shifts.
+function arrayStory(id, frames) {
+  return frames.map((scene, index) => {
+    const previous = frames[Math.max(0, index - 1)];
+    const key = scene.tokens.find(t => t.role === 'key');
+    const atPointer = pointer => scene.tokens.find(t => t.pointer?.split(' · ').includes(pointer));
+    const i = atPointer('i'), j = atPointer('j');
+    const moves = scene.tokens.flatMap(token => {
+      const old = previous.tokens.find(t => t.id === token.id);
+      return old && old.x !== token.x ? [{ value: token.value, from: old.index, to: token.index, key: token.role === 'key' }] : [];
+    });
+    let operation = scene.operation;
+    if (!operation && moves.length) {
+      const shifted = moves.find(move => !move.key);
+      operation = scene.held && shifted ? `${shifted.value} > key ${scene.held} → shift ${shifted.value} right`
+        : `Swap ${moves[0].value} and ${moves[1]?.value} · indices ${moves[0].from} ↔ ${moves[0].to}`;
+    }
+    if (!operation && j) {
+      const comparison = id === 'selection' ? previous.tokens.find(t => t.role === 'key') ?? i : key;
+      if (comparison) operation = id === 'selection'
+        ? `${j.value} ${Number(j.value) < Number(comparison.value) ? '<' : '≥'} ${comparison.value} → ${Number(j.value) < Number(comparison.value) ? 'remember the smaller value' : 'keep the minimum'}`
+        : `Compare ${j.value} at index ${j.index} with ${id === 'quick' ? 'pivot' : 'key'} ${comparison.value}`;
+    }
+    operation ??= scene.held ? `Key ${scene.held} belongs at index ${scene.open ?? key?.index ?? 'shown'}`
+      : id === 'shell' && scene.group ? `Gap ${scene.gap}: only indices ${scene.group.join(' → ')} belong to this group`
+      : id === 'quick' ? 'Only fixed pivots are finished; each side still needs sorting'
+      : 'Green marks the part already in its final order';
+    if (index === frames.length - 1) operation = 'Every position is now sorted';
+    const fact = (label, value, role = 'group') => ({ label, value: String(value ?? '—'), role });
+    const facts = id === 'selection' ? [fact('Fill index i', i?.index), fact('Scan index j', j?.index), fact('Minimum', key?.value ?? i?.value, 'key')]
+      : id === 'insertion' ? [fact('Held key', scene.held, 'key'), fact('Compare index j', j?.index), fact('Key position', scene.open ?? key?.index, 'key')]
+      : id === 'shell' ? [fact('Gap', scene.gap ?? 1), fact('Held key', scene.held, 'key'), fact('Compare index j', j?.index)]
+      : [fact('Pivot', key?.value, 'key'), fact('Scan indices i / j', `${i?.index ?? '—'} / ${j?.index ?? '—'}`), fact('Active range', scene.range ?? '0–8')];
+    if (index === frames.length - 1) facts.splice(0, 3, fact('Sorted values', scene.tokens.length, 'sorted'), fact('Remaining', 0, 'sorted'), fact('Status', 'Complete', 'sorted'));
+    return { ...scene, duration: Math.max(4.2, scene.duration), operation, facts };
+  });
+}
+
 function selectionFilm() {
   const values = [4, 1, 3, 5, 2].map(item);
-  const frames = [frame('Find', 'One place to fill', 'The left boundary i is the next position to fill. Scan everything to its right before choosing.', row(values, {}, { 0: 'i' }))];
+  const frames = [frame('Find', 'One place to fill.', 'The left boundary i is the next position to fill. Remember 4 as the first minimum, then scan everything to its right.', row(values, {0:'key'}, { 0: 'i' }), {operation:'Fill index 0 · start with minimum 4 · scan right'})];
   for (let i = 0; i < values.length - 1; i++) {
     let minimum = i;
     for (let j = i + 1; j < values.length; j++) {
@@ -31,7 +70,7 @@ function selectionFilm() {
       row(values, { ...sortedRoles(i + 1), ...(minimum !== i ? { [minimum]: 'shift' } : {}) }, { [i]: 'i' })));
   }
   frames.push(frame('Remember', 'Scan first. Place once.', 'Every suffix was scanned completely. The prefix now contains all values in sorted order.', row(values, sortedRoles(values.length))));
-  return frames;
+  return arrayStory('selection', frames);
 }
 
 function insertionFilm(initial = [4, 7, 8, 2, 5], gaps = [1]) {
@@ -39,7 +78,7 @@ function insertionFilm(initial = [4, 7, 8, 2, 5], gaps = [1]) {
   const shell = gaps.length > 1;
   const frames = [frame(shell ? 'Groups' : 'Prefix', shell ? 'Distance defines the group' : 'A sorted prefix grows', shell
     ? 'Begin with gap 2. Even and odd indices form separate groups; a key only travels through its own group.'
-    : 'The first value is a sorted prefix of size one. Each new key will find a place inside that prefix.', row(values, shell ? {} : sortedRoles(1)), { gap: shell ? gaps[0] : 1 })];
+    : 'The first value is a sorted prefix of size one. Each new key will find a place inside that prefix.', row(values, shell ? {} : sortedRoles(1)), { gap: shell ? gaps[0] : 1, prefix:shell?0:1, operation:shell?undefined:'Start with [4] sorted · process the next key'})];
   for (const gap of gaps) {
     if (shell && gap === 1) frames.push(frame('Gap one', 'Bring the groups together', 'Gap 2 ordered each group, not the entire array. Gap 1 now compares neighbors and finishes the sort.', row(values), { gap }));
     for (let i = gap; i < values.length; i++) {
@@ -48,7 +87,7 @@ function insertionFilm(initial = [4, 7, 8, 2, 5], gaps = [1]) {
       const groupRoles = shell ? Object.fromEntries(group.map(k => [k, 'group'])) : sortedRoles(i);
       let open = i;
       frames.push(frame(shell ? `Gap ${gap}` : 'Key', `Hold key ${key.value}`, `Compare key ${key.value} with ${values[open - gap].value} at index ${open - gap}. ${shell ? `Move ${gap} positions left within this group.` : 'Everything before the key is already sorted.'}`,
-        row(values, { ...groupRoles, [open]: 'key', [open - gap]: 'compare' }, { [i]: 'i', [open - gap]: 'j' }), { gap, group, held: key.value }));
+        row(values, { ...groupRoles, [open]: 'key', [open - gap]: 'compare' }, { [i]: 'i', [open - gap]: 'j' }), { gap, group: shell ? group : undefined, held: key.value, open, prefix: shell ? 0 : i }));
       while (open >= gap && Number(values[open - gap].value) > Number(key.value)) {
         const from = open - gap;
         const moved = values[from];
@@ -57,46 +96,50 @@ function insertionFilm(initial = [4, 7, 8, 2, 5], gaps = [1]) {
         open = from;
         const next = open >= gap ? ` Next compare ${values[open - gap].value} at index ${open - gap}.` : ' The key has reached the front of this group.';
         frames.push(frame(shell ? `Gap ${gap}` : 'Shift', `${moved.value} right; key ${key.value} left`, `Shift ${moved.value} from index ${from} to ${from + gap}. The blue key follows the new open slot.${next}`,
-          row(values, { ...groupRoles, [open]: 'key', [open + gap]: 'shift', ...(open >= gap ? { [open - gap]: 'compare' } : {}) }, { [i]: 'i', ...(open >= gap ? { [open - gap]: 'j' } : {}) }), { gap, group, held: key.value }));
+          row(values, { ...groupRoles, [open]: 'key', [open + gap]: 'shift', ...(open >= gap ? { [open - gap]: 'compare' } : {}) }, { [i]: 'i', ...(open >= gap ? { [open - gap]: 'j' } : {}) }), { gap, group: shell ? group : undefined, held: key.value, open, prefix: shell ? 0 : i }));
       }
       frames.push(frame(shell ? `Gap ${gap}` : 'Insert', `Insert ${key.value} at index ${open}`, open === i
         ? `The left neighbor is no larger than key ${key.value}. No shift is needed; this pass is complete.`
         : `The key belongs here. ${shell ? 'This part of its gap-group is ordered.' : `The sorted prefix now has ${i + 1} values.`}`,
-        row(values, shell ? { ...groupRoles, [open]: 'sorted' } : sortedRoles(i + 1), { [i]: 'i' }), { gap, group }));
+        row(values, shell ? { ...groupRoles, [open]: 'sorted' } : sortedRoles(i + 1), { [i]: 'i' }), { gap, group: shell ? group : undefined, held: key.value, open, prefix: shell ? 0 : i + 1 }));
     }
   }
   frames.push(frame('Remember', shell ? 'Same insertion. A shrinking gap.' : 'Shift right. Grow left.', shell
     ? 'Large gaps let values travel far early. Gap 1 finishes with ordinary insertion sort.'
     : 'The key moved left while larger values moved right. Each completed insertion kept the prefix sorted.', row(values, sortedRoles(values.length))));
-  return frames;
+  return arrayStory(shell ? 'shell' : 'insertion', frames);
 }
 
 function quickFilm() {
   const values = [4, 7, 8, 2, 9, 5, 6, 3, 1].map(item);
-  const frames = [frame('Pivot', 'The pivot is a value', 'Sample the left, center, and right values: 4, 9, and 1. Their median is 4.', row(values, { 0: 'compare', 4: 'compare', 8: 'compare' }))];
+  const frames = [frame('Pivot', 'Choose the middle sample value.', 'Sample the left, center, and right: 4, 9, and 1. Their median is 4. First, order those samples.', row(values, { 0: 'compare', 4: 'compare', 8: 'compare' }), { operation: 'Samples 4, 9, 1 → pivot value 4' })];
   [values[0], values[8]] = [values[8], values[0]];
+  frames.push(frame('Pivot', 'Put the smallest sample on the left.', 'Swap 4 and 1. Only these two values move. The chosen pivot value is still 4.', row(values, { 8: 'key', 0: 'shift' })));
   [values[4], values[8]] = [values[8], values[4]];
-  frames.push(frame('Pivot', 'Order the three samples', 'The samples are now 1, 4, and 9. The chosen pivot is still the value 4.', row(values, { 4: 'key', 0: 'sorted', 8: 'sorted' })));
+  frames.push(frame('Pivot', 'Put 4 between the other samples.', 'Swap 9 and 4. The samples are now 1, 4, and 9; pivot 4 is at the center.', row(values, { 4: 'key', 8: 'shift' })));
   [values[4], values[7]] = [values[7], values[4]];
-  frames.push(frame('Partition', 'Park the pivot', 'Move pivot 4 to high minus one. i looks for a value too large; j looks for a value too small.', row(values, { 7: 'key', 1: 'compare', 4: 'compare' }, { 1: 'i', 4: 'j' })));
+  frames.push(frame('Partition', 'Park 4. Find two misplaced values.', 'Park pivot 4 at index 7. i stops at 7, which is too large. j stops at 3, which is too small.', row(values, { 7: 'key', 1: 'compare', 4: 'compare' }, { 1: 'i', 4: 'j' }), { operation: 'i finds 7 > 4 · j finds 3 < 4' }));
   [values[1], values[4]] = [values[4], values[1]];
-  frames.push(frame('Partition', 'Exchange the stopped values', '7 and 3 trade places. The pivot stays 4. The next stopped pair is 8 and 2.', row(values, { 7: 'key', 1: 'shift', 4: 'shift' }, { 2: 'i', 3: 'j' })));
+  frames.push(frame('Partition', 'Swap 7 and 3.', '7 belongs on the right of the pivot; 3 belongs on the left. Swap them. Pivot 4 stays parked.', row(values, { 7: 'key', 1: 'shift', 4: 'shift' }, { 1: 'i', 4: 'j' })));
+  frames.push(frame('Partition', 'Keep scanning toward the middle.', 'The next stopped values are 8 and 2. Again, the large value is on the left and the small value is on the right.', row(values, { 7: 'key', 2: 'compare', 3: 'compare' }, { 2: 'i', 3: 'j' }), { operation: 'i finds 8 > 4 · j finds 2 < 4' }));
   [values[2], values[3]] = [values[3], values[2]];
-  frames.push(frame('Partition', 'The scans cross', 'After swapping 8 and 2, i advances to index 3 and j retreats to index 2. Stop exchanging scan values.', row(values, { 7: 'key', 2: 'shift', 3: 'shift' }, { 3: 'i', 2: 'j' })));
+  frames.push(frame('Partition', 'Swap 8 and 2.', 'Move 2 left and 8 right. Then advance i and retreat j to look for the next pair.', row(values, { 7: 'key', 2: 'shift', 3: 'shift' }, { 2: 'i', 3: 'j' })));
+  frames.push(frame('Partition', 'The scans have crossed. Stop.', 'i is now 3 and j is 2. There is no stopped pair left to exchange. The pivot can take its final position.', row(values, { 7: 'key', 3: 'compare', 2: 'compare' }, { 3: 'i', 2: 'j' }), { operation: 'i = 3 > j = 2 → stop scanning' }));
   [values[3], values[7]] = [values[7], values[3]];
-  const split = [lane('s1', 'S1: still needs sorting', 0, 3 / 9, 0.61, 'sorted'), lane('p', '4 fixed', 3 / 9, 4 / 9, 0.61, 'key'), lane('s2', 'S2: still needs sorting', 4 / 9, 1, 0.61, 'shift')];
-  frames.push(frame('Recurse', 'Fix the pivot at the boundary', 'Swap A[i] with the parked pivot. 4 is now fixed between S1 and S2; neither side is sorted yet.', row(values, { 0: 'sorted', 1: 'sorted', 2: 'sorted', 3: 'key', 4: 'shift', 5: 'shift', 6: 'shift', 7: 'shift', 8: 'shift' }), { lanes: split }));
+  const split = [lane('s1', 'S1 · unsorted', 0, 3 / 9, 0.61, 'group'), lane('p', 'Fixed', 3 / 9, 4 / 9, 0.61, 'sorted'), lane('s2', 'S2 · unsorted', 4 / 9, 1, 0.61, 'group')];
+  frames.push(frame('Recurse', '4 is fixed. Each side is a new problem.', 'Swap pivot 4 with A[i]. Every value on the left is smaller; every value on the right is larger. The sides still need sorting.', row(values, { 3: 'key', 7: 'shift' }), { lanes: split, fixed: [3] }));
   [values[1], values[2]] = [values[2], values[1]];
-  frames.push(frame('Recurse', 'Finish the small left side', 'S1 has three values. Insertion sort inserts 2 before 3. Pivot 4 stays in its final position.', row(values, { ...sortedRoles(3), 3: 'key' }), { lanes: split }));
+  const remaining = [lane('left', 'Finished', 0, 4 / 9, 0.61, 'sorted'), lane('s2', 'S2 · unsorted', 4 / 9, 1, 0.61, 'group')];
+  frames.push(frame('Recurse', 'Finish the small left side.', 'S1 has only three values. Insertion sort moves 2 before 3. Pivot 4 stays fixed; we can now focus on S2.', row(values, { ...sortedRoles(4) }), { lanes: remaining, fixed: [3], operation: 'Small S1 → insertion sort · swap 3 and 2', range: '0–2' }));
   [values[4], values[6]] = [values[6], values[4]];
-  frames.push(frame('Recurse', 'Choose a pivot inside S2', 'S2 has five values, so partition again. Its sampled values are 7, 6, and 9; the new pivot is 7.', row(values, { ...sortedRoles(3), 3: 'sorted', 6: 'key' }), { lanes: split }));
+  frames.push(frame('Recurse', 'Choose 7 inside the right side.', 'S2 has five values, so partition again. Its samples are 7, 6, and 9. Order them; their median is 7.', row(values, { ...sortedRoles(4), 6: 'key', 4: 'shift' }), { lanes: remaining, fixed: [3], operation: 'S2 samples 7, 6, 9 → pivot 7', range: '4–8' }));
   [values[6], values[7]] = [values[7], values[6]];
-  frames.push(frame('Recurse', 'Park 7, then scan its range', 'Park pivot 7 at index 7. The local scans stop at 8 and 5 and have already crossed.', row(values, { 7: 'key', 6: 'compare', 5: 'compare' }, { 6: 'i', 5: 'j' }), { lanes: split }));
+  frames.push(frame('Recurse', 'Park 7. The local scans cross.', 'Park 7 at index 7. i stops at index 6 and j at index 5. They have crossed, so no scan-pair swap is needed.', row(values, { ...sortedRoles(4), 7: 'key', 6: 'compare', 5: 'compare' }, { 6: 'i', 5: 'j' }), { lanes: remaining, fixed: [3], operation: 'Inside S2: i = 6 > j = 5 → stop', range: '4–8' }));
   [values[6], values[7]] = [values[7], values[6]];
-  frames.push(frame('Recurse', '7 finds its final position', 'Swap A[i] with pivot 7. The remaining ranges are [6, 5] and [8, 9]; both use insertion sort.', row(values, { 3: 'sorted', 6: 'key' })));
+  frames.push(frame('Recurse', '7 is fixed between its two sides.', 'Swap A[i] with pivot 7. The remaining small ranges are [6, 5] and [8, 9]. Finish them with insertion sort.', row(values, { ...sortedRoles(4), 6: 'key', 7: 'shift' }), { fixed: [3, 6], range: '4–8', lanes: [lane('left','Finished',0,4/9,0.61),lane('small','Small range',4/9,6/9,0.61,'group'),lane('p','Fixed',6/9,7/9,0.61),lane('right','Small range',7/9,1,0.61,'group')] }));
   [values[4], values[5]] = [values[5], values[4]];
-  frames.push(frame('Remember', 'Each pivot reduces the problem', 'Insert 5 before 6. Every remaining range is sorted, so the complete array is sorted.', row(values, sortedRoles(9))));
-  return frames;
+  frames.push(frame('Remember', 'Smaller problems finish the sort.', 'Insert 5 before 6. [8, 9] already needs no shifts. Every range is now sorted, and every pivot stayed fixed.', row(values, sortedRoles(9))));
+  return arrayStory('quick', frames);
 }
 
 function shellFilm() {
@@ -114,67 +157,98 @@ function shellFilm() {
   [values[4], values[5]] = [values[5], values[4]];
   frames.push(frame('Gap one', 'Shift 6 one slot right', 'Key 5 now follows the open slot at index 4. Compare with 3 at index 3; 3 is smaller, so stop shifting.', row(values, { ...sortedRoles(4), 4: 'key', 5: 'shift', 3: 'compare' }, { 5: 'i', 3: 'j' }), { gap: 1, group: [0, 1, 2, 3, 4, 5], held: '5' }));
   frames.push(frame('Remember', 'The gap controls the distance', 'Insert 5 after 3. Gap 2 ordered separate groups; gap 1 joined them into one sorted array.', row(values, sortedRoles(6))));
-  return frames;
+  return arrayStory('shell', frames);
 }
 
 function mergeFilm(tim = false) {
   const values = (tim ? [1, 4, 7, 2, 3, 6] : [7, 1, 4, 6, 2, 3]).map(item);
-  const frames = [frame(tim ? 'Runs' : 'Split', tim ? 'Find existing order' : 'Make smaller problems', tim
-    ? 'Read from left to right. [1, 4, 7] is an ascending run; 2 begins the next ascending run [2, 3, 6].'
-    : 'Split the range into two halves. Sorting a half means solving the same problem on fewer values.', row(values))];
-  const left = [...values.slice(0, 3)].sort((a, b) => Number(a.value) - Number(b.value));
-  const right = [...values.slice(3)].sort((a, b) => Number(a.value) - Number(b.value));
+  let left = values.slice(0, 3), right = values.slice(3);
+  let leftSorted = false, rightSorted = false, leftUsed = 0, rightUsed = 0;
+  const output = Array(values.length).fill(null);
+  const frames = [];
+  const add = (chapter, title, caption, phase, operation, extra = {}) => {
+    const tokens = [...left.map((v,i) => ({ ...v, x:(i + 0.5)/3, y:0.2, role:'neutral', index:String(i) })),
+      ...right.map((v,i) => ({ ...v, x:(i + 0.5)/3, y:0.5, role:'neutral', index:String(i) }))]
+      .filter(v => !output.some(o => o?.id === v.id));
+    tokens.push(...output.flatMap((v,i) => v ? [{ ...v, x:(i + 0.5)/6, y:0.82, role:'sorted', index:String(i) }] : []));
+    frames.push(frame(chapter, title, caption, tokens, { duration:4.8, operation, merge:{ phase, input:values.map(v => ({...v})), left:left.map(v => ({...v})), right:right.map(v => ({...v})), leftSorted, rightSorted, leftUsed, rightUsed, output:output.map(v => v ? {...v} : null), tim, ...extra } }));
+  };
+  add(tim ? 'Runs' : 'Split', tim ? 'Look for order already in the input.' : 'Start with one unsorted array.', tim
+    ? 'Scan left to right. An ascending run can be reused instead of sorted from scratch.'
+    : 'Split the array into two halves. Each half solves the same sorting problem on fewer values.', 'input', tim ? '1 ≤ 4 ≤ 7 · then 2 begins a new run' : '6 items → two halves of 3');
   if (!tim) {
-    frames.push(frame('Split', 'A single value needs no sorting', 'Keep splitting until each range has one value. These are the base cases that stop recursion.', values.map((v, i) => ({ ...v, x: (i + 0.5) / 6, y: 0.42, role: 'group', index: String(i) })), { texts: [text('base', 'size 1: already sorted', 0.5, 0.7, 'group')] }));
-    frames.push(frame('Merge', 'Merge the small ranges first', 'Merge singleton ranges into sorted pairs, then merge those pairs with the remaining singletons.', row([values[1], values[2], values[0], values[4], values[5], values[3]], { ...sortedRoles(6) }), { lanes: [lane('a', 'left half sorted', 0, 0.5, 0.62), lane('b', 'right half sorted', 0.5, 1, 0.62)] }));
+    add('Split','Two halves. Neither is sorted yet.','The left half is [7, 1, 4]; the right half is [6, 2, 3]. Keep splitting each half.', 'split','Left [7, 1, 4] · right [6, 2, 3]');
+    add('Split','Single values stop the recursion.','A range of size one is already sorted. Start merging these tiny ranges into larger sorted ranges.', 'singletons','[7] [1] [4]     [6] [2] [3]');
+    add('Small merges','The left pair needs no exchange.','Compare 1 and 4. Their pair is already ordered. Now merge [7] with the sorted pair [1, 4].','left-pair','1 ≤ 4 → sorted pair [1, 4]');
+    left = [...left].sort((a,b) => Number(a.value)-Number(b.value)); leftSorted = true;
+    add('Small merges','The left half becomes [1, 4, 7].','Merge [7] and [1, 4]: take 1, then 4, then the remaining 7. Only the left half changes.','left-ready','Fronts 7 and 1 → take 1, then 4, then 7');
+    add('Small merges','The right pair is already ordered.','Compare 2 and 3. Merge their sorted pair [2, 3] with [6]; the finished left half stays put.','right-pair','2 ≤ 3 → sorted pair [2, 3]');
+    right = [...right].sort((a,b) => Number(a.value)-Number(b.value)); rightSorted = true;
+    add('Small merges','The right half becomes [2, 3, 6].','Merge [6] and [2, 3]: take 2, then 3, then the remaining 6. Both halves are now sorted.','right-ready','Fronts 6 and 2 → take 2, then 3, then 6');
   } else {
-    frames.push(frame('Runs', 'Reuse the sorted runs', 'For this small teaching example, minimum run length is 3. Both runs already meet it, so no extension is needed.', row(values, { 0: 'sorted', 1: 'sorted', 2: 'sorted', 3: 'shift', 4: 'shift', 5: 'shift' }), { lanes: [lane('a', 'run A', 0, 0.5, 0.62), lane('b', 'run B', 0.5, 1, 0.62, 'shift')] }));
+    leftSorted = true;
+    add('Runs','The first run is [1, 4, 7].','1 ≤ 4 ≤ 7, but 2 is smaller than 7, so it starts a new run. The first run is already sorted.','left-ready','1 ≤ 4 ≤ 7 · stop the first run before 2');
+    rightSorted = true;
+    add('Runs','The second run is [2, 3, 6].','2 ≤ 3 ≤ 6. This teaching example uses minimum run length 3, so neither run needs insertion-sort extension.','right-ready','2 ≤ 3 ≤ 6 · both runs are long enough');
   }
-  const result = [];
-  const display = (front = []) => [
-    ...left.map((v, i) => ({ ...v, x: (i + 0.5) / 7, y: 0.27, role: front.includes(v.id) ? 'compare' : 'sorted' })),
-    ...right.map((v, i) => ({ ...v, x: 0.56 + (i + 0.5) / 7, y: 0.27, role: front.includes(v.id) ? 'compare' : 'shift' })),
-    ...result.map((v, i) => ({ ...v, x: (i + 0.5) / 6, y: 0.67, role: 'sorted', index: String(i) })),
-  ];
-  const texts = [text('left', 'left run', 0.19, 0.1, 'sorted', 0.7), text('right', 'right run', 0.79, 0.1, 'shift', 0.7), text('output', 'growing output', 0.5, 0.88, 'sorted', 0.7)];
-  frames.push(frame('Merge', 'Only compare the two fronts', 'Each run is sorted. Its front is its smallest unused value, so the smaller front is safe to write next.', display([left[0].id, right[0].id]), { texts }));
-  while (left.length || right.length) {
-    const a = left[0], b = right[0];
-    const chosen = !b || (a && Number(a.value) <= Number(b.value)) ? left.shift() : right.shift();
-    result.push(chosen);
-    frames.push(frame('Merge', `Write ${chosen.value}`, a && b
-      ? `Compare fronts ${a.value} and ${b.value}. ${chosen.value} is smaller, so it joins the output. Advance only the run it came from.`
-      : `One run is empty. Copy ${chosen.value} from the remaining run; its values are already ordered.`, display([left[0]?.id, right[0]?.id]), { texts }));
+  add('Merge','Compare only the unused fronts.','Each source is sorted. Its front is its smallest unused value. Choose the smaller front to fill the next output slot.','merge','Left front 1 vs right front 2 → take 1');
+  for (let target=0; target<output.length; target++) {
+    const a=left[leftUsed], b=right[rightUsed];
+    const source=!b || (a && Number(a.value)<=Number(b.value)) ? 'left' : 'right';
+    const sourceIndex=source==='left' ? leftUsed++ : rightUsed++;
+    const chosen=(source==='left' ? left : right)[sourceIndex];
+    output[target]={...chosen};
+    add('Merge',`Copy ${chosen.value} into output slot ${target}.`, a && b
+      ? `Compare ${a.value} and ${b.value}. Copy the smaller front, ${chosen.value}, into slot ${target}. Advance only the ${source} pointer.`
+      : `The ${source==='left' ? 'right' : 'left'} source is exhausted. Copy ${chosen.value} from the remaining source into slot ${target}.`,
+      'place', a && b ? `${a.value} vs ${b.value} → ${chosen.value} goes to output[${target}]` : `One source exhausted → copy ${chosen.value} into output[${target}]`,
+      {source,sourceIndex,target,chosenId:chosen.id,compared:[a?.id,b?.id].filter(Boolean)});
   }
-  frames.push(frame('Remember', tim ? 'Use the order that is already there' : 'Small solutions build the big solution', tim
+  add('Remember',tim ? 'Reuse order. Merge the runs.' : 'Small sorted ranges build the whole.',tim
     ? 'This example needed a scan and one merge. Short runs would first be extended by insertion sort; production TimSort also balances its run stack.'
-    : 'Splitting made the base cases easy. Merging preserved sorted order all the way back to the complete array.', row(result, sortedRoles(result.length))));
+    : 'Every output slot is filled in order. Splitting reached simple base cases; merging built larger sorted ranges from them.', 'done','All 6 output slots are filled in sorted order');
   return frames;
 }
 
 function countingFilm() {
   const values = [2, 1, 2, 0, 3, 1].map(item);
   const counts = [0, 0, 0, 0];
-  const output = [];
+  const output = Array(values.length).fill(null);
   const inputRow = () => values.map((v, i) => ({ ...v, x: (i + 0.5) / 6, y: 0.2, role: 'neutral', index: String(i) }));
   const buckets = () => counts.map((v, i) => ({ id: `bucket${i}`, value: String(v), x: (i + 1) / 5, y: 0.48, role: 'group', index: `value ${i}` }));
-  const texts = [text('input', 'input: n = 6 items', 0.5, 0.05, 'neutral', 0.65), text('output', 'output: 6 positions', 0.5, 0.96, 'sorted', 0.65)];
-  const frames = [frame('Range', 'Items and buckets are different sizes', 'Six input items span values 0 through 3. k = 3 − 0 + 1 = 4 buckets, each beginning at zero.', [...inputRow(), ...buckets()], { texts })];
+  let frequency, ends;
+  const snapshot = (phase, action = {}) => ({
+    phase, input: values.map(v => ({ ...v })), counts: [...counts],
+    frequency: frequency ? [...frequency] : null, ends: ends ? [...ends] : null,
+    output: output.map(v => v ? { ...v } : null), ...action,
+  });
+  const outputRow = () => output.flatMap((v, i) => v ? [{ ...v, x: (i + 0.5) / 6, y: 0.78, role: 'sorted', index: String(i) }] : []);
+  const add = (chapter, title, caption, phase, action = {}) => frames.push(frame(chapter, title, caption,
+    [...inputRow().filter(v => !output.some(o => o?.id === v.id)), ...buckets(), ...outputRow()],
+    { duration: 4.2, counting: snapshot(phase, action) }));
+  const frames = [];
+  add('Set up', '6 items. 4 possible values.', 'The values run from 0 to 3. Create four zero-filled buckets, and six empty output slots.', 'setup');
   for (let i = 0; i < values.length; i++) {
-    const v = Number(values[i].value); counts[v]++;
-    const tokens = [...inputRow(), ...buckets()];
-    tokens[i].role = 'compare'; tokens[6 + v].role = 'key'; tokens[i].pointer = 'i';
-    frames.push(frame('Count', `Add one to bucket ${v}`, `Input value ${v} maps to bucket ${v} because the minimum is zero. That bucket now contains ${counts[v]} occurrence${counts[v] === 1 ? '' : 's'}.`, tokens, { texts }));
+    const v = Number(values[i].value), before = counts[v];
+    counts[v]++;
+    add('Count', `Read ${v}. Count one more ${v}.`, `Input index ${i} contains ${v}. Add one to bucket ${v}: ${before} → ${counts[v]}. The input stays unchanged.`, 'count', { activeInput: i, activeBucket: v, before, after: counts[v] });
   }
-  for (let i = 1; i < counts.length; i++) counts[i] += counts[i - 1];
-  frames.push(frame('Positions', 'Counts become end positions', 'Cumulative counts are [1, 3, 5, 6]. Count[v] now tells how many items are at most v; count[v] − 1 is the next output index.', [...inputRow(), ...buckets()], { texts }));
+  frequency = [...counts];
+  add('Count', 'Now we know how many of each.', 'One 0, two 1s, two 2s, and one 3. These are frequencies, not output indices.', 'frequencies');
+  for (let v = 1; v < counts.length; v++) {
+    const before = counts[v], addend = counts[v - 1];
+    counts[v] += addend;
+    add('Find ranges', `How many values are at most ${v}?`, `${before} value${before === 1 ? '' : 's'} equal ${v}, plus ${addend} smaller values. Total: ${counts[v]}. ${v}s belong at output indices ${addend}–${counts[v] - 1}.`, 'prefix', { activeBucket: v, before, addend, after: counts[v] });
+  }
+  ends = [...counts];
+  add('Find ranges', 'Each value has its own output range.', 'The bucket numbers now count values up to each value. Subtract one to find the rightmost free slot in that range.', 'ranges');
   for (let i = values.length - 1; i >= 0; i--) {
-    const chosen = values[i], v = Number(chosen.value), target = --counts[v];
-    output.push({ ...chosen, x: (target + 0.5) / 6, y: 0.78, role: 'sorted', index: String(target) });
-    const tokens = [...inputRow().filter((_, index) => index < i), ...buckets(), ...output];
-    frames.push(frame('Place', `${v} goes to output index ${target}`, `Read input index ${i} from the right. Decrease bucket ${v} to ${counts[v]}, then write ${v} into output index ${target}.`, tokens, { texts }));
+    const chosen = values[i], v = Number(chosen.value), before = counts[v], target = --counts[v];
+    output[target] = { ...chosen, sourceIndex: i };
+    add('Place', `Copy ${v} into output slot ${target}.`, `Bucket ${v}: ${before} − 1 = ${target}. Copy input[${i}] there. Reading right to left keeps equal values in their original order.`, 'place', { activeInput: i, activeBucket: v, before, after: counts[v], target });
+    frames.at(-1).duration = 4.8;
   }
-  frames.push(frame('Remember', 'Value selects the bucket', 'The output is sorted. Reading right to left preserves the input order of equal values; n items and k buckets still mean different things.', output.map(t => ({ ...t, y: 0.42 })), { texts: [text('cost', 'count n + accumulate k + place n', 0.5, 0.75, 'group', 0.75)] }));
+  frames.push(frame('Remember', 'Count → find ranges → fill slots.', 'The output is sorted. The small i labels show where each copy came from: equal values kept their original order.', outputRow(), { duration: 4.8, counting: snapshot('done') }));
   return frames;
 }
 
@@ -356,6 +430,13 @@ export const conceptVariants = {
 };
 
 export const conceptLegends = {
+  selection: [['key','Smallest found'],['compare','Value being checked'],['shift','Swap in progress'],['sorted','Fixed prefix'],['group','i / j pointers']],
+  insertion: [['key','Held key'],['compare','Compare to the left'],['shift','Value moving right'],['sorted','Completed prefix'],['group','i / j pointers']],
+  shell: [['group','Active gap group / pointers'],['key','Held key'],['compare','Next comparison'],['shift','Value moving right'],['sorted','Completed insertion']],
+  quick: [['key','Current pivot'],['compare','Stopped scan values'],['shift','Swap in progress'],['group','Unsorted ranges / pointers'],['sorted','Fixed / finished']],
+  merge: [['group','Halves / pointers'],['compare','Unused fronts'],['key','Copy into output'],['sorted','Sorted ranges / output']],
+  tim: [['group','Runs / pointers'],['compare','Unused fronts'],['key','Copy into output'],['sorted','Verified runs / output']],
+  counting: [['compare','Reading input'],['key','Active bucket / copy path'],['group','Output range'],['sorted','Written output']],
   induction: [['sorted','Assumed / established'],['key','New case or term'],['group','Algebraic bridge']],
   telescoping: [['key','Positive term'],['shift','Negative term'],['group','Matching opposite pair'],['sorted','Surviving endpoint']],
   master: [['key','Subproblem input size'],['shift','Work at this level'],['sorted','Total growth']],

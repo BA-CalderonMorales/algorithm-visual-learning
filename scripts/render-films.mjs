@@ -16,6 +16,12 @@ try {
   const queue = [...films];
   await Promise.all(Array.from({ length: 2 }, async () => {
     const page = await browser.newPage({ viewport: { width: 1600, height: 896 } });
+    // Keep the recording on the server's origin without loading the app or its
+    // live-reload client. Saving another film must not navigate an active capture.
+    await page.route(new URL('/', origin).href, route => route.fulfill({
+      contentType: 'text/html',
+      body: '<!doctype html><html lang="en"><head><title>Film recorder</title></head><body></body></html>'
+    }));
     await page.goto(origin);
     while (queue.length) {
       const film = queue.shift();

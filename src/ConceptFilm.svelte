@@ -7,6 +7,7 @@
   let variant = $state('master');
   let examples = $derived(conceptVariants[film.id]);
   let selectedFilm = $derived(examples?.find(v => v.id === variant)?.film ?? film);
+  let isSorting = $derived(['selection', 'insertion', 'shell', 'quick', 'merge', 'tim', 'counting'].includes(selectedFilm.id));
   let colorKey = $derived(conceptLegends[film.id] ?? [['key', 'Held / selected'], ['compare', 'Compare'], ['shift', 'Shift'], ['sorted', 'Completed'], ['group', 'Group / pointers']]);
   $effect(() => { if (examples && !examples.some(example => example.id === variant)) variant = examples[0].id; });
   let canvas;
@@ -61,7 +62,7 @@
       const width = entries[0].contentRect.width;
       compact = width < 540;
       canvas.width = compact ? 1120 : 1800;
-      canvas.height = compact ? 1220 : 1008;
+      canvas.height = isSorting ? (compact ? 1020 : 900) : (compact ? 1220 : 1008);
       ready = true; paint();
     });
     resize.observe(player);
@@ -93,8 +94,9 @@
       <label class="film-example">{film.id === 'master' ? 'Recurrence' : 'Example'}<select bind:value={variant} onchange={changeVariant} aria-label="{film.id === 'master' ? 'Recurrence' : 'Visualization example'}">{#each examples as choice}<option value={choice.id}>{choice.label}</option>{/each}</select></label>
     {/if}
   </header>
-  <div class="film-stage" class:compact>
+  <div class="film-stage" class:compact class:sorting={isSorting}>
     <canvas bind:this={canvas} aria-label="{current.scene.title}. {current.scene.caption}">{current.scene.title}. {current.scene.caption}</canvas>
+    {#if isSorting}<p class="film-scene-caption">{current.scene.caption}</p>{/if}
   </div>
   <div class="film-controls">
     <button class="film-play" onclick={togglePlay} aria-label={playing ? 'Pause animation' : 'Play animation'}>{playing ? 'Ⅱ Pause' : '▶ Play'}</button>
@@ -126,6 +128,9 @@
   .film-stage { width:min(100%,1080px); align-self:center; flex:none; }
   canvas { display:block; width:100%; height:auto; aspect-ratio:1000 / 560; }
   .compact canvas { aspect-ratio:560 / 610; }
+  .sorting canvas { aspect-ratio:1000 / 500; }
+  .sorting.compact canvas { aspect-ratio:560 / 510; }
+  .film-scene-caption { margin:0 28px; padding:14px 0; border-top:1px solid #303944; color:#c8d2df; font-size:14px; line-height:1.65; }
   .film-controls { display:flex; flex-wrap:wrap; gap:8px; align-items:center; padding:12px 28px 0; }
   button,select,.film-video { min-height:36px; border:1px solid #3c4857; border-radius:0; background:#202834; padding:7px 12px; color:#d3dfed; font:inherit; font-size:12px; cursor:pointer; text-decoration:none; }
   button:hover,.film-video:hover { border-color:#79b7ff; background:#263545; }
@@ -176,6 +181,7 @@
     .film-scrubber { padding-inline:16px; }
     .film-chapters { padding-inline:16px; gap:2px; }
     .film-key,.film-bottom { padding-inline:16px; }
+    .film-scene-caption { margin-inline:16px; }
     button,select,.film-video { min-height:40px; }
     .film-connections { align-items:flex-start; flex-direction:column; }
   }
