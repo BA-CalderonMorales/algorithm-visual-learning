@@ -59,6 +59,13 @@ export const resources = [
     details: 'https://www.hellointerview.com/pricing',
   },
   {
+    title: 'GetCracked',
+    href: 'https://getcracked.io/',
+    use: 'Quant-focused interview preparation, with coding exercises, quizzes, and courses for trading, development, and hardware engineering.',
+    access: 'See provider for access options',
+    details: 'https://getcracked.io/pricing',
+  },
+  {
     title: 'MIT · Introduction to Algorithms',
     href: 'https://ocw.mit.edu/courses/6-006-introduction-to-algorithms-spring-2020/',
     use: 'Lectures, notes, and practice problems for deeper algorithm analysis.',

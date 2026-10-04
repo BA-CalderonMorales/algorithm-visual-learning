@@ -6,6 +6,8 @@
   import GrowthChart from '../growth/view.svelte';
   import Implementation from '../implementation/view.svelte';
   import ConceptFilm from '../../../shared/playback/player/view.svelte';
+  import { renderSelection } from '../../selection/components/play/renderer.ts';
+  import { describeScene } from '../../selection/components/play/model.ts';
   let { vm } = $props();
 </script>
 
@@ -67,12 +69,16 @@
     {/key}
   {/if}
   {#if vm.algorithmView === 'play'}
-    {#key vm.selectedAlgorithm.id}<ConceptFilm
+    {#key vm.selectedAlgorithm.id}
+      <ConceptFilm
         film={vm.playFilms[vm.selectedAlgorithm.id]}
         legend={vm.conceptLegends[vm.selectedAlgorithm.id]}
         narration={vm.voiceForFilm(vm.playFilms[vm.selectedAlgorithm.id])}
+        renderer={vm.selectedAlgorithm.id === 'selection' ? renderSelection : undefined}
+        sceneDescription={vm.selectedAlgorithm.id === 'selection' ? describeScene : undefined}
         sorting
-      />{/key}
+      />
+    {/key}
   {:else if vm.algorithmView === 'understand'}
     <section class={classNames(styles, 'learning-view understand-view')} aria-labelledby="understand-title">
       <header class={classNames(styles, 'understand-intro')}>

@@ -10,10 +10,10 @@ export const baseSearchEntries = [
     title: 'More learning resources',
     group: 'Start here',
     description:
-      'AlgoMaster, NeetCode, Hello Interview for FAANG-focused interview prep, and free MIT OpenCourseWare courses.',
+      'AlgoMaster, NeetCode, Hello Interview for FAANG-focused prep, GetCracked for quant interviews, and free MIT courses.',
     href: '#/home/resources',
     terms:
-      'resources courses paid free external learning hello interview hellointerview FAANG job hiring interview preparation',
+      'resources courses paid free external learning hello interview hellointerview FAANG job hiring interview preparation getcracked get cracked quant trading hardware',
   },
   {
     title: 'A note from the author',

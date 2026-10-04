@@ -14,7 +14,7 @@
     "build:motion": "vite build --config vite.motion.config.js",
     "preview": "vite preview",
     "test:walkthroughs": "node scripts/verify-walkthroughs.mjs",
-    "test:play": "node scripts/verify-play-models.mjs && node scripts/verify-play.mjs && node scripts/verify-sorting-play.mjs",
+    "test:play": "node scripts/verify-play-models.mjs && node scripts/verify-play.mjs && node scripts/verify-sorting-play.mjs && node scripts/verify-selection-play.mjs && node scripts/verify-player-pattern.mjs",
     "render:films": "node scripts/render-films.mjs",
     "test:film-cache": "node scripts/verify-film-cache.mjs",
     "test:film-rendering": "node scripts/verify-film-rendering.mjs",

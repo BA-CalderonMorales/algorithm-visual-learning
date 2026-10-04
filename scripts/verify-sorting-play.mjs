@@ -39,6 +39,15 @@ try {
             let time=0;
             for(const scene of film.frames){for(const local of [0,0.8,2.1])renderFilm(canvas,film,time+local,{compact,exportVideo});time+=scene.duration;}
           }
+          if (id === 'selection') {
+            const { renderSelection } = await import('/src/algorithms/selection/components/play/renderer.ts');
+            height = compact ? 280 : 260;
+            let time = 0;
+            for (const scene of film.frames) {
+              for (const local of [0, 0.8, 2.1]) renderSelection(canvas, film, time + local, { compact });
+              time += scene.duration;
+            }
+          }
         }
         finally{ctx.fillText=original;}
         return failures;

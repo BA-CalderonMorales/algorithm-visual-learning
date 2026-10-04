@@ -1,6 +1,8 @@
 import { onMount } from 'svelte';
-import { chaptersFor, sceneAt } from '../model.ts';
-import { renderFilm, playPalette } from '../renderers/concept.js';
+import { sceneAt } from '../model.ts';
+import { playPalette } from '../renderers/concept.js';
+import { renderPlayerFilm } from './renderer.ts';
+import { describePlayerScene, narrationStatus, stageBounds } from './model.ts';
 import { narratedTime } from '../scene-narration.ts';
 import { createRecordedNarration, withNarrationTiming } from '../recorded-narration.ts';
 
@@ -13,6 +15,8 @@ export function createViewModel(props = () => ({})) {
     legend = [],
     narration = null,
     sorting = false,
+    renderer = renderPlayerFilm,
+    sceneDescription = describePlayerScene,
   } = $derived(props());
   let variant = $state('master');
   let examples = $derived(variants.length ? variants : undefined);
@@ -54,7 +58,11 @@ export function createViewModel(props = () => ({})) {
 
   let narrator = $state(null);
   let current = $derived(sceneAt(selectedFilm, seconds));
-  let chapters = $derived(chaptersFor(selectedFilm));
+  let scene = $derived(sceneDescription(current.scene, current.index, selectedFilm.frames.length));
+  let status = $derived(narrationStatus({ audioSupported, voiceAvailable, voiceStatus, voiceOn, reverse, playing }));
+  let stageAspect = $derived(
+    `${compact ? 560 : 1000} / ${stageBounds(selectedFilm.id, current.scene, compact).height}`,
+  );
   let clipUrl = $derived(`${import.meta.env.BASE_URL}films/${selectedFilm.id}.webm`);
   const formatTime = (value) => `${Math.floor(value / 60)}:${String(Math.floor(value % 60)).padStart(2, '0')}`;
   const voiceKey = (index) => `${baseFilm.id}:${clips[index].url}`;
@@ -113,7 +121,7 @@ export function createViewModel(props = () => ({})) {
   }
   function paint() {
     if (canvas && ready)
-      renderFilm(canvas, selectedFilm, seconds, { compact, reduced: reduced || (lessonPlayer && !playing) });
+      renderer(canvas, selectedFilm, seconds, { compact, reduced: reduced || (lessonPlayer && !playing) });
   }
   function togglePlay() {
     if (playing) {
@@ -135,15 +143,6 @@ export function createViewModel(props = () => ({})) {
     seconds = time;
     paint();
     if (playing) beginNarration();
-    if (lessonPlayer)
-      requestAnimationFrame(() => {
-        const scroller = player.closest('.study-visual-scroll');
-        const stage = player.querySelector('.film-stage');
-        const controls = player.querySelector('.film-controls');
-        if (scroller && stage)
-          scroller.scrollTop +=
-            stage.getBoundingClientRect().top - scroller.getBoundingClientRect().top - controls.offsetHeight;
-      });
   }
   function changeVariant() {
     playing = false;
@@ -152,6 +151,13 @@ export function createViewModel(props = () => ({})) {
   function jumpScene(index) {
     playing = false;
     jump(sceneStart(index));
+    // A transcript jump should reveal its scene, not leave the diagram above
+    // the lesson's viewport. Ordinary playback controls never move the page.
+    if (lessonPlayer)
+      requestAnimationFrame(() => {
+        const scroller = player?.closest('.study-visual-scroll');
+        if (scroller) scroller.scrollTop = 0;
+      });
   }
 
   $effect(() => {
@@ -247,12 +253,6 @@ export function createViewModel(props = () => ({})) {
   return {
     get jumpScene() {
       return jumpScene;
-    },
-    get conceptVariants() {
-      return conceptVariants;
-    },
-    get conceptLegends() {
-      return conceptLegends;
     },
     get playPalette() {
       return playPalette;
@@ -353,8 +353,14 @@ export function createViewModel(props = () => ({})) {
     get current() {
       return current;
     },
-    get chapters() {
-      return chapters;
+    get scene() {
+      return scene;
+    },
+    get status() {
+      return status;
+    },
+    get stageAspect() {
+      return stageAspect;
     },
     get clipUrl() {
       return clipUrl;

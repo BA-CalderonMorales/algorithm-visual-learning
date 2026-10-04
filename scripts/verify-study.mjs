@@ -50,7 +50,7 @@ try {
           assert.equal(await picker.locator('option').count(), 3);
           for (const choice of conceptVariants[lesson.id]) {
             await picker.selectOption(choice.id);
-            await page.locator('.concept-film').filter({hasText:choice.film.takeaway}).waitFor();
+            await page.locator('.scene-heading h2').filter({hasText:choice.film.frames[0].title}).waitFor();
             assert.equal(await page.getByLabel('Seek animation', {exact:true}).inputValue(), '0');
             await page.getByLabel('Playback speed', {exact:true}).selectOption('3');
             await page.getByRole('button', {name:'Play animation',exact:true}).click();
@@ -75,7 +75,9 @@ try {
   await page.evaluate(() => window.scrollTo(0, 0));
   await page.screenshot({path:'screenshots/telescoping-examples-local.png',fullPage:true});
   await page.getByRole('tab', {name:'Visualize',exact:true}).click();
-  await page.getByRole('button',{name:'Cancel',exact:true}).click();
+  await page.getByText('Read the explanation', { exact: true }).click();
+  await page.locator('.film-transcript button').nth(1).click();
+  assert.equal(await page.locator('.scene-meta .phase').innerText(), 'Cancel');
   await page.waitForTimeout(1000);
   await page.screenshot({path:'screenshots/telescoping-visual-local.png',fullPage:true});
   await page.goto(`${origin}/#/home`);
