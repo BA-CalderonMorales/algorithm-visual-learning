@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
-import { createRecordedNarration, withNarrationTiming } from '../src/recorded-narration.js';
-import { narratedTime } from '../src/scene-narration.js';
-import { playFilms, sceneAt } from '../src/play-models.js';
+import { createRecordedNarration, withNarrationTiming } from '../src/shared/playback/recorded-narration.ts';
+import { narratedTime } from '../src/shared/playback/scene-narration.ts';
+import { playFilms, sceneAt } from '../src/app/film-catalog.ts';
 
 class FakeAudio {
   static instances = [];

@@ -1,0 +1,361 @@
+.scope {
+}
+.concept-film.scope {
+  min-width: 0;
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  overflow: auto;
+  background: #14181e;
+  scrollbar-width: thin;
+  scrollbar-color: #526777 #14181e;
+}
+.concept-film.embedded.scope {
+  margin: 0 0 26px;
+  overflow: visible;
+  border: 1px solid #343e49;
+}
+.concept-film.embedded.lesson-player.scope {
+  margin: 0;
+  border: 0;
+}
+.film-heading.scope {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 22px 28px 16px;
+}
+.film-label.scope {
+  color: #65d9b0;
+  font-size: 11px;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+.film-heading :global(h2).scope {
+  margin: 5px 0;
+  font-size: clamp(20px, 2.3vw, 27px);
+  letter-spacing: -0.03em;
+}
+.film-heading :global(p).scope {
+  margin: 5px 0 0;
+  max-width: 750px;
+  color: #a9b6c5;
+  font-size: 13px;
+  line-height: 1.6;
+}
+.film-stage.scope {
+  width: min(100%, 1080px);
+  align-self: center;
+  flex: none;
+}
+:global(canvas).scope {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1000 / 560;
+}
+:global(.compact) :global(canvas).scope {
+  aspect-ratio: 560 / 610;
+}
+.sorting :global(canvas).scope {
+  aspect-ratio: 1000 / 500;
+}
+.sorting:global(.compact) :global(canvas).scope {
+  aspect-ratio: 560 / 510;
+}
+.film-scene-caption.scope {
+  margin: 0 28px;
+  padding: 14px 0;
+  border-top: 1px solid #303944;
+  color: #c8d2df;
+  font-size: 14px;
+  line-height: 1.65;
+}
+.film-controls.scope {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  padding: 12px 28px 0;
+}
+.film-narration.scope {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+  margin: 0 28px;
+  padding: 12px 0;
+  border-block: 1px solid #303944;
+}
+.film-voice-status.scope {
+  flex: 1 1 230px;
+  color: #a9b6c5;
+  font-size: 12px;
+  line-height: 1.6;
+}
+:global(button):disabled.scope {
+  opacity: 0.45;
+  cursor: default;
+}
+:global(button).scope,
+:global(select).scope,
+.film-video.scope {
+  min-height: 36px;
+  border: 1px solid #3c4857;
+  border-radius: 0;
+  background: #202834;
+  padding: 7px 12px;
+  color: #d3dfed;
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+  text-decoration: none;
+}
+:global(button):hover.scope,
+.film-video:hover.scope {
+  border-color: #79b7ff;
+  background: #263545;
+}
+:global(button):focus-visible.scope,
+:global(select):focus-visible.scope,
+:global(input):focus-visible.scope,
+:global(a):focus-visible.scope,
+:global(summary):focus-visible.scope {
+  outline: 2px solid #79b7ff;
+  outline-offset: 3px;
+}
+.film-play.scope {
+  background: #284765;
+  border-color: #527da4;
+  min-width: 95px;
+  color: #f3f7fb;
+}
+.chosen.scope {
+  color: #c2a0fb;
+  border-color: #886cad;
+}
+.film-speed.scope {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  color: #9dadbf;
+  font-size: 11px;
+}
+.film-speed :global(select).scope {
+  min-width: 65px;
+}
+.film-example.scope {
+  display: grid;
+  gap: 5px;
+  color: #98a7ba;
+  font-size: 11px;
+}
+.film-example :global(select).scope {
+  width: clamp(200px, 23vw, 285px);
+  max-width: 100%;
+}
+.film-time.scope {
+  margin-left: auto;
+  color: #9eadbe;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.film-video.scope {
+  background: transparent;
+}
+.film-scrubber.scope {
+  padding: 8px 28px 4px;
+}
+.film-scrubber :global(input).scope {
+  display: block;
+  width: 100%;
+  margin: 0;
+  min-height: 28px;
+  cursor: pointer;
+  accent-color: #79b7ff;
+}
+.film-chapters.scope {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding: 0 28px 15px;
+}
+.film-chapters :global(button).scope {
+  min-height: 30px;
+  padding: 5px 9px;
+  border-color: transparent;
+  background: transparent;
+  font-size: 11px;
+}
+.film-chapters :global(button).chosen.scope {
+  border-bottom-color: #c2a0fb;
+}
+.film-key.scope {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 15px;
+  padding: 12px 28px;
+  border-top: 1px solid #303944;
+  color: #9aaabd;
+  font-size: 10px;
+}
+.film-key :global(span).scope {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.film-key :global(i).scope {
+  width: 7px;
+  height: 7px;
+}
+.film-bottom.scope {
+  padding: 0 28px 20px;
+}
+.film-note.scope {
+  margin: 4px 0 12px;
+  color: #8d9bad;
+  font-size: 11px;
+  line-height: 1.65;
+}
+.film-connections.scope {
+  display: flex;
+  gap: 8px 20px;
+  flex-wrap: wrap;
+  align-items: center;
+  padding: 12px 0;
+  border-top: 1px solid #303944;
+  font-size: 12px;
+}
+.film-connections :global(span).scope {
+  color: #8999ae;
+  font-size: 10px;
+}
+.film-connections :global(a).scope {
+  color: #9ac8ff;
+  text-decoration: none;
+}
+.film-connections :global(a):hover.scope {
+  text-decoration: underline;
+}
+.film-transcript.scope {
+  border-top: 1px solid #303944;
+  color: #99a8bb;
+  font-size: 12px;
+}
+:global(summary).scope {
+  cursor: pointer;
+  padding-top: 14px;
+}
+.film-transcript :global(ol).scope {
+  display: grid;
+  gap: 15px;
+  padding-left: 23px;
+}
+.film-transcript :global(button).scope {
+  padding: 0;
+  min-height: 26px;
+  background: transparent;
+  border: 0;
+  color: #c4d9f3;
+  text-align: left;
+}
+.film-transcript :global(p).scope {
+  margin: 4px 0;
+  line-height: 1.65;
+}
+.lesson-player .film-heading.scope {
+  order: 0;
+  padding: 14px 22px;
+  border-bottom: 1px solid #303944;
+}
+.lesson-player .film-heading :global(h2).scope,
+.lesson-player .film-label.scope {
+  display: none;
+}
+.lesson-player .film-heading :global(p).scope {
+  margin: 0;
+  max-width: 560px;
+}
+.lesson-player .film-controls.scope {
+  order: 1;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  padding: 10px 22px;
+  background: #19212b;
+  border-bottom: 1px solid #354352;
+}
+.lesson-player .film-scrubber.scope {
+  order: 2;
+  padding: 0 22px 4px;
+  background: #19212b;
+}
+.lesson-player .film-stage.scope {
+  order: 3;
+}
+.lesson-player .film-chapters.scope {
+  order: 4;
+}
+.lesson-player .film-key.scope {
+  order: 5;
+}
+.lesson-player .film-bottom.scope {
+  order: 6;
+}
+.visually-hidden.scope {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+}
+@media (max-width: 600px) {
+  .film-heading.scope {
+    padding: 18px 16px 8px;
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .film-controls.scope {
+    padding: 10px 16px 0;
+    gap: 6px;
+  }
+  .film-heading :global(p).scope {
+    font-size: 12px;
+  }
+  .film-speed.scope {
+    margin-left: auto;
+  }
+  .film-time.scope {
+    margin-left: 0;
+  }
+  .film-scrubber.scope {
+    padding-inline: 16px;
+  }
+  .film-chapters.scope {
+    padding-inline: 16px;
+    gap: 2px;
+  }
+  .film-key.scope,
+  .film-bottom.scope {
+    padding-inline: 16px;
+  }
+  .film-scene-caption.scope {
+    margin-inline: 16px;
+  }
+  .film-narration.scope {
+    margin-inline: 16px;
+  }
+  :global(button).scope,
+  :global(select).scope,
+  .film-video.scope {
+    min-height: 40px;
+  }
+  .film-connections.scope {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}

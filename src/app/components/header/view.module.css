@@ -1,0 +1,326 @@
+.scope {
+}
+.topbar.scope {
+  position: sticky;
+  top: 0;
+  z-index: 4;
+  display: flex;
+  height: 55px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 34px;
+  border-bottom: 1px solid #30313a;
+  background: #191a1fcc;
+  backdrop-filter: blur(16px);
+}
+.breadcrumbs.scope {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: #858996;
+  font-size: 11px;
+}
+.breadcrumbs :global(strong).scope {
+  color: #d4d6de;
+  font-weight: 550;
+}
+.crumb-separator.scope {
+  color: #50535e;
+}
+.domain-tabs.scope {
+  position: sticky;
+  top: 55px;
+  z-index: 3;
+  display: flex;
+  gap: 4px;
+  padding: 12px 34px 0;
+  border-bottom: 1px solid #343640;
+  background: #1b1c21ef;
+  backdrop-filter: blur(16px);
+}
+.domain-tabs :global(button).scope {
+  position: relative;
+  padding: 9px 13px 11px;
+  border: 0;
+  border-radius: 7px 7px 0 0;
+  background: transparent;
+  color: #8f93a0;
+  cursor: pointer;
+  font-size: 11px;
+  transition:
+    color 0.15s,
+    background 0.15s;
+}
+.domain-tabs :global(button):hover.scope {
+  color: #e6e7ee;
+  background: #282a31;
+}
+.domain-tabs :global(button).active.scope {
+  color: #b8d9ff;
+  background: #242a33;
+}
+.domain-tabs :global(button).active.scope::after {
+  position: absolute;
+  right: 9px;
+  bottom: -1px;
+  left: 9px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--blue);
+  content: '';
+}
+@media (max-width: 1000px) {
+  .topbar.scope,
+  .domain-tabs.scope {
+    padding-right: 23px;
+    padding-left: 23px;
+  }
+}
+@media (max-width: 720px) {
+  .topbar.scope {
+    height: 45px;
+    padding: 0 15px;
+  }
+}
+@media (max-width: 720px) {
+  .domain-tabs.scope {
+    top: 45px;
+    padding: 8px 12px 0;
+  }
+}
+@media (max-width: 720px) {
+  .domain-tabs :global(button).scope {
+    flex: 1;
+    padding: 8px 5px 10px;
+    font-size: 10px;
+  }
+}
+.topbar-leading.scope {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 13px;
+}
+.topbar-actions.scope {
+  display: flex;
+  min-width: 0;
+  flex: 1 1 auto;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+}
+.global-search-trigger.scope,
+.fullscreen-toggle.scope,
+.repository-link.scope {
+  display: inline-flex;
+  height: 34px;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 1px solid #3d404b;
+  border-radius: 7px;
+  background: #202127;
+  color: #c5c8d2;
+  text-decoration: none;
+  cursor: pointer;
+}
+.global-search-trigger.scope {
+  width: min(250px, 24vw);
+  min-width: 150px;
+  flex: 0 1 250px;
+  justify-content: flex-start;
+  padding: 0 10px;
+  color: #9ea3b1;
+  font-size: 11px;
+}
+.repository-link.scope {
+  flex: 0 0 auto;
+}
+.global-search-trigger:hover.scope,
+.fullscreen-toggle:hover.scope,
+.repository-link:hover.scope {
+  border-color: #638cb0;
+  background: #282b33;
+  color: #f1f3f8;
+}
+.global-search-trigger:focus-visible.scope,
+.fullscreen-toggle:focus-visible.scope,
+.repository-link:focus-visible.scope {
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
+}
+.global-search-trigger :global(svg).scope,
+.fullscreen-toggle :global(svg).scope,
+.repository-link :global(svg).scope {
+  width: 16px;
+  height: 16px;
+  flex: 0 0 auto;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.6;
+}
+.repository-link :global(svg).scope {
+  fill: currentColor;
+  stroke: none;
+}
+.global-search-trigger :global(kbd).scope {
+  padding: 2px 5px;
+  border: 1px solid #3b3d47;
+  border-radius: 4px;
+  background: #191a20;
+  color: #858a99;
+  font:
+    9px ui-monospace,
+    SFMono-Regular,
+    Consolas,
+    monospace;
+  white-space: nowrap;
+}
+.global-search-trigger :global(kbd).scope {
+  margin-left: auto;
+}
+.fullscreen-toggle.scope {
+  width: 34px;
+  flex: 0 0 34px;
+  padding: 0;
+}
+.repository-link.scope {
+  padding: 0 10px;
+  font-size: 11px;
+}
+.repository-link :global(span):last-child.scope {
+  color: #858a99;
+  font-size: 12px;
+}
+.nav-toggle.scope {
+  display: grid;
+  width: 34px;
+  height: 34px;
+  flex: 0 0 auto;
+  place-items: center;
+  border: 1px solid #41434e;
+  border-radius: 8px;
+  background: #24252b;
+  color: #d6dae4;
+  cursor: pointer;
+  font-size: 17px;
+  line-height: 1;
+}
+.nav-toggle:hover.scope {
+  border-color: #638cb0;
+  background: #2b3039;
+}
+.domain-tabs.scope {
+  display: flex;
+}
+.domain-tabs :global(button).scope {
+  border-radius: 0;
+  font-size: 13px;
+}
+.domain-tabs :global(button).active.scope {
+  background: #252d38;
+  color: #d1e6ff;
+}
+
+@media (min-width: 1100px) {
+  .topbar.scope {
+    padding-inline: clamp(28px, 4vw, 64px);
+  }
+}
+
+@media (min-width: 1100px) {
+  .domain-tabs.scope {
+    padding-inline: clamp(28px, 4vw, 64px);
+  }
+}
+@media (max-width: 1099px) {
+  .domain-tabs.scope {
+    display: none;
+  }
+}
+@media (max-width: 1099px) {
+  .topbar.scope {
+    height: 52px;
+    padding-inline: 16px;
+  }
+}
+@media (max-width: 1099px) {
+  .topbar-leading.scope {
+    gap: 10px;
+  }
+}
+@media (max-width: 1099px) {
+  .breadcrumbs.scope {
+    font-size: 10px;
+  }
+}
+@media (max-width: 720px) {
+  .topbar.scope {
+    height: 48px;
+  }
+}
+@media (max-width: 720px) {
+  .topbar-actions.scope {
+    gap: 5px;
+  }
+}
+@media (max-width: 720px) {
+  .global-search-trigger.scope {
+    width: min(190px, 30vw);
+    min-width: 0;
+    flex: 0 1 190px;
+    padding-inline: 8px;
+  }
+}
+@media (max-width: 720px) {
+  .repository-link.scope {
+    gap: 5px;
+    padding-inline: 7px;
+  }
+}
+@media (max-width: 460px) {
+  .topbar.scope {
+    padding-inline: 9px;
+  }
+}
+@media (max-width: 460px) {
+  .topbar-leading.scope {
+    gap: 7px;
+  }
+}
+@media (max-width: 460px) {
+  .breadcrumbs.scope {
+    gap: 5px;
+    font-size: 9px;
+  }
+}
+@media (max-width: 460px) {
+  .global-search-trigger.scope {
+    width: 36px;
+    height: 32px;
+    flex: 0 0 36px;
+    justify-content: center;
+    padding: 0;
+  }
+}
+@media (max-width: 460px) {
+  .global-search-trigger :global(span).scope,
+  .global-search-trigger :global(kbd).scope {
+    display: none;
+  }
+}
+@media (max-width: 460px) {
+  .fullscreen-toggle.scope {
+    width: 32px;
+    height: 32px;
+    flex-basis: 32px;
+  }
+}
+@media (max-width: 460px) {
+  .repository-link.scope {
+    height: 32px;
+    padding-inline: 7px;
+  }
+}

@@ -1,8 +1,8 @@
 import assert from 'node:assert/strict';
 import { mkdir } from 'node:fs/promises';
 import { chromium } from 'playwright';
-import { studyLessons, lessonTabs, lessonHref } from '../src/study-lessons.js';
-import { conceptVariants } from '../src/play-models.js';
+import { studyLessons, lessonTabs, lessonHref } from '../src/app/study-catalog.ts';
+import { conceptVariants } from '../src/app/film-catalog.ts';
 
 const origin = process.env.PLAY_PREVIEW_URL || 'http://127.0.0.1:5175';
 const browser = await chromium.launch({ headless: true, ...(process.env.PLAYWRIGHT_CHANNEL ? { channel: process.env.PLAYWRIGHT_CHANNEL } : {}) });
@@ -15,7 +15,11 @@ try {
     await page.setViewportSize(viewport);
     for (const route of ['#/home', '#/home/resources', '#/home/author', '#/discrete', '#/complexity']) {
       await page.goto(`${origin}/${route}`);
+      await page.locator('main .hero-collapsed-strip').waitFor();
+      assert.equal(await page.locator('main h1').count(), 0, 'Introductions start collapsed');
+      await page.getByRole('button', {name:'Show intro',exact:false}).click();
       await page.locator('main h1').waitFor();
+      await page.getByRole('button', {name:'Hide intro',exact:false}).click();
       assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth + 1), false, `Overflow: ${route} at ${viewport.width}`);
     }
     for (const lesson of Object.values(studyLessons)) {
@@ -32,7 +36,16 @@ try {
             assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth + 1), false);
           }
         }
-        if (tab.id === 'visualize') {
+        if (tab.id === 'visualize' && lesson.id === 'asymptotic') {
+          const choices = page.locator('.ratio-choices button');
+          assert.equal(await choices.count(), lesson.comparisons.length);
+          for (let index = 0; index < lesson.comparisons.length; index++) {
+            await choices.nth(index).click();
+            assert.equal(await choices.nth(index).getAttribute('aria-pressed'), 'true');
+            await page.locator('svg.ratio-chart').waitFor();
+          }
+        }
+        if (tab.id === 'visualize' && lesson.id !== 'asymptotic') {
           const picker = page.getByLabel(lesson.id === 'master' ? 'Recurrence' : 'Visualization example', {exact:true});
           assert.equal(await picker.locator('option').count(), 3);
           for (const choice of conceptVariants[lesson.id]) {

@@ -1,0 +1,483 @@
+.scope {
+}
+.primary.scope {
+  padding: 7px 9px;
+  border-radius: 6px;
+  background: #2f5883;
+  color: #eff7ff;
+}
+.primary:hover.scope {
+  background: #396da1;
+}
+.worked-example.scope {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: linear-gradient(150deg, #24252b, #1e1f24);
+}
+.worked-example > :global(p).scope {
+  margin: 0;
+  color: #b9bbc6;
+  font-size: 11px;
+  line-height: 1.75;
+}
+.worked-example.scope {
+  min-width: 0;
+  padding: 16px;
+}
+.example-head.scope {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 11px;
+  color: #aeb2bf;
+  font-size: 10px;
+}
+.example-tag.scope {
+  padding: 4px 7px;
+  border: 1px solid #4d4665;
+  border-radius: 999px;
+  color: #c6b5ff;
+  font-size: 9px;
+}
+.worked-example :global(h2).scope {
+  margin: 0 0 10px;
+  font-size: 16px;
+}
+.case-grid.scope {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-top: 13px;
+}
+.case-grid :global(section).scope {
+  padding: 12px;
+  border: 1px solid #3a3b45;
+  border-radius: 9px;
+  background: #1c1d23;
+}
+.case-label.scope {
+  color: #c3b1ff;
+  font-size: 9px;
+  font-weight: 750;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.case-grid :global(p).scope {
+  color: #aeb1bd;
+  font-size: 10px;
+  line-height: 1.6;
+}
+.case-grid :global(b).scope {
+  color: #dcd5ef;
+  font-size: 10px;
+}
+:global(.example-grid) .worked-example :global(p).scope {
+  margin: 0;
+  color: #b9bbc6;
+  font-size: 11px;
+  line-height: 1.7;
+}
+.caution.scope {
+  margin: 12px 0 0;
+  padding: 11px 13px;
+  border-left: 2px solid var(--orange);
+  border-radius: 0 7px 7px 0;
+  background: #32291f88;
+  color: #c9b9a8;
+  font-size: 10px;
+  line-height: 1.7;
+}
+.caution :global(strong).scope {
+  color: #ffd2a6;
+}
+@media (max-width: 720px) {
+  .case-grid.scope {
+    grid-template-columns: 1fr;
+  }
+}
+@media (max-width: 460px) {
+  .example-head.scope {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
+.worked-example > :global(.math-display):first-of-type.scope {
+  margin-top: 9px;
+}
+.algorithm-view.scope {
+  position: relative;
+  display: flex;
+  height: clamp(430px, calc(100dvh - 300px), 760px);
+  min-height: 0;
+  flex-direction: column;
+  margin-top: 18px;
+  overflow: hidden;
+  border: 1px solid #3a3d48;
+  border-radius: 13px;
+  background: #1c1d22;
+  box-shadow: 0 14px 36px #0003;
+}
+.back-link.scope {
+  display: inline-block;
+  margin-bottom: 16px;
+  color: #a9cfff;
+  font-size: 11px;
+  text-decoration: none;
+}
+.back-link:hover.scope {
+  text-decoration: underline;
+}
+.algorithm-hero.scope {
+  padding-bottom: 18px;
+}
+.standalone-view.scope {
+  margin-top: 0;
+}
+.algorithm-view.play-view.scope {
+  height: auto;
+}
+.understand-view.scope {
+  align-content: safe center;
+  gap: clamp(16px, 2.4vh, 24px);
+}
+.understand-view > :global(*).scope {
+  width: min(100%, 1120px);
+}
+.understand-intro.scope {
+  display: grid;
+  grid-template-columns: minmax(190px, 0.72fr) minmax(0, 1.28fr);
+  align-items: end;
+  gap: clamp(20px, 4vw, 56px);
+  padding: 0 0 clamp(16px, 2.4vh, 24px);
+  border-bottom: 1px solid #373a44;
+}
+.understand-heading .eyebrow.scope {
+  margin: 0 0 7px;
+}
+.understand-heading :global(h2).scope {
+  margin: 0;
+  font-size: clamp(20px, 2.4vw, 28px);
+  letter-spacing: -0.025em;
+}
+.learning-lead.scope {
+  max-width: 820px;
+  margin: 0;
+  color: #d3d7e1;
+  font-size: 15px;
+  line-height: 1.8;
+}
+.understand-intro .learning-lead.scope {
+  max-width: none;
+  padding-left: 16px;
+  border-left: 2px solid var(--green);
+  font-size: clamp(14px, 1.4vw, 17px);
+  line-height: 1.65;
+}
+.understand-grid.scope {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(12px, 2.2vw, 26px);
+}
+.understand-point.scope {
+  display: grid;
+  grid-template-columns: 30px minmax(0, 1fr);
+  align-content: start;
+  gap: 10px;
+  min-width: 0;
+  padding: 4px 0 4px 12px;
+  border-left: 1px solid #454852;
+}
+.understand-index.scope {
+  color: #8c92a0;
+  font:
+    600 11px/1.5 ui-monospace,
+    SFMono-Regular,
+    Consolas,
+    monospace;
+}
+.understand-point .learning-label.scope {
+  color: #c2c6d0;
+}
+.understand-point :global(p).scope {
+  margin: 8px 0 0;
+  color: #c2c6d0;
+  font-size: 13px;
+  line-height: 1.7;
+}
+.invariant-point.scope {
+  border-color: #50d9aa;
+}
+.invariant-point .understand-index.scope,
+.invariant-point .learning-label.scope {
+  color: #70e5be;
+}
+.example-point.scope {
+  border-color: #b99aff;
+}
+.example-point .understand-index.scope,
+.example-point .learning-label.scope {
+  color: #c5adff;
+}
+.understand-view > .learning-link.scope {
+  width: fit-content;
+  max-width: 100%;
+  margin-top: 1px;
+}
+.learning-card.scope {
+  padding: 14px;
+  border: 1px solid #373a44;
+  border-radius: 10px;
+  background: #202127;
+}
+.learning-card :global(p).scope,
+.practice-prompt.scope,
+.complexity-note.scope {
+  margin: 7px 0 0;
+  color: #bbc0cd;
+  font-size: 12px;
+  line-height: 1.75;
+}
+.learning-label.scope {
+  color: var(--green);
+  font-size: 10px;
+  font-weight: 750;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.answer-reveal.scope {
+  margin-top: 8px;
+  border: 1px solid #3b4650;
+  border-radius: 9px;
+  background: #1b2026;
+}
+.answer-reveal :global(summary).scope {
+  padding: 11px 13px;
+  color: #b8d9ff;
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 700;
+}
+.answer-reveal :global(p).scope {
+  margin: 0;
+  padding: 0 13px 13px;
+  color: #c1c6d0;
+  font-size: 12px;
+  line-height: 1.7;
+}
+.practice-view.scope {
+  align-content: start;
+}
+.practice-intro.scope {
+  margin: 0;
+  color: #aeb4c1;
+  font-size: 11px;
+  line-height: 1.6;
+}
+.practice-check-grid.scope {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+.practice-check-card.scope {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  padding: 13px;
+  border: 1px solid #383c47;
+  border-radius: 10px;
+  background: linear-gradient(145deg, #22242b, #1d1e24);
+}
+.practice-check-card :global(h3).scope {
+  margin: 0;
+  color: #d9e7f8;
+  font-size: 11px;
+}
+.practice-check-card .practice-prompt.scope {
+  margin-top: 7px;
+  font-size: 11px;
+}
+.practice-check-card .answer-reveal.scope {
+  margin-top: auto;
+  padding-top: 9px;
+  border: 0;
+  background: transparent;
+}
+.practice-check-card .answer-reveal :global(summary).scope {
+  padding: 8px 0;
+}
+.practice-check-card .answer-reveal :global(p).scope {
+  padding: 0 0 7px;
+}
+.practice-prompt.scope {
+  max-width: 760px;
+  margin-top: 0;
+  color: #e3e4ea;
+  font-size: 14px;
+}
+.complexity-view.scope {
+  align-content: start;
+}
+.algorithm-case-grid.scope {
+  margin: 0;
+}
+.algorithm-case-grid :global(article).scope {
+  min-width: 0;
+  padding: 13px;
+  border: 1px solid #3a3b45;
+  border-radius: 9px;
+  background: #202127;
+}
+.algorithm-case-grid :global(p).scope {
+  margin: 7px 0 0;
+  color: #c3c6d0;
+  font-size: 11px;
+  line-height: 1.65;
+}
+.space-card.scope {
+  border-color: #405444;
+}
+.complexity-note.scope {
+  margin: 0;
+  padding: 11px 13px;
+  border-left: 2px solid var(--orange);
+  background: #32291f55;
+}
+.complexity-facts.scope {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+.complexity-facts .learning-card.scope {
+  min-width: 0;
+}
+@media (max-width: 560px) {
+  .complexity-facts.scope {
+    grid-template-columns: 1fr;
+  }
+}
+.reasoning-card.scope {
+  display: grid;
+  gap: 12px;
+  margin-top: 4px;
+  padding: clamp(14px, 2.5vw, 22px);
+  border-color: #414553;
+  background: linear-gradient(145deg, #22242b, #1c1d22);
+}
+.reasoning-card > :global(p).scope {
+  margin: 0;
+  color: #c4c8d2;
+  font-size: 12px;
+  line-height: 1.75;
+}
+.reasoning-card :global(code).scope {
+  color: #e5dfc6;
+  font:
+    12px/1.7 ui-monospace,
+    SFMono-Regular,
+    Consolas,
+    monospace;
+}
+.trace-state.scope,
+.trace-result.scope {
+  display: grid;
+  gap: 6px;
+  padding: 12px;
+  border: 1px solid #3d4653;
+  border-radius: 9px;
+  background: #191c22;
+}
+.trace-state > :global(span).scope,
+.trace-result > :global(span).scope {
+  color: #aeb4c1;
+  font-size: 10px;
+  font-weight: 750;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.trace-state > :global(code).scope,
+.trace-result > :global(code).scope {
+  overflow-wrap: anywhere;
+  color: #e2e4eb;
+  font-size: clamp(10px, 1.5vw, 13px);
+}
+.trace-state :global(b).scope,
+.trace-result :global(b).scope {
+  color: #cbb8ff;
+}
+.trace-state :global(small).scope,
+.trace-result :global(small).scope {
+  color: #9fa5b2;
+  font-size: 10px;
+  line-height: 1.6;
+}
+.trace-result.scope {
+  border-color: #37604e;
+  background: #1c2924;
+}
+.trace-result > :global(code).scope {
+  color: #bcebd5;
+}
+.reasoning-steps.scope {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding-left: 25px;
+}
+.reasoning-steps :global(li).scope {
+  padding: 8px 10px;
+  border-left: 2px solid #647b9a;
+  background: #ffffff05;
+  color: #c5c9d3;
+  font-size: 11px;
+  line-height: 1.7;
+}
+.reasoning-steps :global(li) :global(b).scope {
+  display: block;
+  margin-bottom: 2px;
+  color: #c7dfff;
+}
+.reasoning-steps :global(li) :global(span).scope {
+  display: block;
+}
+:global(.actions) .primary.scope {
+  border: 0;
+}
+@media (max-width: 720px) {
+  .algorithm-case-grid.scope {
+    grid-template-columns: 1fr;
+  }
+}
+@media (max-width: 720px) {
+  .understand-intro.scope {
+    grid-template-columns: 1fr;
+    align-items: start;
+    gap: 12px;
+  }
+}
+@media (max-width: 720px) {
+  .understand-grid.scope {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+}
+@media (max-width: 720px) {
+  .understand-point.scope {
+    grid-template-columns: 30px minmax(0, 1fr);
+  }
+}
+@media (max-width: 720px) {
+  .learning-lead.scope {
+    font-size: 13px;
+  }
+}
+@media (max-width: 720px) {
+  .algorithm-view.scope {
+    height: clamp(400px, calc(100dvh - 260px), 720px);
+  }
+}
+@media (max-width: 720px) {
+  .practice-check-grid.scope {
+    grid-template-columns: 1fr;
+  }
+}

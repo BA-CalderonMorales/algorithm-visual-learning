@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { playFilms, conceptVariants, sceneAt, chaptersFor } from '../src/play-models.js';
+import { playFilms, conceptVariants, sceneAt, chaptersFor } from '../src/app/film-catalog.ts';
 
 for (const film of [...Object.values(playFilms), ...Object.values(conceptVariants).flatMap(choices => choices.map(choice => choice.film))]) {
   assert.ok(film.duration > 0 && film.duration < 100, `${film.id}: keep the explanation short`);

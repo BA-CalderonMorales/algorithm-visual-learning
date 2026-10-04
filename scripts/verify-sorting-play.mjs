@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { mkdir } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { chromium } from 'playwright';
-import { playFilms } from '../src/play-models.js';
+import { playFilms } from '../src/app/film-catalog.ts';
 
 const origin=process.env.PLAY_PREVIEW_URL || 'http://127.0.0.1:5175';
 const browser=await chromium.launch({headless:true,...(process.env.PLAYWRIGHT_CHANNEL?{channel:process.env.PLAYWRIGHT_CHANNEL}:{})});
@@ -19,8 +19,8 @@ try {
       assert.ok(await page.locator('.film-scene-caption').isVisible());
       assert.ok(await page.locator('.film-scene-caption').evaluate(el=>parseFloat(getComputedStyle(el).fontSize)>=14),'Explanations must stay readable on phones');
       const clipped=await page.evaluate(async id=>{
-        const {playFilms}=await import('/src/play-models.js');
-        const {renderFilm}=await import('/src/play-renderer.js');
+        const {playFilms}=await import('/src/app/film-catalog.ts');
+        const {renderFilm}=await import('/src/shared/playback/renderers/concept.js');
         const film=playFilms[id],canvas=document.querySelector('.film-stage canvas'),ctx=canvas.getContext('2d');
         const compact=document.querySelector('.film-stage').classList.contains('compact');
         const width=compact?560:1000;

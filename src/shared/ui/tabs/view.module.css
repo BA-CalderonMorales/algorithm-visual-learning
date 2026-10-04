@@ -1,0 +1,43 @@
+.scope {
+}
+.study-tabs.scope {
+  display: flex;
+  flex-wrap: wrap;
+  flex: none;
+  min-width: 0;
+  border-bottom: 1px solid #3a3d47;
+  background: #202229;
+}
+:global(a).scope {
+  display: grid;
+  place-items: center;
+  min-height: 49px;
+  padding: 10px 23px;
+  border-bottom: 2px solid transparent;
+  border-radius: 0;
+  color: #9aa9bb;
+  text-decoration: none;
+  font-size: 13px;
+  white-space: nowrap;
+}
+:global(a)[aria-selected='true'].scope {
+  background: #252d38;
+  border-bottom-color: #79b7ff;
+  color: #d1e6ff;
+}
+:global(a):hover.scope {
+  color: #e8eff7;
+  background: #242b35;
+}
+:global(a):focus-visible.scope {
+  outline: 2px solid #79b7ff;
+  outline-offset: -3px;
+}
+@media (max-width: 720px) {
+  :global(a).scope {
+    flex: 1 0 auto;
+    min-height: 45px;
+    padding: 10px 13px;
+    font-size: 12px;
+  }
+}

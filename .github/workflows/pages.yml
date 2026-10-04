@@ -29,6 +29,8 @@ jobs:
         uses: actions/configure-pages@v5
       - name: Install dependencies
         run: npm ci
+      - name: Verify source boundaries and formatting
+        run: npm run test:architecture && npm run format:check
       - name: Verify film cache behavior
         run: npm run test:film-cache
       - name: Fingerprint exported films
@@ -46,15 +48,18 @@ jobs:
         run: npx playwright install --with-deps chromium
       - name: Start the app for film rendering
         run: nohup npm run dev -- --host 127.0.0.1 --port 5175 > /tmp/dsa-vite.log 2>&1 < /dev/null &
-      - name: Render only missing or changed films
-        id: render_films
+      - name: Verify responsive app interactions
         run: |
           for attempt in $(seq 1 60); do
             if curl --fail --silent http://127.0.0.1:5175/ > /dev/null; then break; fi
             sleep 1
           done
           curl --fail --silent http://127.0.0.1:5175/ > /dev/null
-          npm run render:films
+          npm run test:architecture-ui
+          npm run test:study
+      - name: Render only missing or changed films
+        id: render_films
+        run: npm run render:films
       - name: Build static site
         run: npm run build
       - name: Verify interactive walkthroughs

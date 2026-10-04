@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { chromium } from 'playwright';
 import { createServer, preview } from 'vite';
-import { algorithms } from '../src/algorithms.js';
+import { algorithms } from '../src/algorithms/model.ts';
 
 const browser = await chromium.launch({ headless: true, ...(process.env.PLAYWRIGHT_CHANNEL ? { channel: process.env.PLAYWRIGHT_CHANNEL } : {}) });
 const sizes = [{ width: 1440, height: 1000 }, { width: 900, height: 900 }, { width: 390, height: 844 }];
@@ -61,7 +61,7 @@ try {
       await waitForTrace(page, 'Selection Sort');
 
       if (mode === 'development') {
-        server.ws.send({ type: 'update', updates: [{ type: 'js-update', path: '/src/App.svelte', acceptedPath: '/src/App.svelte', timestamp: Date.now() }] });
+        server.ws.send({ type: 'update', updates: [{ type: 'js-update', path: '/src/app/view.svelte', acceptedPath: '/src/app/view.svelte', timestamp: Date.now() }] });
         await page.waitForTimeout(500);
         await waitForTrace(page, 'Selection Sort');
       }

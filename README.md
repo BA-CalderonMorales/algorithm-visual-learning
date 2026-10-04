@@ -46,13 +46,16 @@ Use `npm run test:film-cache` to check cache invalidation and `npm run test:film
 ## Project Layout
 
 ```text
-src/                    # Svelte learning hub and algorithm catalogue
+src/                    # Feature-owned presentation, view-models, and pure models
+docs/adr/               # Accepted architecture decisions
 public/walkthroughs/    # walkthroughs plus simple/typed Python, JS, and TS examples
 public/study-mark.svg   # site favicon
 .github/workflows/      # GitHub Pages build and deployment
 ```
 
 The walkthrough pages are standalone HTML so they also work independently. Tim Sort's Python file is an educational implementation, not CPython's production sort.
+
+See [the source map](src/README.md) and [ADR 0001](docs/adr/0001-feature-owned-mvvm-and-styles.md) before contributing. Views use one colocated CSS module; reactive behavior belongs in `.svelte.ts` view-models and pure rules in models. Hand-maintained source files stay at 500 lines or fewer. `npm run test:architecture` and `npm run format:check` enforce the key boundaries before deployment.
 
 Each algorithm page starts with a plain Python version for learning the core idea, then offers typed Python, JavaScript, and TypeScript examples. These are teaching references; some, including Tim Sort, intentionally favor clarity over production-level optimizations.
 

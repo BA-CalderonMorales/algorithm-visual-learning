@@ -1,0 +1,157 @@
+.scope {
+}
+.site-search-result:focus-visible.scope {
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
+}
+.site-search-field :global(svg).scope {
+  width: 16px;
+  height: 16px;
+  flex: 0 0 auto;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.6;
+}
+.site-search :global(kbd).scope {
+  padding: 2px 5px;
+  border: 1px solid #3b3d47;
+  border-radius: 4px;
+  background: #191a20;
+  color: #858a99;
+  font:
+    9px ui-monospace,
+    SFMono-Regular,
+    Consolas,
+    monospace;
+  white-space: nowrap;
+}
+.search-overlay.scope {
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: min(14vh, 120px) 16px 24px;
+  background: #090a0dc9;
+  backdrop-filter: blur(8px);
+}
+.site-search.scope {
+  position: relative;
+  width: min(680px, 100%);
+  max-height: min(76dvh, 720px);
+  margin: 0;
+  overflow: hidden;
+  border: 1px solid #454956;
+  border-radius: 12px;
+  background: #1d1f25;
+  color: inherit;
+  box-shadow: 0 28px 90px #0009;
+}
+.site-search-field.scope {
+  display: flex;
+  min-height: 54px;
+  align-items: center;
+  gap: 11px;
+  padding: 0 15px;
+  border-bottom: 1px solid #353842;
+  color: #9ea4b2;
+}
+.site-search-field :global(input).scope {
+  width: 100%;
+  min-width: 0;
+  height: 50px;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: #f2f3f7;
+  font: inherit;
+  font-size: 14px;
+}
+.site-search-field :global(input).scope::placeholder {
+  color: #858a98;
+}
+.site-search-results.scope {
+  max-height: min(58dvh, 560px);
+  overflow-y: auto;
+  padding: 8px;
+  scrollbar-color: #555b69 #202127;
+  scrollbar-width: thin;
+}
+.site-search-result.scope {
+  display: flex;
+  min-height: 58px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 9px 11px;
+  border: 1px solid transparent;
+  border-radius: 7px;
+  color: inherit;
+  text-decoration: none;
+}
+.site-search-result:hover.scope,
+.site-search-result.search-result-active.scope {
+  border-color: #3e536a;
+  background: #252b35;
+}
+.search-result-copy.scope {
+  display: grid;
+  min-width: 0;
+  gap: 3px;
+}
+.search-result-copy :global(strong).scope {
+  color: #eceef4;
+  font-size: 12px;
+  font-weight: 600;
+}
+.search-result-copy :global(small).scope {
+  overflow: hidden;
+  color: #a7aab6;
+  font-size: 10px;
+  line-height: 1.45;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.search-result-group.scope {
+  flex: 0 0 auto;
+  color: #85cbb0;
+  font-size: 9px;
+}
+.site-search-empty.scope {
+  margin: 0;
+  padding: 24px 14px;
+  color: #a7aab6;
+  font-size: 11px;
+  text-align: center;
+}
+.site-search-hint.scope {
+  display: flex;
+  min-height: 37px;
+  align-items: center;
+  gap: 15px;
+  padding: 6px 13px;
+  border-top: 1px solid #353842;
+  color: #858a98;
+  font-size: 9px;
+}
+.site-search-hint :global(span).scope {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.site-search-hint :global(span):last-child.scope {
+  margin-left: auto;
+}
+@media (max-width: 460px) {
+  .search-result-copy :global(small).scope {
+    white-space: normal;
+  }
+}
+@media (max-width: 460px) {
+  .site-search-hint :global(span):last-child.scope {
+    display: none;
+  }
+}

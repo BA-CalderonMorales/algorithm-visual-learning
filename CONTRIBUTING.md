@@ -22,6 +22,8 @@ GitHub Pages deploys automatically when changes are merged into `develop`. A for
 
 ## Before opening a pull request
 
+- Follow [the source map](src/README.md) and [ADR 0001](docs/adr/0001-feature-owned-mvvm-and-styles.md): feature-owned models and view-models, presentation-only views, one colocated CSS module per view, and a 500-line source-file limit.
+- Run `npm run test:architecture` and `npm run format:check`.
 - Run `npm run build` and resolve any errors.
 - Check the affected page at desktop and narrow/tablet widths.
 - For walkthrough changes, step forward and backward, reset, and try shuffle or presets when available.

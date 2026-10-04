@@ -3,10 +3,10 @@ import { readFile, stat, mkdir } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { chromium } from 'playwright';
 import { preview } from 'vite';
-import { playFilms } from '../src/play-models.js';
-import { sortingNarration, narrationSource } from '../src/sorting-narration.js';
+import { playFilms } from '../src/app/film-catalog.ts';
+import { sortingNarration, narrationSource } from '../src/algorithms/play/narration.ts';
 
-const recordings = JSON.parse(await readFile(new URL('../src/narration-clips.json', import.meta.url)));
+const recordings = JSON.parse(await readFile(new URL('../src/algorithms/play/narration-clips.json', import.meta.url)));
 const ids = Object.keys(sortingNarration);
 assert.equal(recordings.voice, 'am_echo');
 for (const id of ids) {

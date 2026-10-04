@@ -1,6 +1,6 @@
 import { createHash } from 'node:crypto';
 import { readFile, writeFile, rename } from 'node:fs/promises';
-import { playFilms, conceptVariants, sceneAt } from '../src/play-models.js';
+import { playFilms, conceptVariants, sceneAt } from '../src/app/film-catalog.ts';
 
 const version = 1;
 export const filmsDirectory = new URL('../public/films/', import.meta.url);
@@ -13,8 +13,8 @@ export const digest = value => createHash('sha256').update(value).digest('hex');
 export async function renderSignature() {
   // These are the complete canvas renderer dependencies. Narration and site UI
   // are deliberately excluded: exported films do not use either of them.
-  const paths = ['src/play-renderer.js', 'src/sorting-play-renderer.js',
-    'src/play-drawing.js', 'scripts/render-films.mjs', 'scripts/film-cache.mjs', 'package-lock.json'];
+  const paths = ['src/shared/playback/renderers/concept.js', 'src/algorithms/play/renderer.js',
+    'src/shared/playback/renderers/drawing.js', 'scripts/render-films.mjs', 'scripts/film-cache.mjs', 'package-lock.json'];
   const sources = await Promise.all(paths.map(async path => [path,
     (await readFile(new URL(`../${path}`, import.meta.url), 'utf8')).replaceAll('\r\n', '\n')]));
   // Model changes are captured per film below. sceneAt is the only model

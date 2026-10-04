@@ -6,7 +6,7 @@ export default defineConfig({
   define: { 'process.env.NODE_ENV': JSON.stringify('production') },
   build: {
     lib: {
-      entry: resolve('src/walkthrough-motion.js'),
+      entry: resolve('src/algorithms/components/walkthrough/motion.js'),
       name: 'WalkthroughMotion',
       formats: ['iife'],
       fileName: () => 'motion-runtime.js'

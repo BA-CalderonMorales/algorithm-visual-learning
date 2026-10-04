@@ -1,10 +1,10 @@
 // Offline authoring tool. The published app plays files; it never calls Lemonade.
 import { createHash } from 'node:crypto';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
-import { sortingNarration } from '../src/sorting-narration.js';
+import { sortingNarration } from '../src/algorithms/play/narration.ts';
 
 const root = new URL('../public/narration/echo/', import.meta.url);
-const manifestPath = new URL('../src/narration-clips.json', import.meta.url);
+const manifestPath = new URL('../src/algorithms/play/narration-clips.json', import.meta.url);
 const model = 'kokoro-v1', voice = 'am_echo', speed = 0.98;
 export function mp3Duration(bytes) {
   let seconds = 0, frames = 0, offset = 0;

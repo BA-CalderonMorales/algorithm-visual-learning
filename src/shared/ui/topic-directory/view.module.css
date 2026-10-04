@@ -1,0 +1,132 @@
+.scope {
+}
+.library-heading.scope {
+  padding: 12px 0 32px;
+}
+.library-label.scope {
+  margin: 0 0 10px;
+  color: #8f9dac;
+  font-size: 11px;
+  letter-spacing: 0.04em;
+}
+.library-heading :global(h1).scope {
+  max-width: 100%;
+  font-size: clamp(32px, 3.5vw, 48px);
+  letter-spacing: -0.035em;
+  line-height: 1.15;
+}
+.library-heading > :global(p):last-child.scope {
+  max-width: 720px;
+  margin: 17px 0 0;
+  color: #b1bbc9;
+  font-size: 16px;
+  line-height: 1.7;
+}
+.library-bridge.scope {
+  margin-top: 28px;
+  padding: 22px 0 6px;
+}
+.library-bridge :global(h2).scope {
+  font-size: 19px;
+  margin-bottom: 10px;
+}
+.library-bridge :global(p):not(.library-label).scope {
+  max-width: 770px;
+  margin: 0;
+  color: #a9b7c8;
+  font-size: 13px;
+  line-height: 1.7;
+}
+.library-bridge :global(nav).scope {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px;
+  margin-top: 20px;
+}
+.library-bridge :global(nav) :global(a).scope {
+  padding: 10px 0;
+  color: #b5d5ed;
+  font-size: 12px;
+}
+.library-bridge :global(nav) :global(a) :global(span).scope {
+  color: #718aa2;
+  margin-right: 7px;
+  font-size: 10px;
+}
+.resource-intro.scope,
+.author-note > :global(p):not(.library-label).scope {
+  max-width: 800px;
+  color: #b6c1cf;
+  font-size: 14px;
+  line-height: 1.85;
+  margin: 0 0 20px;
+}
+.library-back.scope {
+  display: inline-block;
+  color: #9ac8ff;
+  font-size: 12px;
+  margin-bottom: 18px;
+}
+.topic-directory.scope {
+  border-top: 1px solid #3b414b;
+}
+.topic-row.scope {
+  display: grid;
+  grid-template-columns: 35px minmax(0, 1fr) 135px;
+  gap: 20px;
+  align-items: center;
+  padding: 27px 0;
+  border-bottom: 1px solid #3b414b;
+}
+.topic-number.scope {
+  align-self: start;
+  padding-top: 6px;
+  color: #8e7eab;
+  font-size: 12px;
+}
+.topic-row :global(h2).scope {
+  font-size: 23px;
+}
+.topic-row :global(p).scope {
+  color: #c1ccda;
+  font-size: 14px;
+  margin: 10px 0;
+}
+.topic-row :global(small).scope {
+  color: #96a7bd;
+  font-size: 12px;
+  line-height: 1.7;
+}
+.topic-row :global(nav).scope {
+  display: grid;
+  gap: 14px;
+  color: #9ac8ff;
+  font-size: 12px;
+}
+@media (max-width: 600px) {
+  .library-heading.scope {
+    padding: 8px 0 25px;
+  }
+  .library-heading > :global(p):last-child.scope {
+    font-size: 14px;
+  }
+  .topic-row.scope {
+    grid-template-columns: 24px minmax(0, 1fr);
+    gap: 12px;
+  }
+  .topic-row :global(nav).scope {
+    grid-column: 2;
+    display: flex;
+    gap: 23px;
+    margin-top: 6px;
+  }
+  .topic-row :global(h2).scope {
+    font-size: 21px;
+  }
+  .library-bridge :global(nav).scope {
+    align-items: flex-start;
+    gap: 5px;
+    flex-direction: column;
+  }
+}

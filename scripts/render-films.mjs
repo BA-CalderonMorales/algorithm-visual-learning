@@ -30,7 +30,7 @@ export async function renderMissingFilms({ films = allFilms, directory = filmsDi
         const { film, reason } = queue.shift();
         console.log(`Rendering ${film.id}: ${Math.ceil(film.duration)} seconds (${reason})`);
         const video = await page.evaluate(async film => {
-          const { renderFilm } = await import('/src/play-renderer.js');
+          const { renderFilm } = await import('/src/shared/playback/renderers/concept.js');
           const canvas = document.createElement('canvas');
           canvas.width = 1600; canvas.height = 896;
           await document.fonts.ready;
