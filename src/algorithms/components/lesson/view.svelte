@@ -1,4 +1,5 @@
 <script>
+  import IntroToggle from '../../../shared/ui/intro-toggle/view.svelte';
   import styles from './view.module.css';
   import { classNames } from '../../../shared/ui/class-names.ts';
   import StudyTabs from '../../../shared/ui/tabs/view.svelte';
@@ -25,16 +26,11 @@
         {vm.selectedAlgorithm.cue} Start with the simple version, then compare typed Python, JavaScript, and TypeScript.
       </p>
     {/if}
-    <button class={classNames(styles, 'hero-visibility-toggle')} onclick={() => (vm.heroVisible = false)}
-      >Hide intro <span class={styles.scope} aria-hidden="true">⌃</span></button
-    >
+    <IntroToggle bind:visible={vm.heroVisible} />
   </section>
 {:else}
   <div class={classNames(styles, 'hero-collapsed-strip')}>
-    <span class={styles.scope}>{vm.selectedAlgorithm.name}</span><button
-      class={classNames(styles, 'hero-visibility-toggle')}
-      onclick={() => (vm.heroVisible = true)}>Show intro <span class={styles.scope} aria-hidden="true">⌄</span></button
-    >
+    <span class={styles.scope}>{vm.selectedAlgorithm.name}</span><IntroToggle bind:visible={vm.heroVisible} />
   </div>
 {/if}
 <section

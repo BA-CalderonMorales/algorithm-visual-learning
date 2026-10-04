@@ -1,0 +1,28 @@
+.scope {
+}
+.domain-connections > :global(header).scope {
+  padding: 24px 0;
+  border-bottom: 1px solid #3b414b;
+}
+.library-label.scope {
+  margin: 0 0 10px;
+  color: #8f9dac;
+  font-size: 11px;
+  letter-spacing: 0.04em;
+}
+.domain-connections :global(h2).scope {
+  margin: 0 0 12px;
+  font-size: 24px;
+}
+.domain-connections :global(p):last-child.scope {
+  max-width: 770px;
+  margin: 0;
+  color: #a9b7c8;
+  font-size: 13px;
+  line-height: 1.7;
+}
+@media (max-width: 600px) {
+  .domain-connections :global(h2).scope {
+    font-size: 22px;
+  }
+}

@@ -67,8 +67,11 @@ try {
   await page.goto(`${origin}/#/discrete/telescoping/understand`);
   await page.locator('.study-panel').waitFor();
   await page.waitForTimeout(150); // Let new-topic navigation's two animation frames finish.
-  await page.evaluate(() => window.scrollTo(0, 120));
+  // Keep the clicked tab below the sticky header. Otherwise Playwright scrolls
+  // an obscured tab into view before clicking, independently of our routing.
+  await page.evaluate(() => window.scrollTo(0, 35));
   const before = await page.evaluate(() => scrollY);
+  assert.ok(before > 0, 'Exercise a real scroll offset, not a viewport that already fits');
   await page.getByRole('tab', {name:'Examples',exact:true}).click();
   await page.waitForTimeout(100);
   assert.equal(await page.evaluate(() => scrollY), before, 'Switching views should not jump the page');

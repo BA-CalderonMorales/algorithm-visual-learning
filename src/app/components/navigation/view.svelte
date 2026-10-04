@@ -1,107 +1,96 @@
 <script>
   import styles from './view.module.css';
   import { classNames } from '../../../shared/ui/class-names.ts';
+  import { createNavigationViewModel } from './view-model.svelte.ts';
 
   let { vm } = $props();
+  const navigation = createNavigationViewModel(() => vm);
 </script>
 
-<aside
+<div
+  id="study-navigation"
+  bind:this={navigation.element}
   class={classNames(styles, 'sidebar', { 'nav-open': vm.navOpen })}
+  role="dialog"
+  aria-modal="true"
   aria-label="Study guide navigation"
   aria-hidden={!vm.navOpen}
+  inert={!vm.navOpen}
 >
-  <a class={classNames(styles, 'brand')} href="#/home" onclick={() => vm.openPage('overview', 'home')}>
-    <span class={classNames(styles, 'brand-mark')} aria-hidden="true"
-      ><i class={styles.scope}></i><i class={styles.scope}></i><i class={styles.scope}></i></span
-    >
-    <span class={styles.scope}
-      ><strong class={styles.scope}>DSA Study Studio</strong><small class={styles.scope}
-        >See the idea. Follow the why.</small
-      ></span
-    >
-  </a>
-
-  <button
-    class={classNames(styles, 'nav-link home-link', { active: vm.domain === 'overview' })}
-    onclick={() => vm.openPage('overview', 'home')}
-  >
-    <span class={classNames(styles, 'nav-icon')}>⌂</span> Study home
-  </button>
-
-  <nav class={styles.scope}>
-    <p class={classNames(styles, 'nav-group-title')}>Algorithms</p>
+  <div class={classNames(styles, 'sidebar-heading')}>
+    <a class={classNames(styles, 'brand')} href="#/home" onclick={navigation.close}>
+      <span class={classNames(styles, 'brand-mark')} aria-hidden="true">⋈</span>
+      <span class={styles.scope}>
+        <strong class={styles.scope}>DSA Study Studio</strong>
+        <small class={styles.scope}>See the idea. Follow the why.</small>
+      </span>
+    </a>
     <button
-      class={classNames(styles, 'nav-link', { active: vm.domain === 'algorithms' })}
-      onclick={() => vm.openPage('algorithms', 'catalog')}
+      class={classNames(styles, 'close-navigation')}
+      aria-label="Close study navigation"
+      onclick={navigation.close}
     >
-      <span class={classNames(styles, 'nav-icon')}>↗</span> Sorting algorithms
-      <span class={classNames(styles, 'nav-count')}>7</span>
+      <span class={styles.scope} aria-hidden="true">×</span>
     </button>
+  </div>
 
-    <p class={classNames(styles, 'nav-group-title')}>Discrete mathematics</p>
+  <nav class={classNames(styles, 'navigation-scroll')} aria-label="Learning topics">
     <a
-      class={classNames(styles, 'nav-link', { active: vm.isActive('discrete', 'index') })}
-      href="#/discrete"
-      onclick={() => (vm.navOpen = false)}><span class={classNames(styles, 'nav-icon')}>∑</span> All math topics</a
+      class={classNames(styles, 'nav-link home-link', { active: navigation.homeActive })}
+      href="#/home"
+      aria-current={navigation.homeActive ? 'page' : undefined}
+      onclick={navigation.close}
     >
-    <button
-      class={classNames(styles, 'nav-link', { active: vm.isActive('discrete', 'induction') })}
-      onclick={() => vm.openPage('discrete', 'induction')}
-    >
-      <span class={classNames(styles, 'nav-icon')}>∴</span> Proof by induction
-    </button>
-    <button
-      class={classNames(styles, 'nav-link', { active: vm.isActive('discrete', 'telescoping') })}
-      onclick={() => vm.openPage('discrete', 'telescoping')}
-    >
-      <span class={classNames(styles, 'nav-icon')}>∑</span> Telescoping sums
-    </button>
-    <button
-      class={classNames(styles, 'nav-link', { active: vm.isActive('discrete', 'master') })}
-      onclick={() => vm.openPage('discrete', 'master')}
-    >
-      <span class={classNames(styles, 'nav-icon')}>T</span> Master theorem
-    </button>
+      <span class={classNames(styles, 'home-icon')} aria-hidden="true">⌂</span> Study home
+    </a>
 
-    <p class={classNames(styles, 'nav-group-title')}>Complexity</p>
-    <a
-      class={classNames(styles, 'nav-link', { active: vm.isActive('complexity', 'index') })}
-      href="#/complexity"
-      onclick={() => (vm.navOpen = false)}><span class={classNames(styles, 'nav-icon')}>◷</span> Time and space</a
-    >
-    <button
-      class={classNames(styles, 'nav-link', { active: vm.isActive('complexity', 'time') })}
-      onclick={() => vm.openPage('complexity', 'time')}
-    >
-      <span class={classNames(styles, 'nav-icon')}>◷</span> Time complexity
-    </button>
-    <button
-      class={classNames(styles, 'nav-link', { active: vm.isActive('complexity', 'asymptotic') })}
-      onclick={() => vm.openPage('complexity', 'asymptotic')}
-    >
-      <span class={classNames(styles, 'nav-icon')}>O</span> Asymptotic bounds
-    </button>
-    <button
-      class={classNames(styles, 'nav-link', { active: vm.isActive('complexity', 'space') })}
-      onclick={() => vm.openPage('complexity', 'space')}
-    >
-      <span class={classNames(styles, 'nav-icon')}>▱</span> Space complexity
-    </button>
+    {#each navigation.groups as group (group.id)}
+      <section class={classNames(styles, 'domain-group', { 'current-domain': navigation.isCurrentDomain(group.id) })}>
+        <button
+          class={classNames(styles, 'domain-toggle')}
+          aria-expanded={navigation.isExpanded(group.id)}
+          aria-controls="navigation-{group.id}"
+          onclick={() => navigation.toggle(group.id)}
+        >
+          <span class={classNames(styles, 'domain-icon')} aria-hidden="true">{group.symbol}</span>
+          <span class={classNames(styles, 'domain-name')}>{group.label}</span>
+          <span class={classNames(styles, 'topic-count')} aria-label="{group.topics.length} topics"
+            >{group.topics.length}</span
+          >
+          <svg class={classNames(styles, 'disclosure')} viewBox="0 0 16 16" aria-hidden="true">
+            <path class={styles.scope} d="m6 3 5 5-5 5"></path>
+          </svg>
+        </button>
+        <div
+          id="navigation-{group.id}"
+          class={classNames(styles, 'domain-topics')}
+          hidden={!navigation.isExpanded(group.id)}
+        >
+          <a
+            class={classNames(styles, 'nav-link overview-link', { active: navigation.isActive(group.overview) })}
+            href={group.overview.href}
+            aria-current={navigation.isActive(group.overview) ? 'page' : undefined}
+            onclick={navigation.close}>{group.overview.label}</a
+          >
+          {#each group.topics as topic (topic.key)}
+            <a
+              class={classNames(styles, 'nav-link topic-link', { active: navigation.isActive(topic) })}
+              href={topic.href}
+              aria-current={navigation.isActive(topic) ? 'page' : undefined}
+              onclick={navigation.close}>{topic.label}</a
+            >
+          {/each}
+        </div>
+      </section>
+    {/each}
+  </nav>
 
-    <p class={classNames(styles, 'nav-group-title')}>Contribute</p>
+  <footer class={classNames(styles, 'sidebar-footer')}>
     <a
       class={classNames(styles, 'nav-link contribute-link')}
       href="https://github.com/BA-CalderonMorales/algorithm-visual-learning/blob/develop/CONTRIBUTING.md"
       target="_blank"
-      rel="noopener noreferrer"
+      rel="noopener noreferrer">Contribute to the guide <span class={styles.scope} aria-hidden="true">↗</span></a
     >
-      <span class={classNames(styles, 'nav-icon')}>＋</span> How to contribute
-    </a>
-  </nav>
-
-  <div class={classNames(styles, 'sidebar-note')}>
-    <span class={classNames(styles, 'note-dot')}></span><span class={styles.scope}
-      >Made for curious minds<br class={styles.scope} />and the next class, too.</span
-    >
-  </div>
-</aside>
+  </footer>
+</div>

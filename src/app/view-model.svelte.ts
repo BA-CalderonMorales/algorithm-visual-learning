@@ -18,6 +18,7 @@ export function createViewModel() {
   let topic = $state('home');
   let studyView = $state('understand');
   let homeView = $state('explore');
+  let directoryView = $state('explore');
   let selectedStudyLesson = $derived(studyLessons[topic]);
   let navOpen = $state(false);
   let globalSearchOpen = $state(false);
@@ -76,6 +77,7 @@ export function createViewModel() {
     domain = nextDomain;
     topic = nextTopic;
     studyView = 'understand';
+    directoryView = 'explore';
     selectedAlgorithmId = '';
     catalog.query = '';
     navOpen = false;
@@ -111,6 +113,21 @@ export function createViewModel() {
     window.addEventListener('keydown', handleGlobalKeydown);
     document.addEventListener('fullscreenchange', syncFullscreen);
     const applyRoute = () => {
+      const directoryRoute = window.location.hash.match(
+        /^#\/(algorithms\/sorting|discrete|complexity)(?:\/(connections))?$/,
+      );
+      if (directoryRoute) {
+        const nextDomain = directoryRoute[1] === 'algorithms/sorting' ? 'algorithms' : directoryRoute[1];
+        const nextTopic = nextDomain === 'algorithms' ? 'catalog' : 'index';
+        const samePage = domain === nextDomain && topic === nextTopic;
+        domain = nextDomain;
+        topic = nextTopic;
+        directoryView = directoryRoute[2] || 'explore';
+        selectedAlgorithmId = '';
+        navOpen = false;
+        if (!samePage) returnToTop();
+        return;
+      }
       const algorithmRoute = window.location.hash.match(
         /^#\/algorithms\/([^/]+)\/(understand|play|walkthrough|practice|complexity|growth|python(?:\/(?:simple|typed))?|javascript|typescript)$/,
       );
@@ -156,6 +173,7 @@ export function createViewModel() {
         }
       }
       const [nextDomain, nextTopic] = routeTopics[window.location.hash] ?? routeTopics['#/home'];
+      const samePage = domain === nextDomain && topic === nextTopic;
       homeView =
         window.location.hash === '#/home/resources'
           ? 'resources'
@@ -165,6 +183,7 @@ export function createViewModel() {
       domain = nextDomain;
       topic = nextTopic;
       selectedAlgorithmId = '';
+      if (!samePage) returnToTop();
     };
     applyRoute();
     window.addEventListener('hashchange', applyRoute);
@@ -238,7 +257,7 @@ export function createViewModel() {
       : domain === 'discrete'
         ? (selectedStudyLesson?.title ?? 'Discrete mathematics')
         : domain === 'complexity'
-          ? ({ time: 'Time complexity', space: 'Space complexity' }[topic] ?? 'Complexity')
+          ? (selectedStudyLesson?.title ?? 'Complexity')
           : 'A visual DSA study guide',
   );
 
@@ -321,6 +340,9 @@ export function createViewModel() {
     },
     set studyView(value) {
       studyView = value;
+    },
+    get directoryView() {
+      return directoryView;
     },
     get homeView() {
       return homeView;

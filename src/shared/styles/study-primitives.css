@@ -50,33 +50,9 @@
   white-space: nowrap;
   clip-path: inset(50%);
 }
-.hero-visibility-toggle {
-  display: inline-flex;
-  min-height: 32px;
-  align-items: center;
-  gap: 8px;
-  margin-top: 13px;
-  padding: 6px 10px;
-  border: 1px solid #3c4653;
-  border-radius: 2px;
-  background: #20242b;
-  color: #aebdd0;
-  font: inherit;
-  font-size: 11px;
-  cursor: pointer;
-}
-.hero-visibility-toggle:hover {
-  border-color: #6087ad;
-  color: #d8e9fa;
-  background: #252c35;
-}
-.hero-visibility-toggle:focus-visible {
-  outline: 2px solid #79b7ff;
-  outline-offset: 2px;
-}
 .hero-collapsed-strip {
   display: flex;
-  min-height: 38px;
+  min-height: 44px;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
@@ -84,10 +60,6 @@
   padding: 2px 0;
   color: #c2cad6;
   font-size: 12px;
-}
-.hero-collapsed-strip .hero-visibility-toggle {
-  flex: none;
-  margin: 0;
 }
 .algorithm-view-heading .eyebrow {
   margin-bottom: 4px;

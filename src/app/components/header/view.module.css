@@ -15,16 +15,23 @@
 }
 .breadcrumbs.scope {
   display: flex;
+  min-width: 0;
+  flex: 1;
   align-items: center;
-  gap: 9px;
   color: #858996;
-  font-size: 11px;
+  font-size: 13px;
 }
 .breadcrumbs :global(strong).scope {
   color: #d4d6de;
   font-weight: 550;
 }
 .crumb-separator.scope {
+  width: 10px;
+  height: 12px;
+  flex-shrink: 0;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
   color: #50535e;
 }
 .domain-tabs.scope {
@@ -98,13 +105,15 @@
 .topbar-leading.scope {
   display: flex;
   min-width: 0;
+  flex: 1 1 auto;
   align-items: center;
   gap: 13px;
 }
 .topbar-actions.scope {
   display: flex;
   min-width: 0;
-  flex: 1 1 auto;
+  flex: 0 0 auto;
+  margin-left: 20px;
   align-items: center;
   justify-content: flex-end;
   gap: 8px;
@@ -253,7 +262,7 @@
 }
 @media (max-width: 1099px) {
   .breadcrumbs.scope {
-    font-size: 10px;
+    font-size: 12px;
   }
 }
 @media (max-width: 720px) {
@@ -292,8 +301,80 @@
 }
 @media (max-width: 460px) {
   .breadcrumbs.scope {
-    gap: 5px;
-    font-size: 9px;
+    font-size: 12px;
+  }
+}
+.breadcrumb-list.scope {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 7px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.breadcrumb-item.scope {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 7px;
+}
+.crumb-link.scope {
+  display: inline-flex;
+  min-width: 0;
+  min-height: 34px;
+  align-items: center;
+  gap: 6px;
+  color: #9aa7b8;
+  text-decoration: none;
+}
+.crumb-link:hover.scope {
+  color: #d4e7ff;
+}
+.crumb-link:focus-visible.scope {
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
+}
+.crumb-label.scope,
+.crumb-current.scope {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.crumb-current.scope {
+  color: #dce4ef;
+  font-weight: 550;
+}
+.home-symbol.scope {
+  width: 15px;
+  height: 15px;
+  flex: none;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.4;
+  stroke-linejoin: round;
+}
+.crumb-short-label.scope {
+  display: none;
+}
+@media (max-width: 720px) {
+  .home-crumb .crumb-label.scope,
+  .has-short-label .crumb-label.scope,
+  .repository-link :global(span).scope {
+    display: none;
+  }
+  .crumb-short-label.scope {
+    display: inline;
+  }
+  .crumb-label.scope {
+    max-width: 88px;
+  }
+  .breadcrumb-list.scope,
+  .breadcrumb-item.scope {
+    gap: 4px;
+  }
+  .topbar-actions.scope {
+    margin-left: 10px;
   }
 }
 @media (max-width: 460px) {

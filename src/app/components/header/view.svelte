@@ -1,8 +1,10 @@
 <script>
   import styles from './view.module.css';
   import { classNames } from '../../../shared/ui/class-names.ts';
+  import { createHeaderViewModel } from './view-model.svelte.ts';
 
   let { vm } = $props();
+  const header = createHeaderViewModel(() => vm);
 </script>
 
 <header class={classNames(styles, 'topbar')}>
@@ -11,12 +13,39 @@
       class={classNames(styles, 'nav-toggle')}
       aria-label={vm.navOpen ? 'Close navigation' : 'Open navigation'}
       aria-expanded={vm.navOpen}
+      aria-controls="study-navigation"
       onclick={() => (vm.navOpen = !vm.navOpen)}>{vm.navOpen ? '×' : '☰'}</button
     >
-    <div class={classNames(styles, 'breadcrumbs')}>
-      <span class={styles.scope}>Learning library</span><span class={classNames(styles, 'crumb-separator')}>/</span
-      ><strong class={styles.scope}>{vm.pageTitle}</strong>
-    </div>
+    <nav class={classNames(styles, 'breadcrumbs')} aria-label="Breadcrumb">
+      <ol class={classNames(styles, 'breadcrumb-list')}>
+        {#each header.breadcrumbs as crumb, index}
+          <li class={classNames(styles, 'breadcrumb-item', { 'current-crumb': !crumb.href, 'home-crumb': crumb.home })}>
+            {#if index > 0}<svg class={classNames(styles, 'crumb-separator')} viewBox="0 0 12 12" aria-hidden="true"
+                ><path class={styles.scope} d="m4 2 4 4-4 4"></path></svg
+              >{/if}
+            {#if crumb.href}
+              <a
+                class={classNames(styles, 'crumb-link', { 'has-short-label': crumb.shortLabel })}
+                href={crumb.href}
+                aria-label={crumb.home ? 'Study home' : undefined}
+                title={crumb.label}
+              >
+                {#if crumb.home}<svg class={classNames(styles, 'home-symbol')} viewBox="0 0 20 20" aria-hidden="true"
+                    ><path class={styles.scope} d="m3 9 7-6 7 6v8h-5v-5H8v5H3Z"></path></svg
+                  >{/if}
+                <span class={classNames(styles, 'crumb-label')}>{crumb.label}</span>
+                {#if crumb.shortLabel}<span class={classNames(styles, 'crumb-short-label')}>{crumb.shortLabel}</span
+                  >{/if}
+              </a>
+            {:else}
+              <span class={classNames(styles, 'crumb-current')} aria-current="page" title={crumb.label}
+                >{crumb.label}</span
+              >
+            {/if}
+          </li>
+        {/each}
+      </ol>
+    </nav>
   </div>
   <div class={classNames(styles, 'topbar-actions')}>
     <button

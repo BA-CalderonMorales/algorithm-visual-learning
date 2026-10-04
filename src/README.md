@@ -36,6 +36,12 @@ the small set of intentionally shared study primitives. Do not place feature
 selectors in the global sheet or override a child's internals from its parent.
 Parents arrange their children; children own appearance and responsive rules.
 
+Home and core-domain directories share `shared/ui/library-layout` for the
+collapsed intro, tabs, padding, and bounded scroll panel. Topic links share
+`library-entry`; cross-domain pointers share `domain-connections`. The sorting
+catalog keeps its own comparison table inside that same shell. Adjust shared
+presentation once instead of introducing a different directory layout per domain.
+
 ## Guardrails and checks
 
 Keep hand-maintained source/CSS files at 500 physical lines or fewer, including
@@ -51,6 +57,7 @@ npm run build
 npm run test:walkthroughs
 npm run test:play
 npm run test:study
+npm run test:domain-landings
 npm run test:narration
 npm run test:film-cache
 ```

@@ -1,0 +1,67 @@
+.scope {
+}
+.intro-toggle.scope {
+  position: relative;
+  display: inline-grid;
+  width: 40px;
+  height: 40px;
+  flex: none;
+  place-items: center;
+  padding: 0;
+  border: 1px solid #3c4653;
+  border-radius: 0;
+  background: #20242b;
+  color: #aebdd0;
+  vertical-align: middle;
+  cursor: pointer;
+}
+.intro-toggle[aria-expanded='true'].scope {
+  margin-top: 14px;
+}
+.intro-toggle:hover.scope {
+  border-color: #6087ad;
+  color: #d8e9fa;
+  background: #252c35;
+}
+.intro-toggle:focus-visible.scope {
+  outline: 2px solid #79b7ff;
+  outline-offset: 2px;
+}
+.intro-toggle :global(svg).scope {
+  width: 19px;
+  height: 19px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.6;
+}
+.intro-tooltip.scope {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  z-index: 6;
+  padding: 7px 9px;
+  border: 1px solid #454d5b;
+  background: #242931;
+  color: #e0e9f5;
+  font-size: 11px;
+  line-height: 1.4;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+}
+.intro-toggle:hover .intro-tooltip.scope,
+.intro-toggle:focus-visible .intro-tooltip.scope {
+  opacity: 1;
+}
+.intro-toggle[aria-expanded='true'] .intro-tooltip.scope {
+  right: auto;
+  left: 0;
+}
+@media (pointer: coarse) {
+  .intro-toggle.scope {
+    width: 44px;
+    height: 44px;
+  }
+}

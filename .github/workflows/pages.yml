@@ -56,6 +56,8 @@ jobs:
           done
           curl --fail --silent http://127.0.0.1:5175/ > /dev/null
           npm run test:architecture-ui
+          npm run test:navigation
+          npm run test:domain-landings
           npm run test:study
       - name: Render only missing or changed films
         id: render_films

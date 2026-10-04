@@ -1,0 +1,55 @@
+.scope {
+}
+.library-heading.scope {
+  padding: 12px 0 32px;
+}
+.library-label.scope {
+  margin: 0 0 10px;
+  color: #8f9dac;
+  font-size: 11px;
+  letter-spacing: 0.04em;
+}
+.library-heading :global(h1).scope {
+  max-width: 100%;
+  font-size: clamp(32px, 3.5vw, 48px);
+  letter-spacing: -0.035em;
+  line-height: 1.15;
+}
+.library-heading > :global(p):last-of-type.scope {
+  max-width: 720px;
+  margin: 17px 0 0;
+  color: #b1bbc9;
+  font-size: 16px;
+  line-height: 1.7;
+}
+.library-workspace.scope {
+  min-width: 0;
+  border: 1px solid #3a3d47;
+  background: #1b1d23;
+}
+.library-panel.scope {
+  height: clamp(450px, 68svh, 780px);
+  overflow: auto;
+  padding: 6px 27px 25px;
+  scrollbar-width: thin;
+  scrollbar-color: #596579 #1b1d23;
+}
+.library-panel:focus-visible.scope {
+  outline: 2px solid #79b7ff;
+  outline-offset: -3px;
+}
+.library-panel.edge-to-edge.scope {
+  padding: 0;
+}
+@media (max-width: 600px) {
+  .library-heading.scope {
+    padding: 8px 0 25px;
+  }
+  .library-heading > :global(p):last-of-type.scope {
+    font-size: 14px;
+  }
+  .library-panel.scope {
+    padding: 4px 17px 20px;
+    height: clamp(460px, 72svh, 680px);
+  }
+}

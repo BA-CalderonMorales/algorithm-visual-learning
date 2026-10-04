@@ -1,0 +1,139 @@
+.scope {
+}
+:global(a).scope {
+  color: inherit;
+  text-decoration: none;
+}
+:global(a):hover.scope {
+  color: #a1ccff;
+}
+:global(a):focus-visible.scope {
+  outline: 2px solid #79b7ff;
+  outline-offset: 4px;
+}
+.library-label.scope {
+  display: block;
+  margin: 0 0 10px;
+  color: #8f9dac;
+  font-size: 11px;
+  letter-spacing: 0.04em;
+}
+.library-row.scope {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) 160px minmax(150px, 0.7fr);
+  gap: 22px;
+  align-items: center;
+  padding: 26px 0;
+  border-bottom: 1px solid #3b414b;
+}
+.library-copy :global(h2).scope {
+  font-size: 24px;
+  margin: 0 0 11px;
+}
+.library-copy :global(h2) :global(span).scope {
+  color: #648dac;
+  font-size: 19px;
+}
+.library-copy :global(p).scope {
+  max-width: 490px;
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.7;
+  color: #a9b7c8;
+}
+.library-sketch :global(svg).scope {
+  display: block;
+  width: 160px;
+}
+.library-sketch :global(rect).scope,
+.library-sketch :global(circle).scope {
+  fill: #1c232b;
+  stroke: #627c8a;
+  stroke-width: 1;
+}
+.library-sketch :global(text).scope {
+  fill: #c6dae4;
+  text-anchor: middle;
+  font:
+    14px Cambria,
+    serif;
+}
+.sketch-path.scope {
+  fill: none;
+  stroke: #65d9b0;
+  stroke-width: 1.5;
+}
+.sketch-axis.scope {
+  fill: none;
+  stroke: #42515f;
+  stroke-width: 1;
+}
+.sketch-cost.scope {
+  fill: none;
+  stroke: #c2a0fb;
+  stroke-width: 1.5;
+}
+.library-links.scope {
+  display: grid;
+  gap: 5px;
+}
+.library-links :global(a).scope {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 8px 0;
+  color: #b1c4d9;
+  font-size: 12px;
+}
+.library-links :global(a) :global(span).scope {
+  color: #6a829b;
+}
+.library-links :global(a):hover.scope {
+  color: #a1ccff;
+}
+@media (pointer: coarse) {
+  .library-links :global(a).scope {
+    min-height: 44px;
+    align-items: center;
+  }
+}
+
+@media (max-width: 1000px) {
+  .library-row.scope {
+    grid-template-columns: minmax(0, 1fr) 150px;
+    gap: 12px 26px;
+  }
+  .library-sketch.scope {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+  }
+  .library-sketch :global(svg).scope {
+    width: 150px;
+  }
+  .library-links.scope {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
+  }
+  .library-links :global(a).scope {
+    justify-content: flex-start;
+    gap: 6px;
+  }
+}
+@media (max-width: 600px) {
+  .library-row.scope {
+    grid-template-columns: 1fr;
+    gap: 12px;
+    padding: 23px 0;
+  }
+  .library-sketch.scope {
+    display: none;
+  }
+  .library-links.scope {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 20px;
+  }
+  .library-copy :global(h2).scope {
+    font-size: 22px;
+  }
+}
