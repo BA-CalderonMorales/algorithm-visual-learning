@@ -85,6 +85,7 @@
   background: #23252b;
 }
 .catalog-table :global(thead) :global(th).scope {
+  padding-inline: 8px;
   border-bottom: 1px solid #3b3e49;
   color: #8f96a5;
   font-size: 9px;
@@ -109,6 +110,7 @@
   letter-spacing: inherit;
   text-align: left;
   text-transform: inherit;
+  overflow-wrap: anywhere;
 }
 .sort-button :global(span).scope {
   flex-shrink: 0;

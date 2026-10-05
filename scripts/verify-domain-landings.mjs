@@ -84,10 +84,15 @@ try {
         assert.equal(panel.overflow, 'auto');
         assert.equal(panel.overflowX, false, route+' internal horizontal overflow at '+viewport.width);
         if (entry.id === 'algorithms' && view === 'explore' && viewport.width > 840) {
-          const headersFit = await page.locator('.catalog-table thead th').evaluateAll(els =>
-            els.every(el => el.scrollWidth <= el.clientWidth + 1 &&
-              (!el.querySelector('button') || el.querySelector('button').scrollWidth <= el.querySelector('button').clientWidth + 1)));
-          assert.ok(headersFit, 'Sortable headings must not spill into neighboring columns');
+          const headers = await page.locator('.catalog-table thead th').evaluateAll(els =>
+            els.map(el => ({
+              label:el.textContent.trim(), width:el.clientWidth, contentWidth:el.scrollWidth,
+              buttonWidth:el.querySelector('button')?.clientWidth,
+              buttonContentWidth:el.querySelector('button')?.scrollWidth,
+            })));
+          const overflowing = headers.filter(el => el.contentWidth > el.width + 1 ||
+            (el.buttonContentWidth && el.buttonContentWidth > el.buttonWidth + 1));
+          assert.deepEqual(overflowing, [], 'Sortable headings must not spill into neighboring columns: '+JSON.stringify(overflowing));
         }
         assert.ok(panel.content.length > 100, 'Meaningful panel content');
         assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth + 1), false);
