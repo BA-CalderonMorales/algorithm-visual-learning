@@ -138,6 +138,21 @@ try {
         }
         assert.ok(panel.content.length > 100, 'Meaningful panel content');
         assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth + 1), false);
+        if (entry.id === 'algorithms' && view === 'explore') {
+          const filter = page.getByPlaceholder('Try ‘divide and conquer’');
+          const toolbar = page.locator('.catalog-toolbar');
+          const before = await toolbar.boundingBox();
+          await page.locator('.library-panel').evaluate(el => el.scrollTop = el.scrollHeight);
+          const after = await toolbar.boundingBox();
+          assert.ok(Math.abs(after.y - before.y) < 1, 'Filter stays pinned at the top of Explore while scrolling');
+          const field = await filter.boundingBox();
+          assert.equal(await page.evaluate(({x,y}) => document.elementFromPoint(x,y)?.matches('.catalog-toolbar input'),
+            {x:field.x + field.width / 2, y:field.y + field.height / 2}), true, 'Sticky filter stays above scrolling rows');
+          await filter.fill('merge sort');
+          assert.equal(await page.locator('.catalog-table tbody tr').count(), 1, 'Filter works from the scrolled panel');
+          await filter.fill('');
+          await page.locator('.library-panel').evaluate(el => el.scrollTop = 0);
+        }
         if (entry.id !== 'algorithms' || view === 'connections') {
           assert.equal(await page.locator('.library-row').count(), view === 'connections' ? entries.length - 1 : entry.id === 'problems' ? 1 : 3);
           const links = await page.locator('.library-row a').evaluateAll(els => els.map(el => ({

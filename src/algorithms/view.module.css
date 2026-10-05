@@ -5,10 +5,15 @@
   container-type: inline-size;
 }
 .catalog-toolbar.scope {
+  position: sticky;
+  top: 0;
+  z-index: 2;
   display: flex;
   align-items: center;
   justify-content: flex-end;
   padding: 12px 20px;
+  border-bottom: 1px solid var(--line);
+  background: var(--theme-surface-1, #1b1d23);
 }
 .search.scope {
   display: flex;
