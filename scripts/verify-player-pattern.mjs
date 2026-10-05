@@ -4,6 +4,7 @@ import { fileURLToPath } from 'node:url';
 import { chromium } from 'playwright';
 import { playFilms, conceptVariants } from '../src/app/film-catalog.ts';
 import { stageBounds } from '../src/shared/playback/player/model.ts';
+import { assertSharpCorners } from './assert-sharp-corners.mjs';
 
 // Every exported diagram must fit inside its live-player crop. Film headers,
 // fact cards and captions intentionally live outside these diagram bounds.
@@ -47,6 +48,7 @@ try {
       await page.goto(`${origin}/#/${route}`);
       const player = page.locator('.concept-film');
       await player.locator('.scene-heading h2').waitFor();
+      await assertSharpCorners(page);
       assert.equal(await player.locator('.film-chapters, .film-heading').count(), 0);
       assert.equal(await player.locator('.more').getAttribute('open'), null);
       assert.equal(await player.locator('.film-transcript li').count(), playFilms[id].frames.length);

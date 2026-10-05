@@ -5,6 +5,26 @@ import { fileURLToPath } from 'node:url';
 import { parse, compile } from 'svelte/compiler';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
+// UI surfaces are square. A circular phase marker is a diagram shape, not a
+// rounded panel or control; keep that one explicit legacy exception narrow.
+function cornerViolations(css, filename) {
+  const errors = [];
+  const rules = css.replace(/\/\*[\s\S]*?\*\//g, '').matchAll(/([^{}]+)\{([^{}]*)\}/g);
+  for (const [, selector, declarations] of rules) {
+    for (const [, property, rawValue] of declarations.matchAll(/\b(border(?:-[a-z]+)*-radius)\s*:\s*([^;}]+)/g)) {
+      const value = rawValue.replace(/\s*!important\s*$/, '').trim();
+      const phaseCircle = filename === 'public/walkthroughs/quick_sort_partition_walkthrough.html' &&
+        selector.trim() === '#quick-sort-walkthrough .node' && property === 'border-radius' && value === '50%';
+      if (!phaseCircle && !/^0(?:px|em|rem|%)?(?:\s+(?:\/\s*)?0(?:px|em|rem|%)?)*$/.test(value)) {
+        errors.push(`${filename}: ${selector.trim()} uses ${property}: ${value}; UI corners must be 0`);
+      }
+    }
+  }
+  return errors;
+}
+assert.equal(cornerViolations('.panel { border-radius: 7px; }', 'test.css').length, 1);
+assert.equal(cornerViolations('.input { border-start-start-radius: 4px; }', 'test.css').length, 1);
+assert.deepEqual(cornerViolations('.panel { border-radius: 0; }', 'test.css'), []);
 async function walk(directory) {
   const entries = await readdir(path.join(root, directory), { withFileTypes: true });
   return (await Promise.all(entries.map(entry => entry.isDirectory()
@@ -28,6 +48,7 @@ for (const filename of files) {
   const lines = text.replaceAll('\r\n', '\n').trimEnd().split('\n').length;
   if (lines > 500) errors.push(`${filename}: ${lines} physical lines (limit 500)`);
   if (filename.endsWith('.css') && /!important\b/.test(text)) errors.push(`${filename}: undocumented !important`);
+  if (filename.endsWith('.css')) errors.push(...cornerViolations(text, filename));
   if (!filename.endsWith('.svelte')) continue;
   if (!filename.endsWith('/view.svelte')) errors.push(`${filename}: presentation components use view.svelte`);
   const ast = parse(text);
@@ -52,5 +73,10 @@ for (const filename of files) {
   }
 }
 for (const filename of readmes) assert.ok(files.includes(filename), `Missing ${filename}`);
+for (const filename of (await walk('public/walkthroughs')).filter(file => /\.(css|html)$/.test(file))) {
+  const text = await readFile(path.join(root, filename), 'utf8');
+  const css = filename.endsWith('.css') ? text : [...text.matchAll(/<style\b[^>]*>([\s\S]*?)<\/style>/gi)].map(match => match[1]).join('\n');
+  errors.push(...cornerViolations(css, filename));
+}
 assert.deepEqual(errors, [], errors.join('\n'));
-console.log(`Architecture: ${files.length} source files; 500-line limit, presentation CSS, Svelte compilation, and README ownership passed.`);
+console.log(`Architecture: ${files.length} source files; 500-line limit, presentation CSS, sharp UI corners, Svelte compilation, and README ownership passed.`);

@@ -2,7 +2,7 @@
 }
 .primary.scope {
   padding: 7px 9px;
-  border-radius: 6px;
+  border-radius: 0;
   background: #2f5883;
   color: #eff7ff;
 }
@@ -11,7 +11,7 @@
 }
 .worked-example.scope {
   border: 1px solid var(--line);
-  border-radius: 12px;
+  border-radius: 0;
   background: linear-gradient(150deg, #24252b, #1e1f24);
 }
 .worked-example > :global(p).scope {
@@ -36,7 +36,7 @@
 .example-tag.scope {
   padding: 4px 7px;
   border: 1px solid #4d4665;
-  border-radius: 999px;
+  border-radius: 0;
   color: #c6b5ff;
   font-size: 9px;
 }
@@ -53,7 +53,7 @@
 .case-grid :global(section).scope {
   padding: 12px;
   border: 1px solid #3a3b45;
-  border-radius: 9px;
+  border-radius: 0;
   background: #1c1d23;
 }
 .case-label.scope {
@@ -82,7 +82,7 @@
   margin: 12px 0 0;
   padding: 11px 13px;
   border-left: 2px solid var(--orange);
-  border-radius: 0 7px 7px 0;
+  border-radius: 0;
   background: #32291f88;
   color: #c9b9a8;
   font-size: 10px;
@@ -114,7 +114,7 @@
   margin-top: 18px;
   overflow: hidden;
   border: 1px solid #3a3d48;
-  border-radius: 13px;
+  border-radius: 0;
   background: #1c1d22;
   box-shadow: 0 14px 36px #0003;
 }
@@ -227,7 +227,7 @@
 .learning-card.scope {
   padding: 14px;
   border: 1px solid #373a44;
-  border-radius: 10px;
+  border-radius: 0;
   background: #202127;
 }
 .learning-card :global(p).scope,
@@ -248,7 +248,7 @@
 .answer-reveal.scope {
   margin-top: 8px;
   border: 1px solid #3b4650;
-  border-radius: 9px;
+  border-radius: 0;
   background: #1b2026;
 }
 .answer-reveal :global(summary).scope {
@@ -285,7 +285,7 @@
   flex-direction: column;
   padding: 13px;
   border: 1px solid #383c47;
-  border-radius: 10px;
+  border-radius: 0;
   background: linear-gradient(145deg, #22242b, #1d1e24);
 }
 .practice-check-card :global(h3).scope {
@@ -325,7 +325,7 @@
   min-width: 0;
   padding: 13px;
   border: 1px solid #3a3b45;
-  border-radius: 9px;
+  border-radius: 0;
   background: #202127;
 }
 .algorithm-case-grid :global(p).scope {
@@ -384,7 +384,7 @@
   gap: 6px;
   padding: 12px;
   border: 1px solid #3d4653;
-  border-radius: 9px;
+  border-radius: 0;
   background: #191c22;
 }
 .trace-state > :global(span).scope,

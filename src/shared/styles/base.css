@@ -8,8 +8,11 @@ body {
   background: radial-gradient(ellipse at 18% 0%, #202631 0, transparent 44%), #171719;
 }
 button,
-input {
+input,
+select,
+textarea {
   font: inherit;
+  border-radius: 0;
 }
 button {
   color: inherit;

@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import { chromium } from 'playwright';
 import { algorithms } from '../src/algorithms/model.ts';
+import { assertSharpCorners } from './assert-sharp-corners.mjs';
 
 const origin = process.env.PLAY_PREVIEW_URL || 'http://127.0.0.1:5175';
 const browser = await chromium.launch({headless:true, ...(process.env.PLAYWRIGHT_CHANNEL ? {channel:process.env.PLAYWRIGHT_CHANNEL} : {})});
@@ -15,6 +16,7 @@ try {
     await page.getByRole('searchbox', {name:'Search topics',exact:true}).fill('telescoping');
     await page.locator('.site-search-result').first().waitFor();
     assert.ok((await page.locator('.site-search-result').first().innerText()).includes('Telescoping'));
+    await assertSharpCorners(page);
     await page.keyboard.press('Escape');
     await page.goto(`${origin}/#/algorithms/sorting`);
     await page.locator('.catalog-table').waitFor();
@@ -36,6 +38,7 @@ try {
           assert.ok((await page.locator('.learning-view').innerText()).trim().length > 50, `${algorithm.id}/${route}: missing lesson`);
         }
         assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth > innerWidth + 1), false, `${algorithm.id}/${route}: page overflow at ${width}px`);
+        await assertSharpCorners(page);
       }
     }
     await page.close();

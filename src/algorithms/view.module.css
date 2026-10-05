@@ -34,7 +34,7 @@
 .dnc.scope {
   padding: 4px 7px;
   border: 1px solid #695441;
-  border-radius: 999px;
+  border-radius: 0;
   color: #ffcc9c;
   font-size: 9px;
   white-space: nowrap;
@@ -199,7 +199,7 @@
   display: inline-block;
   padding: 4px 6px;
   border: 1px solid #695441;
-  border-radius: 3px;
+  border-radius: 0;
   color: #ffcc9c;
   font-size: 9px;
   line-height: 1.35;
@@ -251,7 +251,7 @@
   justify-content: center;
   padding: 5px 7px;
   border: 1px solid #3d536c;
-  border-radius: 3px;
+  border-radius: 0;
   color: #c7dfff;
   font-size: 9px;
   text-align: center;

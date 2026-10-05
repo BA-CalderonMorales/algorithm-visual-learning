@@ -36,6 +36,11 @@ the small set of intentionally shared study primitives. Do not place feature
 selectors in the global sheet or override a child's internals from its parent.
 Parents arrange their children; children own appearance and responsive rules.
 
+UI surfaces use `border-radius: 0`: tab frames, panels, buttons, badges, fields,
+menus, and embedded walkthroughs. Keep this in each owning stylesheet rather
+than adding global overrides. Architecture checks reject nonzero corner radii;
+Quick Sort's circular phase markers are an explicit diagram-shape exception.
+
 Home and core-domain directories share `shared/ui/library-layout` for the
 collapsed intro, tabs, padding, and bounded scroll panel. Topic links share
 `library-entry`; cross-domain pointers share `domain-connections`. The sorting

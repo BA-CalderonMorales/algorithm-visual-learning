@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import { mkdir } from 'node:fs/promises';
 import { chromium } from 'playwright';
+import { assertSharpCorners } from './assert-sharp-corners.mjs';
 import {
   navigationGroups,
   readingOrder,
@@ -21,6 +22,7 @@ const toggle = page.getByRole('button', { name: 'Open navigation', exact: true }
 async function open() {
   await toggle.click();
   await page.waitForFunction(() => document.querySelector('#study-navigation').contains(document.activeElement));
+  await assertSharpCorners(page);
 }
 async function close() {
   await page.keyboard.press('Escape');

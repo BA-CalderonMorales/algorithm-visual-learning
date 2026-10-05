@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import {mkdir} from 'node:fs/promises';
 import {chromium} from 'playwright';
 import {entries} from '../src/shared/study/library.ts';
+import {assertSharpCorners} from './assert-sharp-corners.mjs';
 
 const origin = process.env.PLAY_PREVIEW_URL || 'http://127.0.0.1:5175';
 const browser = await chromium.launch({
@@ -12,6 +13,7 @@ const page = await browser.newPage();
 const errors = [];
 page.on('pageerror', error => errors.push(error.message));
 async function verifyHomeRows(width) {
+  await assertSharpCorners(page);
   const rows = await page.locator('.library-rows .library-row').evaluateAll(els => els.map(el => {
     const style = getComputedStyle(el);
     const sketch = el.querySelector('.library-sketch');
@@ -69,6 +71,7 @@ try {
         await page.goto(origin+'/'+route);
         const tab = page.getByRole('tab', {name:view === 'explore' ? 'Explore' : 'Connections', exact:true});
         await tab.waitFor();
+        await assertSharpCorners(page);
         assert.equal(await tab.getAttribute('aria-selected'), 'true', 'Direct-link routing');
         assert.equal(await page.locator('main h1').count(), 0, 'Collapsed intro by default');
         assert.equal(await page.locator('.library-panel').getAttribute('aria-labelledby'), await tab.getAttribute('id'));

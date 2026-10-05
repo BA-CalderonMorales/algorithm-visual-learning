@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import { chromium } from 'playwright';
 import { createServer, preview } from 'vite';
 import { algorithms } from '../src/algorithms/model.ts';
+import { assertSharpCorners } from './assert-sharp-corners.mjs';
 
 const browser = await chromium.launch({ headless: true, ...(process.env.PLAYWRIGHT_CHANNEL ? { channel: process.env.PLAYWRIGHT_CHANNEL } : {}) });
 const sizes = [{ width: 1440, height: 1000 }, { width: 900, height: 900 }, { width: 390, height: 844 }];
@@ -17,6 +18,8 @@ async function waitForTrace(page, name) {
   assert.ok(await frame.locator('.legend').evaluate(el => !el.closest('.stage, .study-stage, .ledger')), 'Legend must remain outside the step scroller');
   const height = await page.locator('iframe').evaluate(el => el.clientHeight);
   assert.ok(height > 250, `Walkthrough is too short: ${height}px`);
+  await assertSharpCorners(page);
+  await assertSharpCorners(frame, { allowPhaseCircles: true });
   return frame;
 }
 

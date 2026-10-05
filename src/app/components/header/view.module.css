@@ -49,7 +49,7 @@
   position: relative;
   padding: 9px 13px 11px;
   border: 0;
-  border-radius: 7px 7px 0 0;
+  border-radius: 0;
   background: transparent;
   color: #8f93a0;
   cursor: pointer;
@@ -72,7 +72,7 @@
   bottom: -1px;
   left: 9px;
   height: 2px;
-  border-radius: 2px;
+  border-radius: 0;
   background: var(--blue);
   content: '';
 }
@@ -127,7 +127,7 @@
   justify-content: center;
   gap: 8px;
   border: 1px solid #3d404b;
-  border-radius: 7px;
+  border-radius: 0;
   background: #202127;
   color: #c5c8d2;
   text-decoration: none;
@@ -177,7 +177,7 @@
 .global-search-trigger :global(kbd).scope {
   padding: 2px 5px;
   border: 1px solid #3b3d47;
-  border-radius: 4px;
+  border-radius: 0;
   background: #191a20;
   color: #858a99;
   font:
@@ -210,7 +210,7 @@
   flex: 0 0 auto;
   place-items: center;
   border: 1px solid #41434e;
-  border-radius: 8px;
+  border-radius: 0;
   background: #24252b;
   color: #d6dae4;
   cursor: pointer;

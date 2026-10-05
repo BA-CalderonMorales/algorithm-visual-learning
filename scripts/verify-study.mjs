@@ -3,6 +3,7 @@ import { mkdir } from 'node:fs/promises';
 import { chromium } from 'playwright';
 import { studyLessons, lessonTabs, lessonHref } from '../src/app/study-catalog.ts';
 import { conceptVariants } from '../src/app/film-catalog.ts';
+import { assertSharpCorners } from './assert-sharp-corners.mjs';
 
 const origin = process.env.PLAY_PREVIEW_URL || 'http://127.0.0.1:5175';
 const browser = await chromium.launch({ headless: true, ...(process.env.PLAYWRIGHT_CHANNEL ? { channel: process.env.PLAYWRIGHT_CHANNEL } : {}) });
@@ -21,6 +22,7 @@ try {
       await page.locator('main h1').waitFor();
       await page.getByRole('button', {name:'Hide intro',exact:false}).click();
       assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth + 1), false, `Overflow: ${route} at ${viewport.width}`);
+      await assertSharpCorners(page);
     }
     for (const lesson of Object.values(studyLessons)) {
       for (const tab of lessonTabs) {
@@ -29,6 +31,7 @@ try {
         assert.equal(await page.getByRole('tab', {name:tab.label, exact:true}).getAttribute('aria-selected'), 'true');
         assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth + 1), false, `Overflow: ${lesson.id}/${tab.id} at ${viewport.width}`);
         assert.ok(await page.locator('.study-panel').evaluate(el => el.clientHeight <= 800), 'Lessons must remain bounded');
+        await assertSharpCorners(page);
         if (tab.id === 'examples') {
           for (const example of lesson.examples) {
             await page.getByRole('button', {name:example.title}).click();

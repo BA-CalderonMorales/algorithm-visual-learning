@@ -76,7 +76,7 @@
   bottom: -1px;
   left: 9px;
   height: 2px;
-  border-radius: 2px;
+  border-radius: 0;
   background: var(--blue);
   content: '';
 }
@@ -123,7 +123,7 @@
   min-height: 30px;
   padding: 5px 8px;
   border: 1px solid #454956;
-  border-radius: 2px;
+  border-radius: 0;
   background: #191a20;
   color: #e3e6ed;
   font: inherit;
