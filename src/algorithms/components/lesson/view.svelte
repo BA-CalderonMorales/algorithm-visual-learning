@@ -262,6 +262,6 @@
       bind:gapSequence={vm.shellGapSequence}
     />
   {:else if vm.algorithmView === 'implementation'}
-    <Implementation {vm} />
+    <Implementation algorithm={vm.selectedAlgorithm} language={vm.implementationLanguage} />
   {/if}
 </section>

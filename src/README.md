@@ -9,6 +9,7 @@ src/
   algorithms/   # Catalog, algorithm lessons, growth, walkthroughs, and films
   discrete/     # Induction, telescoping, and Master theorem content
   complexity/   # Time, space, and asymptotic-bound content
+  problems/     # Interview patterns, original reasoning, and live visual stories
   shared/       # Reused study shells, MathML, tabs, playback, and foundations
   main.ts       # Application entry and the one global stylesheet import
 ```

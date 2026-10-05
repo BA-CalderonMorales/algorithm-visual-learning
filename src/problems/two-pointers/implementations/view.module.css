@@ -1,0 +1,84 @@
+.scope {
+}
+.problem-implementation.scope {
+  display: grid;
+  grid-template-columns: 108px minmax(0, 1fr);
+  flex: 1;
+  min-height: 0;
+  min-width: 0;
+}
+.approach-rail.scope {
+  border-right: 1px solid var(--line);
+  padding-top: 8px;
+  background: #181c23;
+}
+.rail-label.scope {
+  display: block;
+  padding: 8px 16px 14px;
+  color: #8f9eb1;
+  font-size: 11px;
+}
+.implementation-main.scope {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  min-width: 0;
+}
+.approach-summary.scope {
+  flex: 0 0 auto;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--line);
+  max-height: 36%;
+  overflow: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #52675d #202127;
+}
+.approach-heading.scope {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 6px 20px;
+}
+.approach-heading h2.scope {
+  margin: 0;
+  font-size: 16px;
+}
+.cost.scope {
+  color: var(--green);
+  font-size: 12px;
+}
+.approach-summary p.scope {
+  margin: 7px 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.6;
+}
+.approach-summary summary.scope {
+  cursor: pointer;
+  font-size: 12px;
+  color: var(--blue);
+}
+.approach-summary details.scope {
+  margin-top: 6px;
+}
+.approach-summary code.scope {
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+@media (max-width: 600px) {
+  .problem-implementation.scope {
+    grid-template-columns: 74px minmax(0, 1fr);
+  }
+  .rail-label.scope {
+    padding-inline: 10px;
+    font-size: 10px;
+  }
+  .approach-summary.scope {
+    padding: 10px 12px;
+    max-height: 35%;
+  }
+  .approach-heading h2.scope {
+    font-size: 14px;
+  }
+}

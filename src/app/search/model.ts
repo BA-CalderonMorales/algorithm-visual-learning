@@ -1,3 +1,5 @@
+import { problemSearchEntries } from '../../problems/model.ts';
+
 export const baseSearchEntries = [
   {
     title: 'Study home',
@@ -97,6 +99,7 @@ export function createSearchIndex(
 ) {
   return [
     ...baseSearchEntries,
+    ...problemSearchEntries,
     ...Object.values(studyLessons).flatMap((lesson) =>
       lessonTabs.map((tab) => ({
         title: `${lesson.title} · ${tab.label}`,

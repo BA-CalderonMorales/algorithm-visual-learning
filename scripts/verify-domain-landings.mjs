@@ -29,7 +29,7 @@ async function verifyHomeRows(width) {
       top:el.getBoundingClientRect().top, bottom:el.getBoundingClientRect().bottom,
     };
   }));
-  assert.equal(rows.length, 3, 'Home shows all three domains');
+  assert.equal(rows.length, entries.length, 'Home shows every registered domain');
   for (const [index, row] of rows.entries()) {
     assert.equal(row.display, 'grid', 'Home must render styled shared rows, not obsolete markup');
     assert.ok(row.gap >= 12 && row.padding >= 20, 'Home row spacing must survive shared-style refactors');
@@ -100,7 +100,7 @@ try {
         assert.ok(panel.content.length > 100, 'Meaningful panel content');
         assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth + 1), false);
         if (entry.id !== 'algorithms' || view === 'connections') {
-          assert.equal(await page.locator('.library-row').count(), view === 'connections' ? 2 : 3);
+          assert.equal(await page.locator('.library-row').count(), view === 'connections' ? entries.length - 1 : entry.id === 'problems' ? 1 : 3);
           const links = await page.locator('.library-row a').evaluateAll(els => els.map(el => ({
             href:el.getAttribute('href'), decoration:getComputedStyle(el).textDecorationLine,
           })));

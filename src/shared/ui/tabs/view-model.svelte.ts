@@ -1,10 +1,10 @@
 export function createViewModel(props = () => ({})) {
-  let { tabs, selected, label, controls = undefined, idPrefix = 'view-tab' } = $derived(props());
+  let { tabs, selected, orientation = 'horizontal' } = $derived(props());
   function navigate(event, index) {
     const next =
-      event.key === 'ArrowRight'
+      event.key === (orientation === 'vertical' ? 'ArrowDown' : 'ArrowRight')
         ? (index + 1) % tabs.length
-        : event.key === 'ArrowLeft'
+        : event.key === (orientation === 'vertical' ? 'ArrowUp' : 'ArrowLeft')
           ? (index + tabs.length - 1) % tabs.length
           : event.key === 'Home'
             ? 0

@@ -12,6 +12,8 @@
   import StudyLesson from '../shared/ui/study-lesson/view.svelte';
   import StudyLibrary from '../explore/view.svelte';
   import TopicDirectory from '../shared/ui/topic-directory/view.svelte';
+  import Problems from '../problems/view.svelte';
+  import ProblemLesson from '../problems/two-pointers/view.svelte';
 
   import { createViewModel } from './view-model.svelte.ts';
   const vm = createViewModel();
@@ -48,6 +50,18 @@
         <Catalog {vm} />
       {:else if vm.domain === 'algorithms' && vm.topic === 'algorithm' && vm.selectedAlgorithm}
         <AlgorithmLesson {vm} />
+      {:else if vm.domain === 'problems'}
+        {#if vm.topic === 'index' || vm.topic === 'two-pointers'}
+          <Problems view={vm.directoryView} bucket={vm.topic === 'two-pointers'} bind:heroVisible={vm.heroVisible} />
+        {:else}
+          {#key vm.topic}<ProblemLesson
+              id={vm.topic}
+              view={vm.studyView}
+              approach={vm.problemApproach}
+              language={vm.problemLanguage}
+              bind:heroVisible={vm.heroVisible}
+            />{/key}
+        {/if}
       {:else if (vm.domain === 'discrete' || vm.domain === 'complexity') && vm.topic === 'index'}
         <TopicDirectory
           domain={vm.domain}

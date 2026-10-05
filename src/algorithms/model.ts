@@ -10,10 +10,6 @@ export const algorithms = [
     upper: 'O(n²)',
     extra: 'Insertion sort handles small ranges in this walkthrough.',
     walkthrough: 'quick_sort_partition_walkthrough.html',
-    python: 'quick_sort.py',
-    simplePython: 'quick_sort_simple.py',
-    javascript: 'quick_sort.js',
-    typescript: 'quick_sort.ts',
   },
   {
     id: 'merge',
@@ -25,10 +21,6 @@ export const algorithms = [
     upper: 'O(n log n)',
     extra: 'Θ(n) auxiliary space.',
     walkthrough: 'merge_sort_walkthrough.html',
-    python: 'merge_sort.py',
-    simplePython: 'merge_sort_simple.py',
-    javascript: 'merge_sort.js',
-    typescript: 'merge_sort.ts',
   },
   {
     id: 'tim',
@@ -40,10 +32,6 @@ export const algorithms = [
     upper: 'O(n log n)',
     extra: 'Adaptive hybrid; Python file is an educational version.',
     walkthrough: 'tim_sort_walkthrough.html',
-    python: 'tim_sort.py',
-    simplePython: 'tim_sort_simple.py',
-    javascript: 'tim_sort.js',
-    typescript: 'tim_sort.ts',
   },
   {
     id: 'insertion',
@@ -55,10 +43,6 @@ export const algorithms = [
     upper: 'O(n²)',
     extra: 'Θ(1) auxiliary space.',
     walkthrough: 'insertion_sort_walkthrough.html',
-    python: 'insertion_sort.py',
-    simplePython: 'insertion_sort_simple.py',
-    javascript: 'insertion_sort.js',
-    typescript: 'insertion_sort.ts',
   },
   {
     id: 'selection',
@@ -70,10 +54,6 @@ export const algorithms = [
     upper: 'O(n²)',
     extra: 'At most n−1 swaps.',
     walkthrough: 'selection_sort_walkthrough.html',
-    python: 'selection_sort.py',
-    simplePython: 'selection_sort_simple.py',
-    javascript: 'selection_sort.js',
-    typescript: 'selection_sort.ts',
   },
   {
     id: 'shell',
@@ -85,10 +65,6 @@ export const algorithms = [
     upper: 'O(n²), halving-gap sequence',
     extra: 'Runtime bounds depend on the gap sequence.',
     walkthrough: 'shell_sort_walkthrough.html',
-    python: 'shell_sort.py',
-    simplePython: 'shell_sort_simple.py',
-    javascript: 'shell_sort.js',
-    typescript: 'shell_sort.ts',
   },
   {
     id: 'counting',
@@ -100,10 +76,6 @@ export const algorithms = [
     upper: 'O(n + k)',
     extra: 'k is the integer range width; supports negative values.',
     walkthrough: 'counting_sort_walkthrough.html',
-    python: 'counting_sort.py',
-    simplePython: 'counting_sort_simple.py',
-    javascript: 'counting_sort.js',
-    typescript: 'counting_sort.ts',
   },
 ];
 

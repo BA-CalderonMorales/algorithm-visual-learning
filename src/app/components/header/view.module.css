@@ -336,6 +336,7 @@
   outline-offset: 2px;
 }
 .crumb-label.scope,
+.crumb-short-label.scope,
 .crumb-current.scope {
   overflow: hidden;
   text-overflow: ellipsis;
@@ -358,6 +359,9 @@
   display: none;
 }
 @media (max-width: 720px) {
+  .breadcrumb-list.deep-trail .breadcrumb-item:nth-child(2).scope {
+    display: none;
+  }
   .home-crumb .crumb-label.scope,
   .has-short-label .crumb-label.scope,
   .repository-link :global(span).scope {

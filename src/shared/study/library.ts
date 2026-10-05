@@ -35,6 +35,19 @@ export const entries = [
       { title: 'Space', href: '#/complexity/space' },
     ],
   },
+  {
+    id: 'problems',
+    title: 'Problems',
+    question: 'Why is this the next move?',
+    href: '#/problems',
+    description:
+      'Build interview intuition by pattern. Start with Two Pointers: sorted pairs, container walls, and 3-Sum.',
+    links: [
+      { title: 'Two Pointers', href: '#/problems/two-pointers' },
+      { title: 'Watch Two Sum', href: '#/problems/two-pointers/two-sum/play' },
+      { title: 'Watch 3-Sum', href: '#/problems/two-pointers/three-sum/play' },
+    ],
+  },
 ];
 
 export function directoryTabs(href) {

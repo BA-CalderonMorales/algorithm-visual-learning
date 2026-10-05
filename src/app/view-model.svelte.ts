@@ -1,6 +1,5 @@
 import { onMount } from 'svelte';
 import { createSearchIndex, searchTopics } from './search/model.ts';
-import { createImplementationViewModel } from '../algorithms/components/implementation/view-model.svelte.ts';
 import { createCatalogViewModel } from '../algorithms/view-model.svelte.ts';
 import { algorithms } from '../algorithms/model.ts';
 import { algorithmLessons } from '../algorithms/lessons.ts';
@@ -11,6 +10,7 @@ import { playFilms, conceptVariants, conceptLegends } from './film-catalog.ts';
 import { voiceForFilm } from '../algorithms/play/voice.ts';
 
 import { studyLessons, studyDomains, lessonTabs, lessonHref } from './study-catalog.ts';
+import { parseProblemRoute, problems } from '../problems/model.ts';
 
 export function createViewModel() {
   const catalog = createCatalogViewModel();
@@ -32,13 +32,10 @@ export function createViewModel() {
   let shellGapSequence = $state('halving');
   let selectedGrowthModel = $derived(getGrowthModel(selectedAlgorithmId, shellGapSequence));
   let implementationLanguage = $state('python-simple');
+  let problemApproach = $state('brute');
+  let problemLanguage = $state('python-simple');
   let selectedAlgorithm = $derived(algorithms.find((algorithm) => algorithm.id === selectedAlgorithmId));
   let selectedLesson = $derived(algorithmLessons[selectedAlgorithmId]);
-  const implementation = createImplementationViewModel(() => ({
-    algorithm: selectedAlgorithm,
-    language: implementationLanguage,
-    enabled: algorithmView === 'implementation',
-  }));
 
   const searchIndex = createSearchIndex(
     algorithms,
@@ -65,6 +62,7 @@ export function createViewModel() {
     '#/algorithms/sorting': ['algorithms', 'catalog'],
     '#/discrete': ['discrete', 'index'],
     '#/complexity': ['complexity', 'index'],
+    '#/problems': ['problems', 'index'],
     '#/discrete/induction': ['discrete', 'induction'],
     '#/discrete/telescoping': ['discrete', 'telescoping'],
     '#/discrete/master-theorem': ['discrete', 'master'],
@@ -113,6 +111,20 @@ export function createViewModel() {
     window.addEventListener('keydown', handleGlobalKeydown);
     document.addEventListener('fullscreenchange', syncFullscreen);
     const applyRoute = () => {
+      const problemRoute = parseProblemRoute(window.location.hash);
+      if (problemRoute) {
+        const samePage = domain === 'problems' && topic === problemRoute.topic;
+        domain = 'problems';
+        topic = problemRoute.topic;
+        studyView = problemRoute.view;
+        problemApproach = problemRoute.approach ?? 'brute';
+        problemLanguage = problemRoute.language ?? 'python-simple';
+        directoryView = problemRoute.directoryView;
+        selectedAlgorithmId = '';
+        navOpen = false;
+        if (!samePage) returnToTop();
+        return;
+      }
       const directoryRoute = window.location.hash.match(
         /^#\/(algorithms\/sorting|discrete|complexity)(?:\/(connections))?$/,
       );
@@ -258,7 +270,10 @@ export function createViewModel() {
         ? (selectedStudyLesson?.title ?? 'Discrete mathematics')
         : domain === 'complexity'
           ? (selectedStudyLesson?.title ?? 'Complexity')
-          : 'A visual DSA study guide',
+          : domain === 'problems'
+            ? (problems.find((problem) => problem.id === topic)?.title ??
+              (topic === 'two-pointers' ? 'Two Pointers' : 'Problems'))
+            : 'A visual DSA study guide',
   );
 
   const pageKicker = $derived(
@@ -271,14 +286,11 @@ export function createViewModel() {
           : 'A growing companion for data structures & algorithms',
   );
   return {
-    get pythonLoading() {
-      return implementation.loading;
+    get problemApproach() {
+      return problemApproach;
     },
-    get pythonError() {
-      return implementation.error;
-    },
-    get highlightedLines() {
-      return implementation.lines;
+    get problemLanguage() {
+      return problemLanguage;
     },
     get implementationLanguage() {
       return implementationLanguage;

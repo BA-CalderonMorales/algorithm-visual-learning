@@ -41,3 +41,35 @@
     font-size: 12px;
   }
 }
+.study-tabs.vertical.scope {
+  flex-direction: column;
+  flex-wrap: nowrap;
+  border-bottom: 0;
+  background: transparent;
+}
+.study-tabs.vertical > a.scope {
+  flex: none;
+  justify-content: start;
+  padding: 14px 16px;
+  border-bottom: 0;
+  border-left: 2px solid transparent;
+}
+.study-tabs.vertical > a[aria-selected='true'].scope {
+  border-left-color: #79b7ff;
+}
+.study-tabs.compact > a.scope {
+  flex: 1 0 auto;
+  min-height: 39px;
+  padding: 8px;
+  font-size: 11px;
+}
+@media (max-width: 600px) {
+  .study-tabs.compact.scope {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .study-tabs.vertical > a.scope {
+    padding: 13px 10px;
+    font-size: 12px;
+  }
+}

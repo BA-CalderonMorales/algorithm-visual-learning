@@ -17,7 +17,7 @@
       onclick={() => (vm.navOpen = !vm.navOpen)}>{vm.navOpen ? '×' : '☰'}</button
     >
     <nav class={classNames(styles, 'breadcrumbs')} aria-label="Breadcrumb">
-      <ol class={classNames(styles, 'breadcrumb-list')}>
+      <ol class={classNames(styles, 'breadcrumb-list', { 'deep-trail': header.breadcrumbs.length > 3 })}>
         {#each header.breadcrumbs as crumb, index}
           <li class={classNames(styles, 'breadcrumb-item', { 'current-crumb': !crumb.href, 'home-crumb': crumb.home })}>
             {#if index > 0}<svg class={classNames(styles, 'crumb-separator')} viewBox="0 0 12 12" aria-hidden="true"
@@ -97,6 +97,10 @@
   <button
     class={classNames(styles, '', { active: vm.domain === 'discrete' })}
     onclick={() => vm.openPage('discrete', 'index')}>Discrete math</button
+  >
+  <button
+    class={classNames(styles, '', { active: vm.domain === 'problems' })}
+    onclick={() => vm.openPage('problems', 'index')}>Problems</button
   >
   <button
     class={classNames(styles, '', { active: vm.domain === 'complexity' })}

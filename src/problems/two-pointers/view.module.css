@@ -1,0 +1,162 @@
+.scope {
+}
+.problem-heading.scope {
+  padding-block: 12px 24px;
+}
+.problem-heading :global(h1).scope {
+  font-size: clamp(26px, 3vw, 40px);
+}
+.problem-heading :global(p).scope {
+  color: #aebdce;
+}
+.problem-workspace.scope {
+  min-width: 0;
+  border: 1px solid #3a3d47;
+  background: #1b1d23;
+}
+.problem-panel.scope {
+  height: clamp(450px, 68svh, 780px);
+  min-width: 0;
+  overflow: auto;
+  overscroll-behavior: contain;
+  padding: clamp(12px, 1.6vw, 22px);
+  scrollbar-width: thin;
+  scrollbar-color: #596579 #1b1d23;
+}
+.reasoning.scope {
+  padding: clamp(10px, 1.4vw, 18px);
+}
+.problem-panel.implementation-panel.scope {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.eyebrow.scope {
+  color: #9ba8b9;
+  font-size: 11px;
+  margin: 0 0 10px;
+}
+.reasoning :global(h2).scope {
+  margin: 0 0 12px;
+  font-size: clamp(21px, 2.2vw, 28px);
+  max-width: 800px;
+}
+.task.scope,
+.flow :global(p).scope,
+.notes :global(dd).scope,
+.checks :global(p).scope {
+  margin: 0;
+  font-size: 14px;
+  color: #b6c3d3;
+  line-height: 1.75;
+}
+.anchor.scope {
+  padding: 18px;
+  margin-block: 22px;
+  border-block: 1px solid #343d48;
+  color: #c2a0fb;
+  background: #181c24;
+  font-size: 15px;
+  text-align: center;
+}
+.flow.scope {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 22px;
+  padding: 0;
+  margin: 26px 0;
+  list-style: none;
+}
+.flow :global(li).scope {
+  display: flex;
+  gap: 12px;
+  min-width: 0;
+}
+.flow :global(li) > :global(span).scope {
+  color: #baa4ff;
+  font-size: 12px;
+  padding-top: 3px;
+}
+:global(h3).scope {
+  margin: 0 0 8px;
+  font-size: 15px;
+  line-height: 1.6;
+}
+.notes.scope {
+  margin: 0;
+}
+.notes > :global(div).scope {
+  display: grid;
+  grid-template-columns: minmax(145px, 1fr) 3fr;
+  gap: 24px;
+  border-top: 1px solid #343d48;
+  padding-block: 18px;
+}
+.notes :global(dt).scope {
+  font-size: 13px;
+  color: #d2ddea;
+  line-height: 1.8;
+}
+.checks.scope {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 22px;
+  margin-block: 24px;
+}
+.checks :global(article).scope {
+  padding: 18px;
+  background: #181c24;
+  border: 1px solid #343d48;
+}
+.checks :global(summary).scope {
+  cursor: pointer;
+  color: #9ac8ff;
+  padding-block: 10px;
+  font-size: 13px;
+}
+.lesson-links.scope {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 22px;
+  padding: 20px 18px;
+  border-top: 1px solid #343d48;
+  font-size: 12px;
+}
+.lesson-links :global(p).scope {
+  margin: 0;
+  flex-basis: 100%;
+  font-size: 11px;
+  line-height: 1.7;
+  color: #9ba8b9;
+}
+:global(a).scope {
+  color: #9ac8ff;
+  text-decoration: none;
+}
+:global(a):hover.scope {
+  text-decoration: underline;
+}
+:global(a):focus-visible.scope,
+:global(summary):focus-visible.scope,
+.problem-panel:focus-visible.scope {
+  outline: 2px solid #79b7ff;
+  outline-offset: -2px;
+}
+@media (max-width: 780px) {
+  .flow.scope {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+  .notes > :global(div).scope {
+    grid-template-columns: 1fr;
+    gap: 9px;
+  }
+}
+@media (max-width: 600px) {
+  .checks.scope {
+    grid-template-columns: 1fr;
+  }
+  .problem-panel.scope {
+    height: clamp(460px, 72svh, 680px);
+  }
+}

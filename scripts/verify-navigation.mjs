@@ -124,7 +124,7 @@ try {
     await page.keyboard.press('Escape');
     assert.equal(await page.evaluate(() => document.body.style.overflow), '', 'Body scroll restored');
     console.log(
-      `Navigation: all 16 domain/topic links, disclosures, focus and overflow passed at ${viewport.width}×${viewport.height}.`,
+      `Navigation: all ${readingOrder.length - 1} domain/topic links, disclosures, focus and overflow passed at ${viewport.width}×${viewport.height}.`,
     );
   }
 
@@ -136,6 +136,7 @@ try {
       '#/algorithms/tim/understand',
       '#/discrete/master-theorem/understand',
       '#/complexity/asymptotic/understand',
+      '#/problems/two-pointers/container/understand',
     ]) {
       await page.goto(`${origin}/${route}`);
       const crumbs = page.getByRole('navigation', { name: 'Breadcrumb', exact: true });

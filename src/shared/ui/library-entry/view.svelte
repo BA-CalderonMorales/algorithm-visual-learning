@@ -26,6 +26,16 @@
             height="34"
           /><text class={styles.scope} x={30 + i * 53} y="51">{value}</text>{/each}</svg
       >
+    {:else if entry.id === 'problems' || entry.id === 'two-pointers'}
+      <svg class={styles.scope} viewBox="0 0 220 90">
+        <path class={classNames(styles, 'sketch-path')} d="M30 76h53m-10-6 10 6-10 6M190 76h-53m10-6-10 6 10 6" />
+        {#each [1, 3, 5, 9] as value, i}<rect class={styles.scope} x={12 + i * 53} y="16" width="36" height="34" /><text
+            class={styles.scope}
+            x={30 + i * 53}
+            y="38">{value}</text
+          >{/each}
+        <text class={styles.scope} x="30" y="65">i</text><text class={styles.scope} x="189" y="65">j</text>
+      </svg>
     {:else if entry.id === 'discrete' || entry.id === 'induction'}
       <svg class={styles.scope} viewBox="0 0 220 90"
         ><path

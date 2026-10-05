@@ -50,12 +50,21 @@ feature/
   Count comments and blank lines. Never compress formatting to evade the limit.
   Generated artifacts, media, lockfiles, and editable diagram assets are exempt.
 - READMEs live only at the repository root, `src`, `src/algorithms`,
-  `src/discrete`, and `src/complexity`. Do not scatter them through components.
+  `src/discrete`, `src/complexity`, and the new domain root `src/problems`. Do not scatter them through components.
 
 Use original Excalidraw diagrams with editable source and SVG exports. Diagrams
 should teach one relationship using consistent labels, semantic colors, and
 accessible descriptions. Learn from Hello Interview's explanatory hierarchy,
 not by copying its content, proprietary assets, branding, or commercial layout.
+
+Implementation source belongs to the algorithm or problem that owns it.
+Use conventionally named language files within its `implementations/`
+directory (problem strategies have their own Brute / Better / Best folders).
+Domain adapters lazily import source as text. Reuse one shared highlighted code
+viewer; routing state must not own fetched implementation content. Preserve
+previous public source URLs using verified, generated compatibility copies,
+not duplicate hand-maintained sources. Python examples also count toward the
+500-line limit.
 
 ## Consequences
 

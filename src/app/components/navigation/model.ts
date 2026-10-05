@@ -1,5 +1,6 @@
 import { algorithms } from '../../../algorithms/model.ts';
 import { studyLessons, studyDomains, lessonHref } from '../../study-catalog.ts';
+import { pattern, problems, problemHref } from '../../../problems/model.ts';
 
 export interface NavigationLink {
   domain: string;
@@ -40,6 +41,21 @@ export const navigationGroups: NavigationGroup[] = [
   },
   studyGroup('discrete', '∑'),
   studyGroup('complexity', 'O'),
+  {
+    id: 'problems',
+    label: 'Problems',
+    symbol: '⋈',
+    overview: { domain: 'problems', key: 'index', label: 'All patterns', href: '#/problems' },
+    topics: [
+      { domain: 'problems', key: pattern.id, label: pattern.title, href: pattern.href },
+      ...problems.map((problem) => ({
+        domain: 'problems',
+        key: problem.id,
+        label: problem.title,
+        href: problemHref(problem.id),
+      })),
+    ],
+  },
 ];
 
 export interface PageLocation {
@@ -76,6 +92,14 @@ export function breadcrumbsFor(page: PageLocation): Breadcrumb[] {
     return label ? [home, { label }] : [{ label: 'Study home', home: true }];
   }
   const topic = group.topics.find((topic) => topic.key === currentKey(page));
+  if (group.id === 'problems' && topic && topic.key !== pattern.id) {
+    return [
+      home,
+      { label: group.label, href: group.overview.href },
+      { label: pattern.title, shortLabel: 'Pattern', href: pattern.href },
+      { label: topic.label },
+    ];
+  }
   return topic
     ? [
         home,

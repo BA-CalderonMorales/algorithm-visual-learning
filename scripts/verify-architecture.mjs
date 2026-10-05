@@ -37,6 +37,7 @@ const generated = new Set(['src/algorithms/play/narration-clips.json']);
 const readmes = new Set([
   'src/README.md', 'src/algorithms/README.md',
   'src/discrete/README.md', 'src/complexity/README.md',
+  'src/problems/README.md',
 ]);
 const errors = [];
 const files = await walk('src');
@@ -44,7 +45,7 @@ for (const filename of files) {
   const text = await readFile(path.join(root, filename), 'utf8');
   if (/README\.md$/i.test(filename) && !readmes.has(filename)) errors.push(`${filename}: redundant README`);
   if (/view-model\.ts$/.test(filename)) errors.push(`${filename}: use view-model.svelte.ts, not a parallel VM`);
-  if (!/\.(?:svelte|ts|js|css|json)$/.test(filename) || generated.has(filename)) continue;
+  if (!/\.(?:svelte|ts|js|py|css|json)$/.test(filename) || generated.has(filename)) continue;
   const lines = text.replaceAll('\r\n', '\n').trimEnd().split('\n').length;
   if (lines > 500) errors.push(`${filename}: ${lines} physical lines (limit 500)`);
   if (filename.endsWith('.css') && /!important\b/.test(text)) errors.push(`${filename}: undocumented !important`);
