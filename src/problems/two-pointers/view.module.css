@@ -7,12 +7,12 @@
   font-size: clamp(26px, 3vw, 40px);
 }
 .problem-heading :global(p).scope {
-  color: #aebdce;
+  color: var(--theme-ink, #aebdce);
 }
 .problem-workspace.scope {
   min-width: 0;
-  border: 1px solid #3a3d47;
-  background: #1b1d23;
+  border: 1px solid var(--theme-border, #3a3d47);
+  background: var(--theme-surface-1, #1b1d23);
 }
 .problem-panel.scope {
   height: clamp(450px, 68svh, 780px);
@@ -21,7 +21,7 @@
   overscroll-behavior: contain;
   padding: clamp(12px, 1.6vw, 22px);
   scrollbar-width: thin;
-  scrollbar-color: #596579 #1b1d23;
+  scrollbar-color: #596579 var(--theme-surface-1, #1b1d23);
 }
 .reasoning.scope {
   padding: clamp(10px, 1.4vw, 18px);
@@ -32,7 +32,7 @@
   overflow: hidden;
 }
 .eyebrow.scope {
-  color: #9ba8b9;
+  color: var(--theme-ink-muted, #9ba8b9);
   font-size: 11px;
   margin: 0 0 10px;
 }
@@ -47,15 +47,15 @@
 .checks :global(p).scope {
   margin: 0;
   font-size: 14px;
-  color: #b6c3d3;
+  color: var(--theme-ink, #b6c3d3);
   line-height: 1.75;
 }
 .anchor.scope {
   padding: 18px;
   margin-block: 22px;
-  border-block: 1px solid #343d48;
-  color: #c2a0fb;
-  background: #181c24;
+  border-block: 1px solid var(--theme-border, #343d48);
+  color: var(--theme-ink-purple, #c2a0fb);
+  background: var(--theme-surface-1, #181c24);
   font-size: 15px;
   text-align: center;
 }
@@ -73,7 +73,7 @@
   min-width: 0;
 }
 .flow :global(li) > :global(span).scope {
-  color: #baa4ff;
+  color: var(--theme-ink-blue, #baa4ff);
   font-size: 12px;
   padding-top: 3px;
 }
@@ -89,12 +89,12 @@
   display: grid;
   grid-template-columns: minmax(145px, 1fr) 3fr;
   gap: 24px;
-  border-top: 1px solid #343d48;
+  border-top: 1px solid var(--theme-border, #343d48);
   padding-block: 18px;
 }
 .notes :global(dt).scope {
   font-size: 13px;
-  color: #d2ddea;
+  color: var(--theme-ink, #d2ddea);
   line-height: 1.8;
 }
 .checks.scope {
@@ -105,12 +105,12 @@
 }
 .checks :global(article).scope {
   padding: 18px;
-  background: #181c24;
-  border: 1px solid #343d48;
+  background: var(--theme-surface-1, #181c24);
+  border: 1px solid var(--theme-border, #343d48);
 }
 .checks :global(summary).scope {
   cursor: pointer;
-  color: #9ac8ff;
+  color: var(--theme-ink-blue, #9ac8ff);
   padding-block: 10px;
   font-size: 13px;
 }
@@ -119,7 +119,7 @@
   flex-wrap: wrap;
   gap: 12px 22px;
   padding: 20px 18px;
-  border-top: 1px solid #343d48;
+  border-top: 1px solid var(--theme-border, #343d48);
   font-size: 12px;
 }
 .lesson-links :global(p).scope {
@@ -127,10 +127,10 @@
   flex-basis: 100%;
   font-size: 11px;
   line-height: 1.7;
-  color: #9ba8b9;
+  color: var(--theme-ink-muted, #9ba8b9);
 }
 :global(a).scope {
-  color: #9ac8ff;
+  color: var(--theme-ink-blue, #9ac8ff);
   text-decoration: none;
 }
 :global(a):hover.scope {

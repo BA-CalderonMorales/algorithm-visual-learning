@@ -1,4 +1,5 @@
 import { problemSearchEntries } from '../../problems/model.ts';
+import { routeEnabled } from '../features.ts';
 
 export const baseSearchEntries = [
   {
@@ -99,7 +100,7 @@ export function createSearchIndex(
 ) {
   return [
     ...baseSearchEntries,
-    ...problemSearchEntries,
+    ...problemSearchEntries.filter((entry) => routeEnabled(entry.href)),
     ...Object.values(studyLessons).flatMap((lesson) =>
       lessonTabs.map((tab) => ({
         title: `${lesson.title} · ${tab.label}`,

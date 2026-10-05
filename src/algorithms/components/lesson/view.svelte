@@ -1,5 +1,5 @@
 <script>
-  import IntroToggle from '../../../shared/ui/intro-toggle/view.svelte';
+  import IntroHeading from '../../../shared/ui/intro-heading/view.svelte';
   import styles from './view.module.css';
   import { classNames } from '../../../shared/ui/class-names.ts';
   import StudyTabs from '../../../shared/ui/tabs/view.svelte';
@@ -12,7 +12,7 @@
   let { vm } = $props();
 </script>
 
-{#if vm.heroVisible}
+<IntroHeading title={vm.selectedAlgorithm.name} bind:visible={vm.heroVisible}>
   <section class={classNames(styles, 'page-hero compact-hero algorithm-hero')}>
     <a class={classNames(styles, 'back-link')} href="#/algorithms/sorting">← All sorting algorithms</a>
     <p class={classNames(styles, 'eyebrow')}>Algorithm walkthrough · code references</p>
@@ -26,13 +26,8 @@
         {vm.selectedAlgorithm.cue} Start with the simple version, then compare typed Python, JavaScript, and TypeScript.
       </p>
     {/if}
-    <IntroToggle bind:visible={vm.heroVisible} />
   </section>
-{:else}
-  <div class={classNames(styles, 'hero-collapsed-strip')}>
-    <span class={styles.scope}>{vm.selectedAlgorithm.name}</span><IntroToggle bind:visible={vm.heroVisible} />
-  </div>
-{/if}
+</IntroHeading>
 <section
   class={classNames(styles, 'algorithm-view standalone-view', { 'play-view': vm.algorithmView === 'play' })}
   aria-label="{vm.selectedAlgorithm.name} materials"

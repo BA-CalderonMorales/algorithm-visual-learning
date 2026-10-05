@@ -6,9 +6,9 @@
   overflow-x: auto;
   padding: 18px 12px;
   text-align: center;
-  color: #e0d6fb;
+  color: var(--theme-ink, #e0d6fb);
   scrollbar-width: thin;
-  scrollbar-color: #61547c transparent;
+  scrollbar-color: var(--theme-ink-muted, #61547c) transparent;
 }
 .study-math.scope :global(math) {
   display: math;

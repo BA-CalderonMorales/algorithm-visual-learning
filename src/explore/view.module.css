@@ -2,7 +2,7 @@
 }
 .library-label.scope {
   margin: 0 0 10px;
-  color: #8f9dac;
+  color: var(--theme-ink-muted, #8f9dac);
   font-size: 11px;
   letter-spacing: 0.04em;
 }
@@ -11,7 +11,7 @@
   text-decoration: none;
 }
 :global(a):hover.scope {
-  color: #a1ccff;
+  color: var(--theme-ink-blue, #a1ccff);
 }
 :global(a):focus-visible.scope {
   outline: 2px solid #79b7ff;
@@ -28,7 +28,7 @@
 .library-bridge :global(p):not(.library-label).scope {
   max-width: 770px;
   margin: 0;
-  color: #a9b7c8;
+  color: var(--theme-ink-muted, #a9b7c8);
   font-size: 13px;
   line-height: 1.7;
 }
@@ -41,11 +41,11 @@
 }
 .library-bridge :global(nav) :global(a).scope {
   padding: 10px 0;
-  color: #b5d5ed;
+  color: var(--theme-ink-blue, #b5d5ed);
   font-size: 12px;
 }
 .library-bridge :global(nav) :global(a) :global(span).scope {
-  color: #718aa2;
+  color: var(--theme-ink-muted, #718aa2);
   margin-right: 7px;
   font-size: 10px;
 }
@@ -61,7 +61,7 @@
 .resource-intro.scope,
 .author-note > :global(p):not(.library-label).scope {
   max-width: 800px;
-  color: #b6c1cf;
+  color: var(--theme-ink, #b6c1cf);
   font-size: 14px;
   line-height: 1.85;
   margin: 0 0 20px;
@@ -71,13 +71,13 @@
   grid-template-columns: minmax(0, 1fr) 205px;
   gap: 25px;
   padding: 20px 0;
-  border-top: 1px solid #3b414b;
+  border-top: 1px solid var(--theme-border, #3b414b);
 }
 .resource-row :global(h3).scope {
   font-size: 17px;
 }
 .resource-row :global(p).scope {
-  color: #a9b7c8;
+  color: var(--theme-ink-muted, #a9b7c8);
   font-size: 13px;
   line-height: 1.7;
   margin: 9px 0 0;
@@ -86,14 +86,14 @@
   display: grid;
   gap: 10px;
   align-content: center;
-  color: #a5b5c8;
+  color: var(--theme-ink-muted, #a5b5c8);
   font-size: 11px;
 }
 .resource-row > :global(div):last-child :global(a).scope {
-  color: #9ac8ff;
+  color: var(--theme-ink-blue, #9ac8ff);
 }
 .resource-note.scope {
-  color: #8797a9;
+  color: var(--theme-ink-muted, #8797a9);
   font-size: 11px;
   line-height: 1.6;
   margin: 12px 0 0;
@@ -102,17 +102,17 @@
   display: flex;
   flex-wrap: wrap;
   gap: 12px 24px;
-  border-top: 1px solid #3b414b;
+  border-top: 1px solid var(--theme-border, #3b414b);
   padding-top: 20px;
-  color: #9ac8ff;
+  color: var(--theme-ink-blue, #9ac8ff);
   font-size: 12px;
 }
 .author-note .author-signature.scope {
-  color: #d1dbe8;
+  color: var(--theme-ink, #d1dbe8);
   font-size: 13px;
 }
 .path-arrow.scope {
-  color: #586e7d;
+  color: var(--theme-ink-muted, #586e7d);
   font-size: 12px;
 }
 

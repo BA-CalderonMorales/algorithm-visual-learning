@@ -132,8 +132,16 @@ try {
   for (const width of [1440, 900, 700, 460, 390, 320]) {
     await page.setViewportSize({ width, height: 1000 });
     for (const route of [
+      '#/home',
+      '#/algorithms/sorting',
+      '#/discrete',
+      '#/complexity',
+      '#/problems',
+      '#/problems/two-pointers',
       '#/home/resources',
-      '#/algorithms/tim/understand',
+      ...['selection', 'insertion', 'merge', 'counting', 'shell', 'quick', 'tim'].map(
+        (id) => `#/algorithms/${id}/understand`,
+      ),
       '#/discrete/master-theorem/understand',
       '#/complexity/asymptotic/understand',
       '#/problems/two-pointers/container/understand',
@@ -163,13 +171,26 @@ try {
       assert.ok(
         await page.locator('.hero-collapsed-strip').evaluate((el) => {
           const title = el.querySelector('span').getBoundingClientRect();
-          const button = el.querySelector('button').getBoundingClientRect();
+          const button = el.closest('.intro-heading').querySelector('button').getBoundingClientRect();
           return Math.abs(title.top + title.height / 2 - button.top - button.height / 2) < 1;
         }),
         'Intro title and eye icon are vertically aligned',
       );
+      const anchor = await show.boundingBox();
+      const originalButton = await show.elementHandle();
       await show.click();
-      await page.getByRole('button', { name: 'Hide intro', exact: true }).click();
+      const hide = page.getByRole('button', { name: 'Hide intro', exact: true });
+      assert.deepEqual(await hide.boundingBox(), anchor, 'Opening the intro keeps the eye in place');
+      assert.ok(
+        await originalButton.evaluate((el) => el === document.activeElement && el.isConnected),
+        'The original eye button retains focus after opening',
+      );
+      await page.keyboard.press('Enter');
+      assert.deepEqual(await show.boundingBox(), anchor, 'Closing the intro keeps the eye in place');
+      assert.ok(
+        await originalButton.evaluate((el) => el === document.activeElement && el.isConnected),
+        'The original eye button retains focus after closing',
+      );
       const next = page.locator('.reading-navigation a[rel="next"]');
       if (route.includes('/tim/')) assert.equal(await next.getAttribute('href'), '#/discrete');
       if (route.includes('/master-theorem/')) assert.equal(await next.getAttribute('href'), '#/complexity');

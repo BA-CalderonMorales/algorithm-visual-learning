@@ -14,6 +14,9 @@
   margin: auto;
   padding: 29px 34px 22px;
 }
+:global(html[data-width='full']) .page-content.scope {
+  max-width: none;
+}
 
 @media (min-width: 1500px) {
   .page-content.scope {
@@ -59,7 +62,7 @@
   inset: 0;
   z-index: 11;
   border: 0;
-  background: #08090bb8;
+  background: var(--theme-surface-0, #08090bb8);
   backdrop-filter: blur(2px);
 }
 .study-page-heading.scope {
@@ -69,7 +72,7 @@
   margin-top: 14px;
 }
 .study-back.scope {
-  color: #9ac8ff;
+  color: var(--theme-ink-blue, #9ac8ff);
   font-size: 12px;
   text-decoration: none;
 }

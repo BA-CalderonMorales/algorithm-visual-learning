@@ -1,0 +1,60 @@
+/* Preserve instructional hue meanings; light themes darken text accents.
+   Dark deliberately uses each component's original fallback color. */
+:root[data-theme='midnight'] {
+  --theme-surface-0: #0c1324;
+  --theme-surface-1: #101b30;
+  --theme-surface-2: #17243b;
+  --theme-surface-3: #20324b;
+  --theme-surface-4: #2c4059;
+  --theme-border: #45566f;
+}
+:root[data-theme='warm'] {
+  --theme-surface-0: #1d1815;
+  --theme-surface-1: #26201b;
+  --theme-surface-2: #302820;
+  --theme-surface-3: #3a3026;
+  --theme-surface-4: #4b3d32;
+  --theme-border: #605346;
+}
+:root[data-theme='paper'],
+:root[data-theme='dawn'] {
+  color-scheme: light;
+  --theme-ink: #253246;
+  --theme-ink-muted: #526170;
+  --theme-ink-blue: #165ca9;
+  --theme-ink-green: #126c4c;
+  --theme-ink-purple: #6b3897;
+  --theme-ink-orange: #8d4c10;
+  --theme-ink-red: #a82e42;
+  --theme-ink-yellow: #7f5906;
+  --theme-ink-teal: #0f6572;
+  --theme-fill-blue: #e2edfb;
+  --theme-fill-green: #e0f2e9;
+  --theme-fill-purple: #eee5fa;
+  --theme-fill-orange: #fff0df;
+  --theme-fill-red: #fce7e8;
+  --theme-fill-yellow: #fff3cb;
+  --theme-fill-teal: #def3f1;
+  --theme-chart-grid: #25324620;
+  --blue: var(--theme-ink-blue);
+  --green: var(--theme-ink-green);
+  --purple: var(--theme-ink-purple);
+  --orange: var(--theme-ink-orange);
+  --yellow: var(--theme-ink-yellow);
+}
+:root[data-theme='paper'] {
+  --theme-surface-0: #f5f7fb;
+  --theme-surface-1: #ffffff;
+  --theme-surface-2: #edf1f6;
+  --theme-surface-3: #e2e8f0;
+  --theme-surface-4: #cbd5e1;
+  --theme-border: #b3bfcc;
+}
+:root[data-theme='dawn'] {
+  --theme-surface-0: #fff6e9;
+  --theme-surface-1: #fffcf6;
+  --theme-surface-2: #f5eddf;
+  --theme-surface-3: #ece1cf;
+  --theme-surface-4: #d8cbb5;
+  --theme-border: #bdb09b;
+}

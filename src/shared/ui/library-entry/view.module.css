@@ -5,7 +5,7 @@
   text-decoration: none;
 }
 :global(a):hover.scope {
-  color: #a1ccff;
+  color: var(--theme-ink-blue, #a1ccff);
 }
 :global(a):focus-visible.scope {
   outline: 2px solid #79b7ff;
@@ -14,7 +14,7 @@
 .library-label.scope {
   display: block;
   margin: 0 0 10px;
-  color: #8f9dac;
+  color: var(--theme-ink-muted, #8f9dac);
   font-size: 11px;
   letter-spacing: 0.04em;
 }
@@ -24,14 +24,14 @@
   gap: 22px;
   align-items: center;
   padding: 26px 0;
-  border-bottom: 1px solid #3b414b;
+  border-bottom: 1px solid var(--theme-border, #3b414b);
 }
 .library-copy :global(h2).scope {
   font-size: 24px;
   margin: 0 0 11px;
 }
 .library-copy :global(h2) :global(span).scope {
-  color: #648dac;
+  color: var(--theme-ink-blue, #648dac);
   font-size: 19px;
 }
 .library-copy :global(p).scope {
@@ -39,7 +39,7 @@
   margin: 0;
   font-size: 13px;
   line-height: 1.7;
-  color: #a9b7c8;
+  color: var(--theme-ink-muted, #a9b7c8);
 }
 .library-sketch :global(svg).scope {
   display: block;
@@ -47,12 +47,12 @@
 }
 .library-sketch :global(rect).scope,
 .library-sketch :global(circle).scope {
-  fill: #1c232b;
-  stroke: #627c8a;
+  fill: var(--theme-surface-2, #1c232b);
+  stroke: var(--theme-ink-muted, #627c8a);
   stroke-width: 1;
 }
 .library-sketch :global(text).scope {
-  fill: #c6dae4;
+  fill: var(--theme-ink, #c6dae4);
   text-anchor: middle;
   font:
     14px Cambria,
@@ -60,17 +60,17 @@
 }
 .sketch-path.scope {
   fill: none;
-  stroke: #65d9b0;
+  stroke: var(--theme-ink-green, #65d9b0);
   stroke-width: 1.5;
 }
 .sketch-axis.scope {
   fill: none;
-  stroke: #42515f;
+  stroke: var(--theme-ink-muted, #42515f);
   stroke-width: 1;
 }
 .sketch-cost.scope {
   fill: none;
-  stroke: #c2a0fb;
+  stroke: var(--theme-ink-purple, #c2a0fb);
   stroke-width: 1.5;
 }
 .library-links.scope {
@@ -82,14 +82,14 @@
   justify-content: space-between;
   gap: 20px;
   padding: 8px 0;
-  color: #b1c4d9;
+  color: var(--theme-ink, #b1c4d9);
   font-size: 12px;
 }
 .library-links :global(a) :global(span).scope {
-  color: #6a829b;
+  color: var(--theme-ink-muted, #6a829b);
 }
 .library-links :global(a):hover.scope {
-  color: #a1ccff;
+  color: var(--theme-ink-blue, #a1ccff);
 }
 @media (pointer: coarse) {
   .library-links :global(a).scope {

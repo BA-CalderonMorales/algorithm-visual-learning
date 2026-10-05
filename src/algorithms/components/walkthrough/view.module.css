@@ -13,7 +13,7 @@
   min-width: 0;
   min-height: 0;
   border: 0;
-  background: #171719;
+  background: var(--theme-surface-0, #171719);
 }
 .walkthrough-frame:global(.hidden-material).scope {
   display: none;
@@ -27,12 +27,12 @@
   justify-items: center;
   gap: 10px;
   padding: 24px;
-  background: #1c1d22;
-  color: #aeb4c2;
+  background: var(--theme-surface-1, #1c1d22);
+  color: var(--theme-ink-muted, #aeb4c2);
   text-align: center;
 }
 .walkthrough-status :global(strong).scope {
-  color: #f2f3f7;
+  color: var(--theme-ink, #f2f3f7);
 }
 .walkthrough-status :global(span).scope {
   max-width: 42ch;
@@ -44,10 +44,10 @@
 .walkthrough-status :global(button).scope {
   min-height: 36px;
   padding: 7px 12px;
-  border: 1px solid #464b57;
+  border: 1px solid var(--theme-border, #464b57);
   border-radius: 0;
-  background: #282a31;
-  color: #e5e7eb;
+  background: var(--theme-surface-2, #282a31);
+  color: var(--theme-ink, #e5e7eb);
   cursor: pointer;
 }
 .walkthrough-status :global(button):hover.scope {

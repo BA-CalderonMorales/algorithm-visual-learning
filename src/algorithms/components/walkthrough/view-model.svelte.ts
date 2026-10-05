@@ -1,3 +1,5 @@
+import { connectWalkthroughTheme } from './theme.ts';
+
 export function createViewModel(props = () => ({})) {
   let { name, src, onShortcut } = $derived(props());
   let frame = $state(null);
@@ -12,6 +14,7 @@ export function createViewModel(props = () => ({})) {
     if (!element) return;
     status = 'loading';
     let keyboardDocument;
+    let disconnectTheme;
     let poll;
     let deadline;
     const stopWaiting = () => {
@@ -24,6 +27,8 @@ export function createViewModel(props = () => ({})) {
         if (!doc || doc.URL !== expectedUrl) return false;
         if (doc.title.trim().toLowerCase() !== expectedTitle || !doc.querySelector('.history-row, .row')) return false;
         if (keyboardDocument !== doc) {
+          disconnectTheme?.();
+          disconnectTheme = connectWalkthroughTheme(doc);
           keyboardDocument?.removeEventListener('keydown', onShortcut);
           keyboardDocument = doc;
           doc.addEventListener('keydown', onShortcut);
@@ -55,6 +60,7 @@ export function createViewModel(props = () => ({})) {
       element.removeEventListener('load', loaded);
       element.removeEventListener('error', failed);
       keyboardDocument?.removeEventListener('keydown', onShortcut);
+      disconnectTheme?.();
     };
   });
   return {

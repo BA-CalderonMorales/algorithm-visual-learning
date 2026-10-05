@@ -2,11 +2,11 @@
 }
 .domain-connections > :global(header).scope {
   padding: 24px 0;
-  border-bottom: 1px solid #3b414b;
+  border-bottom: 1px solid var(--theme-border, #3b414b);
 }
 .library-label.scope {
   margin: 0 0 10px;
-  color: #8f9dac;
+  color: var(--theme-ink-muted, #8f9dac);
   font-size: 11px;
   letter-spacing: 0.04em;
 }
@@ -17,7 +17,7 @@
 .domain-connections :global(p):last-child.scope {
   max-width: 770px;
   margin: 0;
-  color: #a9b7c8;
+  color: var(--theme-ink-muted, #a9b7c8);
   font-size: 13px;
   line-height: 1.7;
 }

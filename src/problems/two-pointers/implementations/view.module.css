@@ -10,12 +10,12 @@
 .approach-rail.scope {
   border-right: 1px solid var(--line);
   padding-top: 8px;
-  background: #181c23;
+  background: var(--theme-surface-1, #181c23);
 }
 .rail-label.scope {
   display: block;
   padding: 8px 16px 14px;
-  color: #8f9eb1;
+  color: var(--theme-ink-muted, #8f9eb1);
   font-size: 11px;
 }
 .implementation-main.scope {
@@ -32,7 +32,7 @@
   max-height: 36%;
   overflow: auto;
   scrollbar-width: thin;
-  scrollbar-color: #52675d #202127;
+  scrollbar-color: var(--theme-surface-4, #52675d) var(--theme-surface-2, #202127);
 }
 .approach-heading.scope {
   display: flex;

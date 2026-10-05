@@ -13,7 +13,7 @@
         <span class={classNames(styles, 'term-index')}>k = {k}</span>
         <span
           class={classNames(styles, 'signed-term', { survives: k === 1 })}
-          style:--pair={k === 1 ? '#65d9b0' : colors[k - 2]}
+          style:--pair={k === 1 ? 'var(--green)' : colors[k - 2]}
         >
           <span class={styles.scope}>+</span><math class={styles.scope}
             >{#if k === 1}<mn class={styles.scope}>1</mn>{:else}<mfrac class={styles.scope}
@@ -23,7 +23,7 @@
         </span>
         <span
           class={classNames(styles, 'signed-term', { survives: k === 4 })}
-          style:--pair={k === 4 ? '#65d9b0' : colors[k - 1]}
+          style:--pair={k === 4 ? 'var(--green)' : colors[k - 1]}
         >
           <span class={styles.scope}>−</span><math class={styles.scope}
             ><mfrac class={styles.scope}><mn class={styles.scope}>1</mn><mn class={styles.scope}>{k + 1}</mn></mfrac

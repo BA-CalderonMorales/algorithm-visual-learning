@@ -1,7 +1,7 @@
 <script>
   import styles from './view.module.css';
   import { classNames } from '../../shared/ui/class-names.ts';
-  import IntroToggle from '../../shared/ui/intro-toggle/view.svelte';
+  import IntroHeading from '../../shared/ui/intro-heading/view.svelte';
   import StudyTabs from '../../shared/ui/tabs/view.svelte';
   import Player from '../../shared/playback/player/view.svelte';
   import { createViewModel } from './view-model.svelte.ts';
@@ -19,18 +19,13 @@
 </script>
 
 {#if vm.lesson}
-  {#if heroVisible}
+  <IntroHeading title={vm.lesson.title} bind:visible={heroVisible}>
     <header class={classNames(styles, 'problem-heading')}>
       <a class={styles.scope} href="#/problems/two-pointers">← Two Pointers</a>
       <h1 class={styles.scope}>{vm.lesson.title}</h1>
       <p class={styles.scope}>{vm.lesson.idea}</p>
-      <IntroToggle bind:visible={heroVisible} />
     </header>
-  {:else}
-    <div class={classNames(styles, 'hero-collapsed-strip')}>
-      <span class={styles.scope}>{vm.lesson.title}</span><IntroToggle bind:visible={heroVisible} />
-    </div>
-  {/if}
+  </IntroHeading>
   <div class={classNames(styles, 'problem-workspace')}>
     <StudyTabs
       tabs={vm.tabs}

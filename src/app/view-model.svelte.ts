@@ -11,6 +11,7 @@ import { voiceForFilm } from '../algorithms/play/voice.ts';
 
 import { studyLessons, studyDomains, lessonTabs, lessonHref } from './study-catalog.ts';
 import { parseProblemRoute, problems } from '../problems/model.ts';
+import { routeEnabled } from './features.ts';
 
 export function createViewModel() {
   const catalog = createCatalogViewModel();
@@ -111,6 +112,9 @@ export function createViewModel() {
     window.addEventListener('keydown', handleGlobalKeydown);
     document.addEventListener('fullscreenchange', syncFullscreen);
     const applyRoute = () => {
+      if (!routeEnabled(window.location.hash)) {
+        history.replaceState(null, '', '#/home');
+      }
       const problemRoute = parseProblemRoute(window.location.hash);
       if (problemRoute) {
         const samePage = domain === 'problems' && topic === problemRoute.topic;

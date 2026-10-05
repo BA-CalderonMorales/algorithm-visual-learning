@@ -1,6 +1,7 @@
 import { algorithms } from '../../../algorithms/model.ts';
 import { studyLessons, studyDomains, lessonHref } from '../../study-catalog.ts';
 import { pattern, problems, problemHref } from '../../../problems/model.ts';
+import { features } from '../../features.ts';
 
 export interface NavigationLink {
   domain: string;
@@ -56,7 +57,7 @@ export const navigationGroups: NavigationGroup[] = [
       })),
     ],
   },
-];
+].filter((group) => features.problems || group.id !== 'problems');
 
 export interface PageLocation {
   domain: string;

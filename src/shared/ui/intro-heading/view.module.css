@@ -1,0 +1,28 @@
+.scope {
+}
+.intro-heading.scope {
+  position: relative;
+  min-height: 44px;
+}
+.intro-control.scope {
+  position: absolute;
+  top: 2px;
+  right: 0;
+  z-index: 1;
+}
+.intro-body.scope {
+  padding-inline-end: 56px;
+}
+.hero-collapsed-strip.scope {
+  display: flex;
+  min-height: 44px;
+  align-items: center;
+  margin: 0 0 16px;
+  padding: 2px 56px 2px 0;
+  color: var(--theme-ink, #c2cad6);
+  font-size: 12px;
+}
+.intro-label.scope {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}

@@ -37,13 +37,26 @@ the small set of intentionally shared study primitives. Do not place feature
 selectors in the global sheet or override a child's internals from its parent.
 Parents arrange their children; children own appearance and responsive rules.
 
+Appearance preferences live in `app/components/appearance`; their surface
+palettes live in `shared/styles/themes.css`. Use `--theme-surface-0` through
+`--theme-surface-4` and `--theme-border` with the original color as a fallback.
+Use `--theme-ink` and `--theme-ink-muted` for text, and `--theme-ink-{hue}` /
+`--theme-fill-{hue}` for instructional states with their original colors as
+fallbacks. Light themes darken accents for contrast without changing their
+meaning. `shared/styles/model.ts` adapts dynamic DOM colors; keep canvas/video
+palettes unchanged. Never apply whole-page/video color filters.
+Embedded walkthroughs synchronize through `algorithms/components/walkthrough/theme.ts`.
+The shared `intro-heading` anchors one persistent eye control beside its content.
+
 UI surfaces use `border-radius: 0`: tab frames, panels, buttons, badges, fields,
 menus, and embedded walkthroughs. Keep this in each owning stylesheet rather
 than adding global overrides. Architecture checks reject nonzero corner radii;
 Quick Sort's circular phase markers are an explicit diagram-shape exception.
 
 Home and core-domain directories share `shared/ui/library-layout` for the
-collapsed intro, tabs, padding, and bounded scroll panel. Topic links share
+collapsed intro, vertical side-tabs, padding, and bounded scroll panel. Lesson
+tabs remain horizontal. The rail collapse control remembers the reader's choice
+and never resets the panel's scroll position. Topic links share
 `library-entry`; cross-domain pointers share `domain-connections`. The sorting
 catalog keeps its own comparison table inside that same shell. Adjust shared
 presentation once instead of introducing a different directory layout per domain.
@@ -64,6 +77,9 @@ npm run test:walkthroughs
 npm run test:play
 npm run test:study
 npm run test:domain-landings
+npm run test:appearance
+npm run test:light-themes
+npm run test:features
 npm run test:narration
 npm run test:film-cache
 ```

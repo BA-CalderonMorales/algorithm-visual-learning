@@ -1,5 +1,5 @@
 <script>
-  import IntroToggle from '../shared/ui/intro-toggle/view.svelte';
+  import IntroHeading from '../shared/ui/intro-heading/view.svelte';
   import styles from './view.module.css';
   import { classNames } from '../shared/ui/class-names.ts';
   import AlgorithmLesson from './../algorithms/components/lesson/view.svelte';
@@ -71,20 +71,13 @@
           bind:heroVisible={vm.heroVisible}
         />
       {:else if (vm.domain === 'discrete' || vm.domain === 'complexity') && vm.selectedStudyLesson}
-        {#if vm.heroVisible}
+        <IntroHeading title={vm.selectedStudyLesson.title} bind:visible={vm.heroVisible}>
           <section class={classNames(styles, 'page-hero compact-hero study-page-heading')}>
             <a class={classNames(styles, 'study-back')} href="#/{vm.domain}">← {vm.studyDomains[vm.domain].title}</a>
             <h1 class={styles.scope}>{vm.selectedStudyLesson.title}</h1>
             <p class={classNames(styles, 'intro')}>{vm.selectedStudyLesson.intro}</p>
-            <IntroToggle bind:visible={vm.heroVisible} />
           </section>
-        {:else}
-          <div class={classNames(styles, 'hero-collapsed-strip')}>
-            <span class={styles.scope}>{vm.selectedStudyLesson.title}</span><IntroToggle
-              bind:visible={vm.heroVisible}
-            />
-          </div>
-        {/if}
+        </IntroHeading>
         {#key vm.selectedStudyLesson.id}<StudyLesson
             lesson={vm.selectedStudyLesson}
             view={vm.studyView}

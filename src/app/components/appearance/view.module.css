@@ -1,0 +1,124 @@
+.scope {
+}
+.theme-picker.scope {
+  position: relative;
+  flex: none;
+}
+.theme-trigger.scope {
+  display: grid;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  padding: 0;
+  border: 1px solid var(--theme-border, #3d404b);
+  background: var(--theme-surface-1, #202127);
+  color: var(--theme-ink, #c5c8d2);
+  cursor: pointer;
+}
+.theme-trigger :global(svg).scope {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+}
+.theme-trigger :global(path).scope {
+  fill: currentColor;
+}
+.theme-trigger:hover.scope,
+.theme-option:hover.scope {
+  background: var(--theme-surface-2, #282b33);
+  border-color: var(--theme-ink-blue, #638cb0);
+}
+.theme-trigger:focus-visible.scope,
+.theme-option:focus-visible.scope {
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
+}
+.theme-options.scope {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  z-index: 6;
+  width: 244px;
+  padding: 6px;
+  border: 1px solid var(--theme-border, #454d5b);
+  background: var(--theme-surface-1, #1b1d23);
+  box-shadow: 0 12px 28px #00000045;
+}
+.theme-option.scope {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--theme-ink, #dce4ef);
+  text-align: left;
+  cursor: pointer;
+}
+.theme-option[aria-checked='true'].scope {
+  border-color: var(--blue);
+}
+.theme-copy.scope {
+  display: grid;
+  flex: 1;
+  gap: 4px;
+}
+.theme-copy :global(strong).scope {
+  font-size: 12px;
+}
+.theme-copy :global(small).scope {
+  color: var(--theme-ink-muted, #aeb5c2);
+  font-size: 11px;
+}
+.theme-swatch.scope {
+  display: grid;
+  width: 20px;
+  height: 20px;
+  flex: none;
+  border: 1px solid var(--theme-ink-muted, #7b8699);
+  place-items: center;
+}
+.theme-check.scope {
+  width: 14px;
+  height: 14px;
+  fill: none;
+  stroke: var(--swatch-ink, #e8f0fc);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.dark.scope {
+  background: #202127;
+}
+.midnight.scope {
+  background: #101b30;
+}
+.warm.scope {
+  background: #30251f;
+}
+.paper.scope {
+  background: #f5f7fb;
+  --swatch-ink: #253246;
+}
+.dawn.scope {
+  background: #fff6e9;
+  --swatch-ink: #253246;
+}
+.theme-options.scope {
+  max-height: calc(100dvh - 80px);
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+@media (max-width: 460px) {
+  .theme-trigger.scope {
+    width: 32px;
+    height: 32px;
+  }
+  .theme-options.scope {
+    right: -100px;
+    width: min(244px, calc(100vw - 24px));
+  }
+}

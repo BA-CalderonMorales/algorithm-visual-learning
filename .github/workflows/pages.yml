@@ -60,6 +60,8 @@ jobs:
           npm run test:architecture-ui
           npm run test:navigation
           npm run test:domain-landings
+          npm run test:appearance
+          npm run test:light-themes
           npm run test:study
           npm run test:problems
       - name: Render only missing or changed films
@@ -68,7 +70,7 @@ jobs:
       - name: Build static site
         run: npm run build
       - name: Verify interactive walkthroughs
-        run: npm run test:walkthroughs && npm run test:implementations
+        run: npm run test:features && npm run test:walkthroughs && npm run test:implementations
       - name: Save verified exported films
         if: steps.render_films.outputs.rendered != '0'
         uses: actions/cache/save@v4

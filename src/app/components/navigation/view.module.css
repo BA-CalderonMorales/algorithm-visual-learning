@@ -9,8 +9,8 @@
   height: 100dvh;
   flex-direction: column;
   padding: 20px 12px 12px;
-  border-right: 1px solid #353640;
-  background: #191a1ff5;
+  border-right: 1px solid var(--theme-border, #353640);
+  background: var(--theme-surface-1, #191a1ff5);
   backdrop-filter: blur(18px);
   box-shadow: 18px 0 48px #0005;
   transform: translateX(calc(-100% - 12px));
@@ -54,7 +54,7 @@
   flex-shrink: 0;
   place-items: center;
   border: 1px solid #4c7869;
-  background: #25322e;
+  background: var(--theme-surface-2, #25322e);
   color: var(--green);
   font-size: 23px;
 }
@@ -76,7 +76,7 @@
   overflow-y: auto;
   overscroll-behavior: contain;
   scrollbar-width: thin;
-  scrollbar-color: #505562 transparent;
+  scrollbar-color: var(--theme-surface-4, #505562) transparent;
   scrollbar-gutter: stable;
   padding: 0 4px 12px;
 }
@@ -88,7 +88,7 @@
   padding: 9px 12px;
   border: 1px solid transparent;
   border-radius: 0;
-  color: #b7bac6;
+  color: var(--theme-ink-muted, #b7bac6);
   text-decoration: none;
   font-size: 13px;
   line-height: 1.4;
@@ -99,12 +99,12 @@
 .nav-link:hover.scope,
 .domain-toggle:hover.scope,
 .close-navigation:hover.scope {
-  background: #24272e;
-  color: #f4f7fc;
+  background: var(--theme-surface-2, #24272e);
+  color: var(--theme-ink, #f4f7fc);
 }
 .nav-link.active.scope {
-  background: #263443;
-  color: #d9ecff;
+  background: var(--theme-surface-3, #263443);
+  color: var(--theme-ink, #d9ecff);
   box-shadow: inset 3px 0 #75b8ff;
 }
 .nav-link:focus-visible.scope,
@@ -124,7 +124,7 @@
 }
 .domain-group.scope {
   padding: 7px 0;
-  border-top: 1px solid #30333c;
+  border-top: 1px solid var(--theme-border, #30333c);
 }
 .domain-toggle.scope {
   display: flex;
@@ -136,12 +136,12 @@
   border: 0;
   border-radius: 0;
   background: transparent;
-  color: #c2c6d2;
+  color: var(--theme-ink, #c2c6d2);
   text-align: left;
   cursor: pointer;
 }
 .current-domain .domain-toggle.scope {
-  color: #f4f7fc;
+  color: var(--theme-ink, #f4f7fc);
 }
 .domain-icon.scope {
   width: 19px;
@@ -156,7 +156,7 @@
   font-weight: 650;
 }
 .topic-count.scope {
-  color: #8e93a1;
+  color: var(--theme-ink-muted, #8e93a1);
   font-size: 11px;
   font-variant-numeric: tabular-nums;
 }
@@ -175,17 +175,17 @@
   padding: 2px 0 4px 27px;
 }
 .overview-link.scope {
-  color: #9298a9;
+  color: var(--theme-ink-muted, #9298a9);
   font-size: 12px;
 }
 .sidebar-footer.scope {
   flex-shrink: 0;
   padding-top: 8px;
-  border-top: 1px solid #30333c;
+  border-top: 1px solid var(--theme-border, #30333c);
 }
 .contribute-link.scope {
   justify-content: space-between;
-  color: #9298a9;
+  color: var(--theme-ink-muted, #9298a9);
   font-size: 12px;
 }
 @media (max-width: 460px) {

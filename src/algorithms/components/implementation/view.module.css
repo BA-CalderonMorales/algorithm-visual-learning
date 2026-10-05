@@ -5,8 +5,8 @@
   flex-wrap: wrap;
   gap: 4px 16px;
   padding: 10px 16px;
-  border-bottom: 1px solid #30323b;
-  color: #9da2af;
+  border-bottom: 1px solid var(--theme-border, #30323b);
+  color: var(--theme-ink-muted, #9da2af);
   font-size: 11px;
   line-height: 1.5;
 }

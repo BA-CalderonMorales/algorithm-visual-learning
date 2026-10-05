@@ -7,9 +7,9 @@
   justify-content: space-between;
   gap: 12px;
   padding: 9px clamp(16px, 3vw, 34px);
-  border-top: 1px solid #30313a;
-  background: #171719a8;
-  color: #727683;
+  border-top: 1px solid var(--theme-border, #30313a);
+  background: var(--theme-surface-0, #171719a8);
+  color: var(--theme-ink-muted, #727683);
   font-size: 9px;
 }
 @media (max-width: 720px) {
@@ -21,5 +21,5 @@
 :global(html):fullscreen .site-footer.scope {
   min-height: 38px;
   padding-block: 8px;
-  background: #171719d9;
+  background: var(--theme-surface-0, #171719d9);
 }

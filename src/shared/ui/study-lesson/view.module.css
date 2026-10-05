@@ -2,8 +2,8 @@
 }
 .study-workspace.scope {
   min-width: 0;
-  border: 1px solid #3a3d47;
-  background: #1b1d23;
+  border: 1px solid var(--theme-border, #3a3d47);
+  background: var(--theme-surface-1, #1b1d23);
 }
 .study-next:focus-visible.scope,
 .study-connections :global(a):focus-visible.scope {
@@ -24,7 +24,7 @@
   overflow-x: hidden;
   min-height: 0;
   scrollbar-width: thin;
-  scrollbar-color: #596579 #1b1d23;
+  scrollbar-color: #596579 var(--theme-surface-1, #1b1d23);
   overscroll-behavior: contain;
 }
 .study-scroll.scope {
@@ -35,7 +35,7 @@
 }
 .study-overline.scope {
   margin: 0 0 8px;
-  color: #8598ad;
+  color: var(--theme-ink-muted, #8598ad);
   font-size: 11px;
 }
 .study-lead :global(h2).scope {
@@ -44,20 +44,20 @@
 }
 .study-lead > :global(p):last-child.scope {
   margin: 0;
-  color: #b7c2d0;
+  color: var(--theme-ink, #b7c2d0);
   font-size: 14px;
   line-height: 1.7;
 }
 .study-anchor.scope {
   margin: 22px 0;
   padding: 6px 16px 14px;
-  border-block: 1px solid #363d49;
-  background: #181c24;
+  border-block: 1px solid var(--theme-border, #363d49);
+  background: var(--theme-surface-1, #181c24);
 }
 .study-anchor > :global(p).scope {
   margin: 0;
   text-align: center;
-  color: #94a1b3;
+  color: var(--theme-ink-muted, #94a1b3);
   font-size: 11px;
   line-height: 1.5;
 }
@@ -77,7 +77,7 @@
 .flow-number.scope {
   flex: none;
   min-width: 25px;
-  color: #bda4f5;
+  color: var(--theme-ink-purple, #bda4f5);
   font-size: 12px;
   font-variant-numeric: tabular-nums;
   padding-top: 3px;
@@ -86,12 +86,12 @@
   margin: 0 0 7px;
   font-size: 14px;
   line-height: 1.5;
-  color: #e0e7f1;
+  color: var(--theme-ink, #e0e7f1);
 }
 :global(li) :global(p).scope,
 :global(dd).scope {
   margin: 0;
-  color: #aebdce;
+  color: var(--theme-ink, #aebdce);
   font-size: 13px;
   line-height: 1.75;
 }
@@ -105,27 +105,27 @@
   grid-template-columns: minmax(130px, 1fr) 3fr;
   gap: 22px;
   padding: 15px 0;
-  border-top: 1px solid #343d48;
+  border-top: 1px solid var(--theme-border, #343d48);
 }
 :global(dt).scope {
   font-size: 12px;
   line-height: 1.6;
-  color: #d2ddeb;
+  color: var(--theme-ink, #d2ddeb);
 }
 .study-caution.scope {
   margin: 20px 0;
-  border-left: 2px solid #dba778;
+  border-left: 2px solid var(--theme-ink-orange, #dba778);
   padding: 0 0 0 14px;
-  color: #acb8c8;
+  color: var(--theme-ink-muted, #acb8c8);
   font-size: 12px;
   line-height: 1.75;
 }
 .study-caution :global(strong).scope {
-  color: #dfc8af;
+  color: var(--theme-ink, #dfc8af);
 }
 .study-next.scope {
   display: inline-block;
-  color: #9ac8ff;
+  color: var(--theme-ink-blue, #9ac8ff);
   text-decoration: none;
   font-size: 13px;
   margin: 6px 0;
@@ -138,8 +138,8 @@
   flex-wrap: wrap;
   gap: 5px;
   padding: 12px 18px;
-  border-bottom: 1px solid #3a3d47;
-  background: #191d24;
+  border-bottom: 1px solid var(--theme-border, #3a3d47);
+  background: var(--theme-surface-1, #191d24);
 }
 .example-picker :global(button).scope {
   display: flex;
@@ -148,20 +148,20 @@
   padding: 8px 10px;
   min-height: 36px;
   background: transparent;
-  border: 1px solid #394554;
+  border: 1px solid var(--theme-border, #394554);
   border-radius: 0;
-  color: #a7b6c8;
+  color: var(--theme-ink-muted, #a7b6c8);
   font: inherit;
   font-size: 12px;
   cursor: pointer;
 }
 .example-picker :global(button).active.scope {
-  border-color: #9f87c8;
-  color: #decbff;
-  background: #282536;
+  border-color: var(--theme-ink-purple, #9f87c8);
+  color: var(--theme-ink, #decbff);
+  background: var(--theme-surface-2, #282536);
 }
 .example-picker :global(button) :global(span).scope {
-  color: #8d789f;
+  color: var(--theme-ink-muted, #8d789f);
   font-size: 10px;
 }
 .example-steps.scope,
@@ -178,34 +178,34 @@
   grid-template-columns: 25px minmax(0, 1fr);
   gap: 14px;
   padding-bottom: 20px;
-  border-bottom: 1px solid #343d48;
+  border-bottom: 1px solid var(--theme-border, #343d48);
 }
 .example-steps :global(li):last-child.scope {
   border-bottom: 0;
 }
 .study-result.scope {
   padding: 18px 20px;
-  border-left: 2px solid #65d9b0;
-  background: #1c2826;
+  border-left: 2px solid var(--theme-ink-green, #65d9b0);
+  background: var(--theme-surface-2, #1c2826);
 }
 .study-result > :global(span).scope {
-  color: #65d9b0;
+  color: var(--theme-ink-green, #65d9b0);
   font-size: 11px;
 }
 .study-result :global(p).scope {
   margin: 8px 0 0;
-  color: #c7ddd4;
+  color: var(--theme-ink, #c7ddd4);
   font-size: 13px;
   line-height: 1.7;
 }
 :global(details).scope {
   margin-top: 12px;
-  color: #b9c8db;
+  color: var(--theme-ink, #b9c8db);
   font-size: 13px;
 }
 :global(summary).scope {
   cursor: pointer;
-  color: #99c5ff;
+  color: var(--theme-ink-blue, #99c5ff);
   padding: 6px 0;
 }
 :global(details) :global(p).scope {
@@ -216,14 +216,14 @@
   flex-wrap: wrap;
   gap: 8px 24px;
   padding: 15px 25px;
-  border-top: 1px solid #3a3d47;
+  border-top: 1px solid var(--theme-border, #3a3d47);
   font-size: 12px;
 }
 .study-connections :global(span).scope {
-  color: #8595a8;
+  color: var(--theme-ink-muted, #8595a8);
 }
 .study-connections :global(a).scope {
-  color: #9ac8ff;
+  color: var(--theme-ink-blue, #9ac8ff);
   text-decoration: none;
 }
 @media (max-width: 720px) {

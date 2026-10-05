@@ -5,7 +5,9 @@ body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
-  background: radial-gradient(ellipse at 18% 0%, #202631 0, transparent 44%), #171719;
+  background:
+    radial-gradient(ellipse at 18% 0%, var(--theme-surface-2, #202631) 0, transparent 44%),
+    var(--theme-surface-0, #171719);
 }
 button,
 input,

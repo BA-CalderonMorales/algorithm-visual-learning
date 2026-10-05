@@ -6,24 +6,24 @@
   gap: 16px;
   margin-top: 24px;
   padding-top: 20px;
-  border-top: 1px solid #343640;
+  border-top: 1px solid var(--theme-border, #343640);
 }
 .reading-link.scope {
   display: grid;
   gap: 5px;
   min-width: 0;
   padding: 14px 16px;
-  border: 1px solid #343640;
-  background: #1b1c2180;
-  color: #d9e2ee;
+  border: 1px solid var(--theme-border, #343640);
+  background: var(--theme-surface-1, #1b1c2180);
+  color: var(--theme-ink, #d9e2ee);
   text-decoration: none;
   transition:
     border-color 0.15s,
     background 0.15s;
 }
 .reading-link:hover.scope {
-  border-color: #638cb0;
-  background: #232a33;
+  border-color: var(--theme-ink-blue, #638cb0);
+  background: var(--theme-surface-2, #232a33);
 }
 .reading-link:focus-visible.scope {
   outline: 2px solid var(--blue);
@@ -39,11 +39,11 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  color: #98a7ba;
+  color: var(--theme-ink-muted, #98a7ba);
   font-size: 11px;
 }
 .section-label.scope {
-  color: #858e9e;
+  color: var(--theme-ink-muted, #858e9e);
   font-size: 11px;
 }
 .next-topic.scope {

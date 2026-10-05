@@ -1,5 +1,6 @@
 import Chart from 'chart.js/auto';
-import { onDestroy } from 'svelte';
+import { onDestroy, onMount } from 'svelte';
+import { chartPalette } from './palette.ts';
 import { countShellGaps, getGrowthModel } from './model.ts';
 
 export function createViewModel(props = () => ({})) {
@@ -11,7 +12,15 @@ export function createViewModel(props = () => ({})) {
   let model = $derived(getGrowthModel(algorithmId, gapSequence));
 
   const caseNames = { best: 'Best case', average: 'Average case', worst: 'Worst case' };
-  const colors = { best: '#5de0ac', average: '#f3bf5f', worst: '#ff896d' };
+  let palette = $state(chartPalette());
+  const colors = $derived(palette.colors);
+  onMount(() => {
+    const sync = () => (palette = chartPalette());
+    const observer = new MutationObserver(sync);
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+    sync();
+    return () => observer.disconnect();
+  });
 
   // Imperative adapter handle, not UI state. Tracking it would make chart
   // replacement retrigger its own effect indefinitely.
@@ -62,11 +71,11 @@ export function createViewModel(props = () => ({})) {
         plugins: {
           legend: { display: false },
           tooltip: {
-            backgroundColor: '#111318',
+            backgroundColor: palette.tooltip,
             borderColor: '#454956',
             borderWidth: 1,
-            titleColor: '#eef0f5',
-            bodyColor: '#c3c8d2',
+            titleColor: palette.tooltipText,
+            bodyColor: palette.tooltipText,
             callbacks: {
               title: (items) => `Input size n = ${items[0]?.parsed.x ?? ''}`,
               label: (item) =>
@@ -79,16 +88,16 @@ export function createViewModel(props = () => ({})) {
             type: 'linear',
             min: 1,
             max: limit,
-            title: { display: true, text: 'Input size (n)', color: '#b4bac6', font: { size: 11 } },
-            grid: { color: '#ffffff0c' },
-            ticks: { color: '#9298a6', maxTicksLimit: 8, font: { size: 10 } },
+            title: { display: true, text: 'Input size (n)', color: palette.text, font: { size: 11 } },
+            grid: { color: palette.grid },
+            ticks: { color: palette.ticks, maxTicksLimit: 8, font: { size: 10 } },
           },
           y: {
             beginAtZero: true,
-            title: { display: true, text: 'Dominant operations (model)', color: '#b4bac6', font: { size: 11 } },
-            grid: { color: '#ffffff12' },
+            title: { display: true, text: 'Dominant operations (model)', color: palette.text, font: { size: 11 } },
+            grid: { color: palette.grid },
             ticks: {
-              color: '#9298a6',
+              color: palette.ticks,
               maxTicksLimit: 6,
               font: { size: 10 },
               callback: (value) =>

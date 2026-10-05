@@ -5,7 +5,7 @@
 }
 .library-label.scope {
   margin: 0 0 10px;
-  color: #8f9dac;
+  color: var(--theme-ink-muted, #8f9dac);
   font-size: 11px;
   letter-spacing: 0.04em;
 }
@@ -18,21 +18,22 @@
 .library-heading > :global(p):last-of-type.scope {
   max-width: 720px;
   margin: 17px 0 0;
-  color: #b1bbc9;
+  color: var(--theme-ink-muted, #b1bbc9);
   font-size: 16px;
   line-height: 1.7;
 }
 .library-workspace.scope {
   min-width: 0;
-  border: 1px solid #3a3d47;
-  background: #1b1d23;
+  border: 1px solid var(--theme-border, #3a3d47);
+  background: var(--theme-surface-1, #1b1d23);
 }
 .library-panel.scope {
+  min-width: 0;
   height: clamp(450px, 68svh, 780px);
   overflow: auto;
   padding: 6px 27px 25px;
   scrollbar-width: thin;
-  scrollbar-color: #596579 #1b1d23;
+  scrollbar-color: #596579 var(--theme-surface-1, #1b1d23);
 }
 .library-panel:focus-visible.scope {
   outline: 2px solid #79b7ff;
@@ -41,7 +42,61 @@
 .library-panel.edge-to-edge.scope {
   padding: 0;
 }
+.library-workspace.vertical-tabs.scope {
+  display: grid;
+  grid-template-columns: 180px minmax(0, 1fr);
+}
+.library-navigation.scope {
+  min-width: 0;
+}
+.library-navigation.vertical-navigation.scope {
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid var(--theme-border, #3a3d47);
+  background: var(--theme-surface-1, #181c23);
+  padding-top: 0;
+}
+.rail-toggle.scope {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  order: 1;
+  flex: 0 0 40px;
+  margin: auto 2px 2px auto;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--theme-ink-muted, #aeb0be);
+  cursor: pointer;
+}
+.rail-toggle:hover.scope {
+  background: var(--theme-surface-2, #262c36);
+  color: var(--theme-ink, #eef0f5);
+}
+.rail-toggle:focus-visible.scope {
+  outline: 2px solid var(--blue);
+  outline-offset: -3px;
+}
+.rail-tabs[hidden].scope {
+  display: none;
+}
+.vertical-navigation .rail-tabs.scope {
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+.library-workspace.vertical-tabs.rail-collapsed.scope {
+  grid-template-columns: 44px minmax(0, 1fr);
+}
+@media (max-width: 1000px) {
+  .library-workspace.vertical-tabs.scope {
+    grid-template-columns: 144px minmax(0, 1fr);
+  }
+}
 @media (max-width: 600px) {
+  .library-workspace.vertical-tabs.scope {
+    grid-template-columns: 94px minmax(0, 1fr);
+  }
   .library-heading.scope {
     padding: 8px 0 25px;
   }

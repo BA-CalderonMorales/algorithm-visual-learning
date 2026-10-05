@@ -1,17 +1,17 @@
 /* Shared visual language for every sorting walkthrough. Keep layout and sizing
    local to each algorithm; this file standardizes only animation/state styling. */
 :root {
-  --walk-blue: #60a5fa;
-  --walk-blue-fill: #24405f;
-  --walk-green: #34d399;
-  --walk-green-fill: #245743;
-  --walk-yellow: #facc15;
-  --walk-yellow-fill: #514616;
-  --walk-orange: #fb923c;
-  --walk-orange-fill: #493326;
-  --walk-violet: #c084fc;
-  --walk-violet-fill: #42265f;
-  --walk-current: #22252b;
+  --walk-blue: var(--theme-ink-blue, #60a5fa);
+  --walk-blue-fill: var(--theme-fill-blue, #24405f);
+  --walk-green: var(--theme-ink-green, #34d399);
+  --walk-green-fill: var(--theme-fill-green, #245743);
+  --walk-yellow: var(--theme-ink-yellow, #facc15);
+  --walk-yellow-fill: var(--theme-fill-yellow, #514616);
+  --walk-orange: var(--theme-ink-orange, #fb923c);
+  --walk-orange-fill: var(--theme-fill-orange, #493326);
+  --walk-violet: var(--theme-ink-purple, #c084fc);
+  --walk-violet-fill: var(--theme-fill-purple, #42265f);
+  --walk-current: var(--theme-surface-2, #22252b);
 }
 
 /* One crisp frame marks the step currently being studied. */
@@ -118,7 +118,7 @@
 .pointer-markers,
 .history-index.history-pointer:not(:empty),
 .item-pointer {
-  color: #e9d5ff !important;
+  color: var(--theme-ink-purple, #e9d5ff) !important;
   font-weight: 700;
 }
 .history-position:has(> .pointer-markers:not(:empty)) .history-cell,
@@ -131,7 +131,7 @@
   z-index: 2;
 }
 .history-position:has(> .pointer-markers:not(:empty)) .history-index {
-  color: #e9d5ff !important;
+  color: var(--theme-ink-purple, #e9d5ff) !important;
   font-weight: 700;
 }
 

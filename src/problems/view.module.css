@@ -8,7 +8,7 @@
 }
 .pattern-intro :global(p).scope {
   font-size: 14px;
-  color: #aebdce;
+  color: var(--theme-ink, #aebdce);
   line-height: 1.7;
 }
 .problem-list.scope {
@@ -20,10 +20,10 @@
   gap: 18px;
   align-items: center;
   padding-block: 23px;
-  border-bottom: 1px solid #343d48;
+  border-bottom: 1px solid var(--theme-border, #343d48);
 }
 .order.scope {
-  color: #baa4ff;
+  color: var(--theme-ink-blue, #baa4ff);
   font-size: 12px;
 }
 .problem-row :global(h2).scope {
@@ -35,10 +35,10 @@
   margin: 0;
   font-size: 13px;
   line-height: 1.7;
-  color: #aebdce;
+  color: var(--theme-ink, #aebdce);
 }
 :global(a).scope {
-  color: #9ac8ff;
+  color: var(--theme-ink-blue, #9ac8ff);
   text-decoration: none;
 }
 :global(a):hover.scope {
@@ -50,7 +50,7 @@
 }
 .watch-link.scope {
   padding: 12px;
-  border: 1px solid #3c4857;
+  border: 1px solid var(--theme-border, #3c4857);
   font-size: 12px;
   white-space: nowrap;
 }

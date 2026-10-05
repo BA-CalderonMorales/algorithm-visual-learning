@@ -3,8 +3,8 @@
 .concept-film.scope {
   min-width: 0;
   padding: clamp(16px, 2.2vw, 28px);
-  background: #14181e;
-  color: #d3dfed;
+  background: var(--theme-surface-1, #14181e);
+  color: var(--theme-ink, #d3dfed);
 }
 .scene-heading.scope,
 .film-stage.scope,
@@ -27,26 +27,26 @@
 }
 .scene-meta.scope {
   justify-content: space-between;
-  color: #9aaabd;
+  color: var(--theme-ink-muted, #9aaabd);
   font-size: 12px;
 }
 .phase.scope {
-  color: #c2a0fb;
+  color: var(--theme-ink-purple, #c2a0fb);
 }
 .scene-heading :global(h2).scope {
   margin: 10px 0 12px;
-  color: #edf0f6;
+  color: var(--theme-ink, #edf0f6);
   font-size: clamp(20px, 2.5vw, 28px);
   line-height: 1.3;
   letter-spacing: -0.025em;
 }
 .scene-context.scope {
-  color: #a9b6c5;
+  color: var(--theme-ink-muted, #a9b6c5);
   font-size: 13px;
   gap: 8px 24px;
 }
 .minimum.scope {
-  color: #79b7ff;
+  color: var(--theme-ink-blue, #79b7ff);
 }
 .film-stage :global(canvas).scope {
   display: block;
@@ -59,11 +59,11 @@
   margin-block: 0;
   font-size: 14px;
   line-height: 1.65;
-  color: #c8d2df;
+  color: var(--theme-ink, #c8d2df);
 }
 .film-key.scope {
   padding-block: 12px 18px;
-  color: #a9b6c5;
+  color: var(--theme-ink-muted, #a9b6c5);
   font-size: 11px;
   gap: 8px 16px;
 }
@@ -77,7 +77,7 @@
   height: 8px;
 }
 .player-bar.scope {
-  border-top: 1px solid #303944;
+  border-top: 1px solid var(--theme-border, #303944);
   padding-block: 14px 8px;
 }
 .film-controls.scope {
@@ -93,10 +93,10 @@
 .film-video.scope {
   min-height: 42px;
   padding: 8px 12px;
-  border: 1px solid #3c4857;
+  border: 1px solid var(--theme-border, #3c4857);
   border-radius: 0;
-  background: #202834;
-  color: #d3dfed;
+  background: var(--theme-surface-2, #202834);
+  color: var(--theme-ink, #d3dfed);
   font: inherit;
   font-size: 12px;
   cursor: pointer;
@@ -104,8 +104,8 @@
 }
 :global(button):hover.scope,
 .film-video:hover.scope {
-  background: #263545;
-  border-color: #79b7ff;
+  background: var(--theme-surface-3, #263545);
+  border-color: var(--theme-ink-blue, #79b7ff);
 }
 :global(button):disabled.scope {
   opacity: 0.4;
@@ -120,9 +120,9 @@
   outline-offset: 3px;
 }
 .film-play.scope {
-  background: #284765;
-  border-color: #527da4;
-  color: #f3f7fb;
+  background: var(--theme-fill-blue, #284765);
+  border-color: var(--theme-ink-blue, #527da4);
+  color: var(--theme-ink, #f3f7fb);
 }
 .icon-button.scope {
   display: inline-flex;
@@ -136,15 +136,15 @@
   line-height: 1;
 }
 .chosen.scope {
-  color: #c2a0fb;
-  border-color: #886cad;
+  color: var(--theme-ink-purple, #c2a0fb);
+  border-color: var(--theme-ink-purple, #886cad);
 }
 .film-speed :global(select).scope {
   min-width: 65px;
 }
 .film-time.scope {
   margin-left: auto;
-  color: #9eadbe;
+  color: var(--theme-ink-muted, #9eadbe);
   font-size: 12px;
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
@@ -158,23 +158,23 @@
   width: 100%;
   min-height: 28px;
   margin: 0;
-  accent-color: #79b7ff;
+  accent-color: var(--theme-ink-blue, #79b7ff);
   cursor: pointer;
 }
 .voice-disclosure.scope {
   margin: 6px 0;
-  color: #8d9bad;
+  color: var(--theme-ink-muted, #8d9bad);
   font-size: 11px;
 }
 .voice-status.scope {
   margin: 8px 0;
-  color: #f6d774;
+  color: var(--theme-ink-yellow, #f6d774);
   font-size: 12px;
   line-height: 1.5;
 }
 .more.scope {
-  border-top: 1px solid #303944;
-  color: #a9b6c5;
+  border-top: 1px solid var(--theme-border, #303944);
+  color: var(--theme-ink-muted, #a9b6c5);
 }
 .more :global(summary).scope {
   padding-block: 14px;
@@ -194,11 +194,11 @@
   padding: 4px 0;
   border: 0;
   background: transparent;
-  color: #c4d9f3;
+  color: var(--theme-ink, #c4d9f3);
   text-align: left;
 }
 .film-transcript :global(button)[aria-current].scope {
-  color: #c2a0fb;
+  color: var(--theme-ink-purple, #c2a0fb);
 }
 .film-transcript :global(p).scope {
   margin: 4px 0;
@@ -209,7 +209,7 @@
   font-size: 12px;
 }
 .film-connections :global(a).scope {
-  color: #9ac8ff;
+  color: var(--theme-ink-blue, #9ac8ff);
   text-decoration: none;
 }
 .film-connections :global(a):hover.scope {
@@ -243,7 +243,7 @@
   align-items: center;
   gap: 10px;
   margin-block: 12px;
-  color: #a9b6c5;
+  color: var(--theme-ink-muted, #a9b6c5);
   font-size: 12px;
 }
 .film-example :global(select).scope {
@@ -251,7 +251,7 @@
   max-width: 100%;
 }
 .film-note.scope {
-  color: #a9b6c5;
+  color: var(--theme-ink-muted, #a9b6c5);
   font-size: 12px;
   line-height: 1.65;
 }

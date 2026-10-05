@@ -19,6 +19,7 @@
     ]}
     selected={view}
     idPrefix="home-tab"
+    tabOrientation="vertical"
     bind:heroVisible
   >
     {#if view === 'explore'}

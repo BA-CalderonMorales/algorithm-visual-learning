@@ -3,13 +3,13 @@
 .cancellation-sum.scope {
   max-width: 560px;
   margin: 18px auto;
-  border: 1px solid #35434c;
-  background: #161b22;
+  border: 1px solid var(--theme-border, #35434c);
+  background: var(--theme-surface-1, #161b22);
   padding: 16px 20px;
 }
 :global(figcaption).scope {
   margin-bottom: 16px;
-  color: #a5b4c6;
+  color: var(--theme-ink-muted, #a5b4c6);
   font-size: 12px;
   line-height: 1.5;
 }
@@ -24,7 +24,7 @@
   align-items: center;
 }
 .term-index.scope {
-  color: #8596aa;
+  color: var(--theme-ink-muted, #8596aa);
   font-size: 12px;
 }
 .signed-term.scope {
@@ -68,8 +68,8 @@
   align-items: center;
   margin: 0;
   padding-top: 14px;
-  border-top: 1px solid #35434c;
-  color: #65d9b0;
+  border-top: 1px solid var(--theme-border, #35434c);
+  color: var(--theme-ink-green, #65d9b0);
 }
 .sum-result :global(span).scope {
   font-size: 12px;

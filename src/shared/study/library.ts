@@ -1,3 +1,5 @@
+import { routeEnabled } from '../../app/features.ts';
+
 export const entries = [
   {
     id: 'algorithms',
@@ -48,7 +50,7 @@ export const entries = [
       { title: 'Watch 3-Sum', href: '#/problems/two-pointers/three-sum/play' },
     ],
   },
-];
+].filter((entry) => routeEnabled(entry.href));
 
 export function directoryTabs(href) {
   return [

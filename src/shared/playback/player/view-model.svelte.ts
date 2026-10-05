@@ -1,6 +1,7 @@
 import { onMount } from 'svelte';
 import { sceneAt } from '../model.ts';
 import { playPalette } from '../renderers/concept.js';
+import { themedColor } from '../../styles/model.ts';
 import { renderPlayerFilm } from './renderer.ts';
 import { describePlayerScene, narrationStatus, stageBounds } from './model.ts';
 import { narratedTime } from '../scene-narration.ts';
@@ -255,7 +256,7 @@ export function createViewModel(props = () => ({})) {
       return jumpScene;
     },
     get playPalette() {
-      return playPalette;
+      return Object.fromEntries(Object.entries(playPalette).map(([role, color]) => [role, themedColor(color)]));
     },
     get variant() {
       return variant;
