@@ -10,6 +10,8 @@ const browser = await chromium.launch({
   ...(process.env.PLAYWRIGHT_CHANNEL ? {channel:process.env.PLAYWRIGHT_CHANNEL} : {}),
 });
 const page = await browser.newPage();
+// Saved collapse preferences from older releases must not hide directory tabs.
+await page.addInitScript(() => localStorage.setItem('study-directory-tabs-collapsed', 'true'));
 const errors = [];
 page.on('pageerror', error => errors.push(error.message));
 async function verifyHomeNavigation() {
@@ -202,10 +204,19 @@ try {
       const maximumScroll = await page.locator('.library-panel').evaluate(el => el.scrollHeight - el.clientHeight);
       assert.equal(await page.locator('.library-panel').evaluate(el => el.scrollTop), Math.min(readingPosition, maximumScroll), 'Collapsing retains reading position unless the wider content now fits');
       await page.reload();
-      await expand.waitFor();
-      await expand.click();
+      await collapse.waitFor();
       assert.equal(await page.locator('.library-navigation [role="tablist"]').isVisible(), true);
       assert.equal(await page.getByRole('button', {name:'Collapse page tabs',exact:true}).getAttribute('aria-expanded'), 'true');
+      await collapse.click();
+      await page.evaluate(route => { location.hash = route; }, entry.href + '/connections');
+      await page.waitForFunction(() => document.querySelector('[role="tabpanel"]')?.getAttribute('aria-labelledby')?.endsWith('-connections'));
+      assert.equal(await expand.getAttribute('aria-expanded'), 'false', 'Switching views within a directory retains the manual collapse');
+      await page.evaluate(() => { location.hash = '#/home'; });
+      await page.locator('#home-tab-explore').waitFor();
+      assert.equal(await collapse.getAttribute('aria-expanded'), 'true', 'Entering another directory starts expanded');
+      await page.evaluate(route => { location.hash = route; }, entry.href);
+      await page.getByRole('tab', {name:'Explore',exact:true}).waitFor();
+      assert.equal(await collapse.getAttribute('aria-expanded'), 'true', 'Returning to a core directory starts expanded');
       if ([1440,390].includes(viewport.width)) {
         await page.evaluate(() => window.scrollTo(0,0));
         await page.screenshot({path:'screenshots/landing-'+entry.id+'-'+viewport.width+'.png',fullPage:true});

@@ -1,25 +1,20 @@
-import { onMount, tick } from 'svelte';
-
-const railKey = 'study-directory-tabs-collapsed';
+import { tick } from 'svelte';
 
 export function createViewModel(props) {
   let panel = $state<HTMLElement | null>(null);
   let collapsed = $state(false);
-  onMount(() => {
-    try {
-      collapsed = localStorage.getItem(railKey) === 'true';
-    } catch {
-      /* Storage is optional; the rail still works. */
-    }
+  const directory = $derived.by(() => {
+    const { idPrefix, title } = props();
+    return `${idPrefix}:${title}`;
+  });
+  $effect(() => {
+    // Open every directory by default, without reopening on its tab changes.
+    directory;
+    collapsed = false;
   });
   function toggleRail() {
     const scroll = panel?.scrollTop;
     collapsed = !collapsed;
-    try {
-      localStorage.setItem(railKey, String(collapsed));
-    } catch {
-      /* Keep the in-memory preference if persistence is unavailable. */
-    }
     // Width changes should not reset the reader's place.
     void tick().then(() => {
       if (panel && scroll !== undefined) panel.scrollTop = scroll;

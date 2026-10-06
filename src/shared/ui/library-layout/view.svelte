@@ -16,7 +16,7 @@
     heroVisible = $bindable(false),
     children,
   } = $props();
-  const vm = createViewModel(() => ({ selected, tabOrientation }));
+  const vm = createViewModel(() => ({ selected, tabOrientation, idPrefix, title }));
 </script>
 
 <IntroHeading {title} bind:visible={heroVisible}>

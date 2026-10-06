@@ -55,8 +55,9 @@ Quick Sort's circular phase markers are an explicit diagram-shape exception.
 
 Home and core-domain directories share `shared/ui/library-layout` for the
 collapsed intro, vertical side-tabs, padding, and bounded scroll panel. Lesson
-tabs remain horizontal. The rail collapse control remembers the reader's choice
-and never resets the panel's scroll position. Topic links share
+tabs remain horizontal. Directory rails start expanded on entry and reload;
+manual collapse lasts within that directory, including its tab changes, without
+resetting the panel's scroll position. Topic links share
 `library-entry`; cross-domain pointers share `domain-connections`. The sorting
 catalog keeps its own comparison table inside that same shell. Adjust shared
 presentation once instead of introducing a different directory layout per domain.
