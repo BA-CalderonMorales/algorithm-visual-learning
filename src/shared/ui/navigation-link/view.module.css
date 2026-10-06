@@ -1,0 +1,69 @@
+.scope {
+}
+.navigation-link.scope {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+  min-height: 44px;
+  padding: 10px 12px;
+  border: 1px solid var(--theme-border, #454956);
+  border-radius: 0;
+  background: var(--theme-surface-2, #24262e);
+  color: var(--theme-ink, #e3e6ed);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.4;
+  text-decoration: none;
+  transition:
+    border-color 120ms ease,
+    background-color 120ms ease;
+}
+.navigation-link.scope:hover {
+  border-color: var(--theme-ink-blue, #79b7ff);
+  background: var(--theme-surface-3, #2d313c);
+}
+.navigation-link.scope:focus-visible {
+  outline: 2px solid var(--theme-ink-blue, #79b7ff);
+  outline-offset: 3px;
+}
+.navigation-link.scope:active {
+  background: var(--theme-surface-1, #1b1d23);
+}
+.primary.scope {
+  border-color: var(--theme-ink-blue, #79b7ff);
+  background: var(--theme-fill-blue, #24476c);
+}
+.primary.scope:hover {
+  background: var(--theme-fill-blue, #24476c);
+  box-shadow: inset 0 0 0 1px var(--theme-ink-blue, #79b7ff);
+}
+.label {
+  flex: 1;
+  min-width: 0;
+  overflow-wrap: break-word;
+}
+.arrow {
+  flex: 0 0 16px;
+  color: var(--theme-ink-blue, #9ac8ff);
+}
+.number {
+  flex: 0 0 auto;
+  color: var(--theme-ink-muted, #aeb0be);
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+}
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+@media (prefers-reduced-motion: reduce) {
+  .navigation-link.scope {
+    transition: none;
+  }
+}

@@ -39,7 +39,8 @@
 }
 :global(a).scope {
   color: var(--theme-ink-blue, #9ac8ff);
-  text-decoration: none;
+  text-decoration: underline;
+  text-underline-offset: 4px;
 }
 :global(a):hover.scope {
   text-decoration: underline;
@@ -48,11 +49,8 @@
   outline: 2px solid #79b7ff;
   outline-offset: 4px;
 }
-.watch-link.scope {
-  padding: 12px;
-  border: 1px solid var(--theme-border, #3c4857);
-  font-size: 12px;
-  white-space: nowrap;
+.problem-actions.scope {
+  min-width: 110px;
 }
 .reference.scope {
   padding-block: 8px 20px;
@@ -62,8 +60,7 @@
     grid-template-columns: 24px minmax(0, 1fr);
     gap: 12px;
   }
-  .watch-link.scope {
+  .problem-actions.scope {
     grid-column: 2;
-    justify-self: start;
   }
 }

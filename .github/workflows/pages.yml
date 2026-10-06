@@ -60,6 +60,9 @@ jobs:
           npm run test:architecture-ui
           npm run test:navigation
           npm run test:domain-landings
+          npm run test:home-links
+          npm run test:core-navigation-links
+          npm run test:lesson-controls
           npm run test:appearance
           npm run test:light-themes
           npm run test:study

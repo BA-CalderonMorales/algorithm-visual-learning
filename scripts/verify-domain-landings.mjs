@@ -159,8 +159,9 @@ try {
           assert.equal(await page.locator('.library-row').count(), view === 'connections' ? entries.length - 1 : entry.id === 'problems' ? 1 : 3);
           const links = await page.locator('.library-row a').evaluateAll(els => els.map(el => ({
             href:el.getAttribute('href'), decoration:getComputedStyle(el).textDecorationLine,
+            heading:Boolean(el.closest('h2')),
           })));
-          assert.ok(links.every(link => link.href.startsWith('#/') && link.decoration === 'none'));
+          assert.ok(links.every(link => link.href.startsWith('#/') && link.decoration === (link.heading ? 'underline' : 'none')), 'Directory titles are clear text links; topic destinations are link controls');
         }
       }
       // Tab clicks/keyboard navigation do not force the outer page back to top.

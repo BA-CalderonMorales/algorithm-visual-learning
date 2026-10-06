@@ -72,9 +72,13 @@
   margin-top: 14px;
 }
 .study-back.scope {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
   color: var(--theme-ink-blue, #9ac8ff);
   font-size: 12px;
-  text-decoration: none;
+  text-decoration: underline;
+  text-underline-offset: 4px;
 }
 .study-back:hover.scope {
   text-decoration: underline;

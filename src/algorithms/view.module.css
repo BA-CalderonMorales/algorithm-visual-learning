@@ -51,6 +51,8 @@
 }
 .inline-link.scope {
   color: var(--blue);
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
 .inline-link:hover.scope {
   text-decoration: underline;
@@ -66,10 +68,7 @@
   line-height: 1.6;
 }
 .inline-link.scope {
-  padding: 0;
-  border: 0;
-  background: none;
-  cursor: pointer;
+  font: inherit;
 }
 .catalog-table-wrap.scope {
   overflow: hidden;
@@ -100,16 +99,16 @@
   text-transform: uppercase;
 }
 .sort-button.scope {
-  display: inline-flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 12px;
   width: 100%;
-  min-height: 24px;
+  min-height: 52px;
   align-items: center;
   justify-content: space-between;
   gap: 6px;
-  padding: 0;
-  border: 0;
-  background: transparent;
+  padding: 6px;
+  border: 1px solid var(--theme-border, #454956);
+  background: var(--theme-surface-1, #1b1d23);
   color: inherit;
   cursor: pointer;
   font: inherit;
@@ -127,6 +126,7 @@
 .sort-button:hover.scope,
 .sort-button:focus-visible.scope {
   color: var(--theme-ink, #dce9f8);
+  border-color: var(--blue);
 }
 .sort-button:hover :global(span).scope,
 .sort-button:focus-visible :global(span).scope {
@@ -143,17 +143,17 @@
   width: 11%;
 }
 .catalog-table :global(thead) :global(th):nth-child(3).scope {
-  width: 24%;
+  width: 22%;
 }
 .catalog-table :global(thead) :global(th):nth-child(4).scope {
-  width: 13%;
+  width: 12%;
 }
 .catalog-table :global(thead) :global(th):nth-child(5).scope,
 .catalog-table :global(thead) :global(th):nth-child(6).scope {
-  width: 12%;
+  width: 11%;
 }
 .catalog-table :global(thead) :global(th):nth-child(7).scope {
-  width: 13%;
+  width: 18%;
 }
 .catalog-table :global(tbody) :global(tr).scope {
   border-bottom: 1px solid var(--theme-border, #30323b);
@@ -174,17 +174,17 @@
   align-items: center;
   gap: 6px;
   color: var(--theme-ink, #eef1f7);
-  text-decoration: none;
+  text-decoration: underline;
+  text-decoration-color: var(--theme-border, #454956);
+  text-underline-offset: 4px;
 }
-.catalog-algorithm-link :global(span).scope {
+.catalog-algorithm-link:hover.scope {
   color: var(--blue);
-  font-size: 10px;
-  opacity: 0;
-  transition: opacity 0.15s ease;
+  text-decoration-color: currentColor;
 }
-.catalog-algorithm-link:hover :global(span).scope,
-.catalog-algorithm-link:focus-visible :global(span).scope {
-  opacity: 1;
+.catalog-algorithm-link:focus-visible.scope {
+  outline: 2px solid var(--blue);
+  outline-offset: 3px;
 }
 .catalog-cue.scope,
 .catalog-note.scope {
@@ -249,32 +249,6 @@
 .catalog-actions.scope {
   display: grid;
   gap: 6px;
-}
-.catalog-actions :global(a).scope {
-  display: inline-flex;
-  min-height: 29px;
-  align-items: center;
-  justify-content: center;
-  padding: 5px 7px;
-  border: 1px solid #3d536c;
-  border-radius: 0;
-  color: var(--theme-ink-blue, #c7dfff);
-  font-size: 9px;
-  text-align: center;
-  text-decoration: none;
-}
-.catalog-actions :global(a):hover.scope {
-  border-color: var(--theme-ink-blue, #68aafc);
-  background: var(--theme-surface-3, #263446);
-}
-.catalog-actions .catalog-code-link.scope {
-  border-color: var(--theme-border, #3b3d47);
-  color: var(--theme-ink-muted, #aeb4c1);
-}
-.catalog-actions .catalog-code-link:hover.scope {
-  border-color: var(--theme-border, #59606e);
-  background: var(--theme-surface-2, #292b32);
-  color: var(--theme-ink, #e9ebf0);
 }
 .catalog-table :global(td)[colspan].scope {
   text-align: center;
@@ -410,17 +384,14 @@
 }
 
 @container (max-width: 840px) {
-  .catalog-algorithm-link :global(span).scope {
-    opacity: 1;
-  }
-}
-
-@container (max-width: 840px) {
   .catalog-actions.scope {
     grid-template-columns: 1fr 1fr;
   }
 }
 @container (max-width: 460px) {
+  .catalog-actions.scope {
+    grid-template-columns: 1fr;
+  }
   .catalog-table :global(tbody) :global(tr).scope {
     grid-template-columns: 1fr;
   }

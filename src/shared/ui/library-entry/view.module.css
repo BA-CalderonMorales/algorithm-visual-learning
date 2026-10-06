@@ -30,10 +30,6 @@
   font-size: 24px;
   margin: 0 0 11px;
 }
-.library-copy :global(h2) :global(span).scope {
-  color: var(--theme-ink-blue, #648dac);
-  font-size: 19px;
-}
 .library-copy :global(p).scope {
   max-width: 490px;
   margin: 0;
@@ -77,25 +73,20 @@
   display: grid;
   gap: 5px;
 }
-.library-links :global(a).scope {
+.link-controls .library-copy :global(h2) :global(a).scope {
   display: flex;
-  justify-content: space-between;
-  gap: 20px;
-  padding: 8px 0;
-  color: var(--theme-ink, #b1c4d9);
-  font-size: 12px;
+  align-items: baseline;
+  gap: 8px;
+  text-decoration: underline;
+  text-decoration-color: var(--theme-border, #454956);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 6px;
 }
-.library-links :global(a) :global(span).scope {
-  color: var(--theme-ink-muted, #6a829b);
+.link-controls .library-copy :global(h2) :global(a):hover.scope {
+  text-decoration-color: currentColor;
 }
-.library-links :global(a):hover.scope {
-  color: var(--theme-ink-blue, #a1ccff);
-}
-@media (pointer: coarse) {
-  .library-links :global(a).scope {
-    min-height: 44px;
-    align-items: center;
-  }
+.link-controls .library-links.scope {
+  gap: 8px;
 }
 
 @media (max-width: 1000px) {
@@ -114,9 +105,8 @@
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 14px;
   }
-  .library-links :global(a).scope {
-    justify-content: flex-start;
-    gap: 6px;
+  .link-controls .library-links.scope {
+    grid-column: 1 / -1;
   }
 }
 @media (max-width: 600px) {
@@ -135,5 +125,10 @@
   }
   .library-copy :global(h2).scope {
     font-size: 22px;
+  }
+  .link-controls .library-links.scope {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 8px;
   }
 }

@@ -5,11 +5,6 @@
   border: 1px solid var(--theme-border, #3a3d47);
   background: var(--theme-surface-1, #1b1d23);
 }
-.study-next:focus-visible.scope,
-.study-connections :global(a):focus-visible.scope {
-  outline: 2px solid #79b7ff;
-  outline-offset: -3px;
-}
 .study-panel.scope {
   display: flex;
   flex-direction: column;
@@ -124,14 +119,9 @@
   color: var(--theme-ink, #dfc8af);
 }
 .study-next.scope {
-  display: inline-block;
-  color: var(--theme-ink-blue, #9ac8ff);
-  text-decoration: none;
-  font-size: 13px;
+  width: fit-content;
+  max-width: 100%;
   margin: 6px 0;
-}
-.study-next:hover.scope {
-  text-decoration: underline;
 }
 .example-picker.scope {
   display: flex;
@@ -198,33 +188,17 @@
   font-size: 13px;
   line-height: 1.7;
 }
-:global(details).scope {
-  margin-top: 12px;
-  color: var(--theme-ink, #b9c8db);
-  font-size: 13px;
-}
-:global(summary).scope {
-  cursor: pointer;
-  color: var(--theme-ink-blue, #99c5ff);
-  padding: 6px 0;
-}
-:global(details) :global(p).scope {
-  padding: 10px 0;
-}
 .study-connections.scope {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px 24px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
+  gap: 10px;
   padding: 15px 25px;
   border-top: 1px solid var(--theme-border, #3a3d47);
   font-size: 12px;
 }
 .study-connections :global(span).scope {
+  grid-column: 1 / -1;
   color: var(--theme-ink-muted, #8595a8);
-}
-.study-connections :global(a).scope {
-  color: var(--theme-ink-blue, #9ac8ff);
-  text-decoration: none;
 }
 @media (max-width: 720px) {
   .study-panel.scope {

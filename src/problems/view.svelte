@@ -4,6 +4,7 @@
   import LibraryLayout from '../shared/ui/library-layout/view.svelte';
   import LibraryEntry from '../shared/ui/library-entry/view.svelte';
   import DomainConnections from '../shared/ui/domain-connections/view.svelte';
+  import NavigationLink from '../shared/ui/navigation-link/view.svelte';
   import { directoryTabs } from '../shared/study/library.ts';
   import { pattern, problems, problemHref } from './model.ts';
   let { view = 'explore', bucket = false, heroVisible = $bindable(false) } = $props();
@@ -37,11 +38,13 @@
               <h2 class={styles.scope}><a class={styles.scope} href={problemHref(problem.id)}>{problem.title}</a></h2>
               <p class={styles.scope}>{problem.idea}</p>
             </div>
-            <a
-              class={classNames(styles, 'watch-link')}
-              href={problemHref(problem.id, 'play')}
-              aria-label="Watch {problem.title}">Watch →</a
-            >
+            <div class={classNames(styles, 'problem-actions')}>
+              <NavigationLink
+                href={problemHref(problem.id, 'play')}
+                label="Watch"
+                accessibleLabel="Watch {problem.title}"
+              />
+            </div>
           </article>
         {/each}
       </section>{/if}

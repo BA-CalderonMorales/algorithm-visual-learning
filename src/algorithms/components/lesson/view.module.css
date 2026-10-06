@@ -1,14 +1,5 @@
 .scope {
 }
-.primary.scope {
-  padding: 7px 9px;
-  border-radius: 0;
-  background: var(--theme-fill-blue, #2f5883);
-  color: var(--theme-ink, #eff7ff);
-}
-.primary:hover.scope {
-  background: #396da1;
-}
 .worked-example.scope {
   border: 1px solid var(--line);
   border-radius: 0;
@@ -119,11 +110,14 @@
   box-shadow: 0 14px 36px #0003;
 }
 .back-link.scope {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
   margin-bottom: 16px;
   color: var(--theme-ink-blue, #a9cfff);
   font-size: 11px;
-  text-decoration: none;
+  text-decoration: underline;
+  text-underline-offset: 4px;
 }
 .back-link:hover.scope {
   text-decoration: underline;
@@ -219,7 +213,8 @@
 .example-point .learning-label.scope {
   color: var(--theme-ink-purple, #c5adff);
 }
-.understand-view > .learning-link.scope {
+.lesson-action.scope {
+  justify-self: start;
   width: fit-content;
   max-width: 100%;
   margin-top: 1px;
@@ -247,23 +242,6 @@
 }
 .answer-reveal.scope {
   margin-top: 8px;
-  border: 1px solid var(--theme-border, #3b4650);
-  border-radius: 0;
-  background: var(--theme-surface-1, #1b2026);
-}
-.answer-reveal :global(summary).scope {
-  padding: 11px 13px;
-  color: var(--theme-ink-blue, #b8d9ff);
-  cursor: pointer;
-  font-size: 11px;
-  font-weight: 700;
-}
-.answer-reveal :global(p).scope {
-  margin: 0;
-  padding: 0 13px 13px;
-  color: var(--theme-ink, #c1c6d0);
-  font-size: 12px;
-  line-height: 1.7;
 }
 .practice-view.scope {
   align-content: start;
@@ -300,14 +278,6 @@
 .practice-check-card .answer-reveal.scope {
   margin-top: auto;
   padding-top: 9px;
-  border: 0;
-  background: transparent;
-}
-.practice-check-card .answer-reveal :global(summary).scope {
-  padding: 8px 0;
-}
-.practice-check-card .answer-reveal :global(p).scope {
-  padding: 0 0 7px;
 }
 .practice-prompt.scope {
   max-width: 760px;
@@ -439,9 +409,6 @@
 }
 .reasoning-steps :global(li) :global(span).scope {
   display: block;
-}
-:global(.actions) .primary.scope {
-  border: 0;
 }
 @media (max-width: 720px) {
   .algorithm-case-grid.scope {

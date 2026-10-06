@@ -61,6 +61,15 @@ resetting the panel's scroll position. Topic links share
 `library-entry`; cross-domain pointers share `domain-connections`. The sorting
 catalog keeps its own comparison table inside that same shell. Adjust shared
 presentation once instead of introducing a different directory layout per domain.
+Directory destinations use `navigation-link`: sharp bordered controls, 44px
+minimum height, persistent arrows, and visible hover/focus states. Linked section
+titles stay underlined without arrows. Prose citations remain text links; actions
+use buttons rather than anchors without destinations.
+Lesson destinations reuse that same control. Native reasoning reveals share
+`reasoning-disclosure`; the shared player owns outlined transcript scene-jump
+buttons. Keep those affordances in their shared presentation owners, not in
+individual lesson styles. Playback and disclosure behavior remain separate from
+their appearance.
 
 ## Guardrails and checks
 
@@ -78,6 +87,7 @@ npm run test:walkthroughs
 npm run test:play
 npm run test:study
 npm run test:domain-landings
+npm run test:lesson-controls
 npm run test:appearance
 npm run test:light-themes
 npm run test:features

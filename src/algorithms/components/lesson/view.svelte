@@ -7,6 +7,8 @@
   import GrowthChart from '../growth/view.svelte';
   import Implementation from '../implementation/view.svelte';
   import ConceptFilm from '../../../shared/playback/player/view.svelte';
+  import NavigationLink from '../../../shared/ui/navigation-link/view.svelte';
+  import ReasoningDisclosure from '../../../shared/ui/reasoning-disclosure/view.svelte';
   import { renderSelection } from '../../selection/components/play/renderer.ts';
   import { describeScene } from '../../selection/components/play/model.ts';
   let { vm } = $props();
@@ -156,9 +158,13 @@
           </p>
         </article>
       {/if}
-      <a class={classNames(styles, 'primary learning-link')} href="#/algorithms/{vm.selectedAlgorithm.id}/walkthrough"
-        >Now follow a step-by-step trace →</a
-      >
+      <div class={classNames(styles, 'lesson-action')}>
+        <NavigationLink
+          href="#/algorithms/{vm.selectedAlgorithm.id}/walkthrough"
+          label="Now follow a step-by-step trace"
+          primary
+        />
+      </div>
     </section>
   {:else if vm.algorithmView === 'practice'}
     <section class={classNames(styles, 'learning-view practice-view')} aria-labelledby="practice-title">
@@ -173,23 +179,19 @@
             <article class={classNames(styles, 'practice-check-card')}>
               <h3 class={styles.scope}>{check.title}</h3>
               <p class={classNames(styles, 'practice-prompt')}>{check.prompt}</p>
-              <details class={classNames(styles, 'answer-reveal')}>
-                <summary class={styles.scope}>Reveal the reasoning</summary>
-                <p class={styles.scope}>{check.answer}</p>
-              </details>
+              <div class={classNames(styles, 'answer-reveal')}>
+                <ReasoningDisclosure label="Reveal the reasoning" answer={check.answer} />
+              </div>
             </article>
           {/each}
         </div>
       {:else}
         <p class={classNames(styles, 'practice-prompt')}>{vm.selectedLesson.practice}</p>
-        <details class={classNames(styles, 'answer-reveal')}>
-          <summary class={styles.scope}>Show the reasoning</summary>
-          <p class={styles.scope}>{vm.selectedLesson.answer}</p>
-        </details>
+        <div class={classNames(styles, 'answer-reveal')}><ReasoningDisclosure answer={vm.selectedLesson.answer} /></div>
       {/if}
-      <a class={classNames(styles, 'secondary learning-link')} href="#/algorithms/{vm.selectedAlgorithm.id}/walkthrough"
-        >Return to the walkthrough →</a
-      >
+      <div class={classNames(styles, 'lesson-action')}>
+        <NavigationLink href="#/algorithms/{vm.selectedAlgorithm.id}/walkthrough" label="Return to the walkthrough" />
+      </div>
     </section>
   {:else if vm.algorithmView === 'complexity'}
     <section class={classNames(styles, 'learning-view complexity-view')} aria-labelledby="algorithm-complexity-title">
@@ -243,9 +245,12 @@
       </article>
       <p class={classNames(styles, 'complexity-note')}>{vm.selectedLesson.note}</p>
       <p class={classNames(styles, 'complexity-note')}>{vm.selectedGrowthModel.note}</p>
-      <a class={classNames(styles, 'secondary learning-link')} href="#/algorithms/{vm.selectedAlgorithm.id}/growth"
-        >See these same cases on the Growth chart →</a
-      >
+      <div class={classNames(styles, 'lesson-action')}>
+        <NavigationLink
+          href="#/algorithms/{vm.selectedAlgorithm.id}/growth"
+          label="See these same cases on the Growth chart"
+        />
+      </div>
       {#if vm.selectedAlgorithm.id === 'quick'}<p class={classNames(styles, 'complexity-note')}>
           {vm.selectedAlgorithm.extra}
         </p>{/if}

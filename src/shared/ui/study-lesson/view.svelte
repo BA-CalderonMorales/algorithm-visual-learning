@@ -6,6 +6,8 @@
   import CancellationSum from '../../../discrete/telescoping/components/cancellation/view.svelte';
   import StudyTabs from '../tabs/view.svelte';
   import AsymptoticRatio from '../../../complexity/asymptotic/components/ratio/view.svelte';
+  import NavigationLink from '../navigation-link/view.svelte';
+  import ReasoningDisclosure from '../reasoning-disclosure/view.svelte';
   let { lesson, view = 'understand', film, variants = [], legend = [] } = $props();
   import { createViewModel } from './view-model.svelte.ts';
   const vm = createViewModel(() => ({ lesson, view }));
@@ -76,7 +78,9 @@
             <strong class={styles.scope}>Watch for this.</strong>
             {lesson.caution}
           </p>
-          <a class={classNames(styles, 'study-next')} href={vm.lessonHref(lesson, 'visualize')}>See it happen →</a>
+          <div class={classNames(styles, 'study-next')}>
+            <NavigationLink href={vm.lessonHref(lesson, 'visualize')} label="See it happen" />
+          </div>
         {:else if view === 'examples'}
           <div class={classNames(styles, 'study-lead')}>
             <p class={classNames(styles, 'study-overline')}>Example {vm.exampleIndex + 1} / {lesson.examples.length}</p>
@@ -100,8 +104,9 @@
             <p class={styles.scope}>{vm.example.result}</p>
             {#if vm.example.resultMath}<StudyMath expression={vm.example.resultMath} />{/if}
           </div>
-          <a class={classNames(styles, 'study-next')} href={vm.lessonHref(lesson, 'practice')}>Check your reasoning →</a
-          >
+          <div class={classNames(styles, 'study-next')}>
+            <NavigationLink href={vm.lessonHref(lesson, 'practice')} label="Check your reasoning" />
+          </div>
         {:else if view === 'practice'}
           <div class={classNames(styles, 'study-lead')}>
             <p class={classNames(styles, 'study-overline')}>Explain it in your own words</p>
@@ -115,10 +120,7 @@
                 <span class={classNames(styles, 'flow-number')}>{index + 1}</span>
                 <div class={styles.scope}>
                   <h3 class={styles.scope}>{check.question}</h3>
-                  <details class={styles.scope}>
-                    <summary class={styles.scope}>Show the reasoning</summary>
-                    <p class={styles.scope}>{check.answer}</p>
-                  </details>
+                  <ReasoningDisclosure answer={check.answer} />
                 </div>
               </li>{/each}
           </ol>
@@ -126,15 +128,15 @@
             <strong class={styles.scope}>If this is still fuzzy:</strong> revisit one example, then explain which step you
             used and why it was allowed.
           </p>
-          <a class={classNames(styles, 'study-next')} href={vm.lessonHref(lesson, 'examples')}>Revisit an example →</a>
+          <div class={classNames(styles, 'study-next')}>
+            <NavigationLink href={vm.lessonHref(lesson, 'examples')} label="Revisit an example" />
+          </div>
         {/if}
       </div>
     {/if}
   </div>
   <nav class={classNames(styles, 'study-connections')} aria-label="Related topics">
-    <span class={styles.scope}>Use this idea</span>{#each lesson.connections as link}<a
-        class={styles.scope}
-        href={link.href}>{link.title} →</a
-      >{/each}
+    <span class={styles.scope}>Use this idea</span>
+    {#each lesson.connections as link}<NavigationLink href={link.href} label={link.title} />{/each}
   </nav>
 </section>

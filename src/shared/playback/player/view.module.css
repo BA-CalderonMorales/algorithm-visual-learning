@@ -173,13 +173,25 @@
   line-height: 1.5;
 }
 .more.scope {
-  border-top: 1px solid var(--theme-border, #303944);
+  margin-top: 12px;
   color: var(--theme-ink-muted, #a9b6c5);
 }
 .more :global(summary).scope {
-  padding-block: 14px;
-  font-size: 12px;
+  min-height: 44px;
+  padding: 12px;
+  border: 1px solid var(--theme-border, #454956);
+  background: var(--theme-surface-2, #24262e);
+  color: var(--theme-ink-blue, #9ac8ff);
+  list-style-position: inside;
+  font-size: 13px;
   cursor: pointer;
+}
+.more :global(summary):hover.scope {
+  background: var(--theme-surface-3, #2d313c);
+}
+.more :global(summary):focus-visible.scope {
+  outline: 2px solid var(--theme-ink-blue, #79b7ff);
+  outline-offset: 3px;
 }
 .film-transcript.scope {
   margin: 0;
@@ -190,30 +202,47 @@
   padding-block: 9px;
 }
 .film-transcript :global(button).scope {
-  min-height: 32px;
-  padding: 4px 0;
-  border: 0;
-  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  min-height: 44px;
+  padding: 10px 12px;
+  border: 1px solid var(--theme-border, #454956);
+  background: var(--theme-surface-2, #24262e);
   color: var(--theme-ink, #c4d9f3);
   text-align: left;
 }
 .film-transcript :global(button)[aria-current].scope {
   color: var(--theme-ink-purple, #c2a0fb);
+  border-color: var(--theme-ink-purple, #c2a0fb);
+  background: var(--theme-fill-purple, #2b2540);
+}
+.film-transcript :global(button):hover.scope {
+  border-color: var(--theme-ink-blue, #79b7ff);
+}
+.film-transcript :global(button):focus-visible.scope {
+  outline: 2px solid var(--theme-ink-blue, #79b7ff);
+  outline-offset: 3px;
+}
+.scene-jump-label.scope {
+  min-width: 0;
+  overflow-wrap: break-word;
+}
+.scene-jump-icon.scope {
+  flex: 0 0 auto;
 }
 .film-transcript :global(p).scope {
   margin: 4px 0;
   line-height: 1.65;
 }
 .film-connections.scope {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
+  gap: 10px;
   padding-block: 18px 4px;
   font-size: 12px;
-}
-.film-connections :global(a).scope {
-  color: var(--theme-ink-blue, #9ac8ff);
-  text-decoration: none;
-}
-.film-connections :global(a):hover.scope {
-  text-decoration: underline;
 }
 .visually-hidden.scope {
   position: absolute;

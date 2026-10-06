@@ -1,5 +1,10 @@
 .scope {
 }
+.growth-action.scope {
+  width: fit-content;
+  max-width: 100%;
+  justify-self: start;
+}
 .growth-view.scope {
   align-content: start;
   gap: 15px;

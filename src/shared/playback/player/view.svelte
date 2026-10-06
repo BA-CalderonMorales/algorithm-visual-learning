@@ -1,6 +1,7 @@
 <script>
   import styles from './view.module.css';
   import { classNames } from '../../ui/class-names.ts';
+  import NavigationLink from '../../ui/navigation-link/view.svelte';
   import { createViewModel } from './view-model.svelte.ts';
   let {
     film,
@@ -195,16 +196,22 @@
           <button
             class={styles.scope}
             onclick={() => vm.jumpScene(index)}
-            aria-current={index === vm.current.index ? 'step' : undefined}>{scene.title}</button
+            title="Jump to scene {index + 1}"
+            aria-current={index === vm.current.index ? 'step' : undefined}
+            ><span class={classNames(styles, 'scene-jump-label')}>{scene.title}</span><span
+              class={classNames(styles, 'scene-jump-icon')}
+              aria-hidden="true">▶</span
+            ></button
           >
           <p class={styles.scope}>{vm.voiceAvailable ? vm.clips[index].text : scene.caption}</p>
         </li>{/each}
     </ol>
     {#if vm.selectedFilm.note}<p class={classNames(styles, 'film-note')}>{vm.selectedFilm.note}</p>{/if}
     <nav class={classNames(styles, 'film-connections')} aria-label="Related ideas">
-      {#each vm.selectedFilm.connections as connection}<a class={styles.scope} href={connection.href}
-          >{connection.title} →</a
-        >{/each}
+      {#each vm.selectedFilm.connections as connection}<NavigationLink
+          href={connection.href}
+          label={connection.title}
+        />{/each}
     </nav>
   </details>
 </section>

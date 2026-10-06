@@ -1,6 +1,7 @@
 <script>
   import LibraryLayout from '../shared/ui/library-layout/view.svelte';
   import LibraryEntry from '../shared/ui/library-entry/view.svelte';
+  import NavigationLink from '../shared/ui/navigation-link/view.svelte';
   import styles from './view.module.css';
   import { classNames } from '../shared/ui/class-names.ts';
   let { libraryDomain = 'home', view = 'explore', heroVisible = $bindable(false) } = $props();
@@ -28,25 +29,6 @@
           <LibraryEntry {entry} number={index + 1} />
         {/each}
       </section>
-      <section class={classNames(styles, 'library-bridge')}>
-        <div class={styles.scope}>
-          <p class={classNames(styles, 'library-label')}>One idea across subjects</p>
-          <h2 class={styles.scope}>Follow merge sort beyond the array.</h2>
-          <p class={styles.scope}>
-            The same algorithm can teach you how data moves, why the time is n log n, and where the extra memory goes.
-          </p>
-        </div>
-        <nav class={styles.scope} aria-label="Merge sort learning path">
-          <a class={styles.scope} href="#/algorithms/merge/play"><span class={styles.scope}>01</span> Watch the merge</a
-          ><span class={classNames(styles, 'path-arrow')} aria-hidden="true">→</span><a
-            class={styles.scope}
-            href="#/discrete/master-theorem/visualize"><span class={styles.scope}>02</span> Count the levels</a
-          ><span class={classNames(styles, 'path-arrow')} aria-hidden="true">→</span><a
-            class={styles.scope}
-            href="#/complexity/space/examples"><span class={styles.scope}>03</span> Account for the buffer</a
-          >
-        </nav>
-      </section>
     {:else if view === 'resources'}
       <section class={classNames(styles, 'resource-directory')}>
         <p class={classNames(styles, 'library-label')}>Other places to learn</p>
@@ -65,12 +47,8 @@
               <p class={styles.scope}>{resource.use}</p>
             </div>
             <div class={styles.scope}>
-              <span class={styles.scope}>{resource.access}</span>{#if resource.details}<a
-                  class={styles.scope}
-                  href={resource.details}
-                  target="_blank"
-                  rel="noopener noreferrer">Access details ↗</a
-                >{/if}
+              <span class={styles.scope}>{resource.access}</span>
+              {#if resource.details}<NavigationLink href={resource.details} label="Access details" external />{/if}
             </div>
           </article>{/each}
         <p class={classNames(styles, 'resource-note')}>
@@ -105,22 +83,21 @@
         </p>
         <p class={classNames(styles, 'author-signature')}>— Brandon Calderon-Morales</p>
         <nav class={styles.scope} aria-label="Help improve this guide">
-          <a
-            class={styles.scope}
+          <NavigationLink
             href="https://github.com/BA-CalderonMorales/algorithm-visual-learning/blob/develop/CONTRIBUTING.md"
-            target="_blank"
-            rel="noopener noreferrer">Contribute an improvement ↗</a
-          ><a
-            class={styles.scope}
+            label="Contribute an improvement"
+            external
+          />
+          <NavigationLink
             href="https://github.com/BA-CalderonMorales/algorithm-visual-learning"
-            target="_blank"
-            rel="noopener noreferrer">Fork the repository ↗</a
-          ><a
-            class={styles.scope}
+            label="Fork the repository"
+            external
+          />
+          <NavigationLink
             href="https://github.com/BA-CalderonMorales/algorithm-visual-learning/blob/develop/LICENSE"
-            target="_blank"
-            rel="noopener noreferrer">Read the MIT license ↗</a
-          >
+            label="Read the MIT license"
+            external
+          />
         </nav>
       </article>
     {/if}

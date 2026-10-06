@@ -3,6 +3,7 @@
   import { classNames } from '../shared/ui/class-names.ts';
   import LibraryLayout from '../shared/ui/library-layout/view.svelte';
   import DomainConnections from '../shared/ui/domain-connections/view.svelte';
+  import NavigationLink from '../shared/ui/navigation-link/view.svelte';
   import { directoryTabs } from '../shared/study/library.ts';
   let { vm } = $props();
 </script>
@@ -103,7 +104,7 @@
               <tr class={styles.scope}>
                 <th class={styles.scope} scope="row" data-label="Algorithm"
                   ><a class={classNames(styles, 'catalog-algorithm-link')} href="#/algorithms/{algorithm.id}/understand"
-                    >{algorithm.name}<span class={styles.scope} aria-hidden="true">↗</span></a
+                    >{algorithm.name}</a
                   ></th
                 >
                 <td class={styles.scope} data-label="Difficulty"
@@ -127,11 +128,8 @@
                 <td data-label="Upper bound" class={classNames(styles, 'catalog-bound')}>{algorithm.upper}</td>
                 <td class={styles.scope} data-label="Study links"
                   ><div class={classNames(styles, 'catalog-actions')}>
-                    <a class={classNames(styles, 'catalog-step-link')} href="#/algorithms/{algorithm.id}/walkthrough"
-                      >Trace steps</a
-                    ><a class={classNames(styles, 'catalog-code-link')} href="#/algorithms/{algorithm.id}/python"
-                      >Python</a
-                    >
+                    <NavigationLink href="#/algorithms/{algorithm.id}/walkthrough" label="Trace steps" />
+                    <NavigationLink href="#/algorithms/{algorithm.id}/python" label="Python" />
                   </div></td
                 >
               </tr>
@@ -144,9 +142,9 @@
         </table>
       </div>
       <p class={classNames(styles, 'section-footnote')}>
-        These are quick per-algorithm reminders. The <button
+        These are quick per-algorithm reminders. The <a
           class={classNames(styles, 'inline-link')}
-          onclick={() => vm.openPage('complexity', 'time')}>Complexity domain</button
+          href="#/complexity/time">Complexity domain</a
         > teaches how to analyze bounds and cases in general.
       </p>
     </section>

@@ -17,38 +17,6 @@
   outline: 2px solid #79b7ff;
   outline-offset: 4px;
 }
-.library-bridge.scope {
-  margin-top: 28px;
-  padding: 22px 0 6px;
-}
-.library-bridge :global(h2).scope {
-  font-size: 19px;
-  margin-bottom: 10px;
-}
-.library-bridge :global(p):not(.library-label).scope {
-  max-width: 770px;
-  margin: 0;
-  color: var(--theme-ink-muted, #a9b7c8);
-  font-size: 13px;
-  line-height: 1.7;
-}
-.library-bridge :global(nav).scope {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 14px;
-  margin-top: 20px;
-}
-.library-bridge :global(nav) :global(a).scope {
-  padding: 10px 0;
-  color: var(--theme-ink-blue, #b5d5ed);
-  font-size: 12px;
-}
-.library-bridge :global(nav) :global(a) :global(span).scope {
-  color: var(--theme-ink-muted, #718aa2);
-  margin-right: 7px;
-  font-size: 10px;
-}
 .resource-directory.scope,
 .author-note.scope {
   padding: 25px 3px;
@@ -76,6 +44,14 @@
 .resource-row :global(h3).scope {
   font-size: 17px;
 }
+.resource-row :global(h3) :global(a).scope {
+  text-decoration: underline;
+  text-decoration-color: var(--theme-border, #454956);
+  text-underline-offset: 5px;
+}
+.resource-row :global(h3) :global(a):hover.scope {
+  text-decoration-color: currentColor;
+}
 .resource-row :global(p).scope {
   color: var(--theme-ink-muted, #a9b7c8);
   font-size: 13px;
@@ -89,9 +65,6 @@
   color: var(--theme-ink-muted, #a5b5c8);
   font-size: 11px;
 }
-.resource-row > :global(div):last-child :global(a).scope {
-  color: var(--theme-ink-blue, #9ac8ff);
-}
 .resource-note.scope {
   color: var(--theme-ink-muted, #8797a9);
   font-size: 11px;
@@ -99,9 +72,9 @@
   margin: 12px 0 0;
 }
 .author-note :global(nav).scope {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px 24px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
   border-top: 1px solid var(--theme-border, #3b414b);
   padding-top: 20px;
   color: var(--theme-ink-blue, #9ac8ff);
@@ -111,19 +84,9 @@
   color: var(--theme-ink, #d1dbe8);
   font-size: 13px;
 }
-.path-arrow.scope {
-  color: var(--theme-ink-muted, #586e7d);
-  font-size: 12px;
-}
-
 @media (max-width: 600px) {
-  .library-bridge :global(nav).scope {
-    align-items: flex-start;
-    gap: 5px;
-    flex-direction: column;
-  }
-  .path-arrow.scope {
-    display: none;
+  .author-note :global(nav).scope {
+    grid-template-columns: 1fr;
   }
   .resource-row.scope {
     grid-template-columns: 1fr;

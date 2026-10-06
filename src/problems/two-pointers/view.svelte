@@ -8,6 +8,8 @@
   import { pointerLegends, describeScene } from './story.ts';
   import { renderPointers } from './renderer.ts';
   import Implementations from './implementations/view.svelte';
+  import NavigationLink from '../../shared/ui/navigation-link/view.svelte';
+  import ReasoningDisclosure from '../../shared/ui/reasoning-disclosure/view.svelte';
   let {
     id,
     view = 'understand',
@@ -95,10 +97,7 @@
             {#each vm.lesson.checks as check, index}<article class={styles.scope}>
                 <span class={classNames(styles, 'eyebrow')}>0{index + 1}</span>
                 <h3 class={styles.scope}>{check.question}</h3>
-                <details class={styles.scope}>
-                  <summary class={styles.scope}>Check your reasoning</summary>
-                  <p class={styles.scope}>{check.answer}</p>
-                </details>
+                <ReasoningDisclosure label="Check your reasoning" answer={check.answer} />
               </article>{/each}
           </div>
         </section>
@@ -107,7 +106,7 @@
           <a class={styles.scope} href={vm.lesson.reference} target="_blank" rel="noopener noreferrer"
             >Go deeper on Hello Interview ↗</a
           >
-          {#each vm.lesson.connections as link}<a class={styles.scope} href={link.href}>{link.title} →</a>{/each}
+          {#each vm.lesson.connections as link}<NavigationLink href={link.href} label={link.title} />{/each}
           <p class={styles.scope}>
             Original study explanations and visuals. Pattern reference: Hello Interview; no affiliation.
           </p>

@@ -9,6 +9,11 @@
 .problem-heading :global(p).scope {
   color: var(--theme-ink, #aebdce);
 }
+.problem-heading :global(a).scope {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+}
 .problem-workspace.scope {
   min-width: 0;
   border: 1px solid var(--theme-border, #3a3d47);
@@ -108,16 +113,10 @@
   background: var(--theme-surface-1, #181c24);
   border: 1px solid var(--theme-border, #343d48);
 }
-.checks :global(summary).scope {
-  cursor: pointer;
-  color: var(--theme-ink-blue, #9ac8ff);
-  padding-block: 10px;
-  font-size: 13px;
-}
 .lesson-links.scope {
   display: flex;
   flex-wrap: wrap;
-  gap: 12px 22px;
+  gap: 10px;
   padding: 20px 18px;
   border-top: 1px solid var(--theme-border, #343d48);
   font-size: 12px;
@@ -131,13 +130,13 @@
 }
 :global(a).scope {
   color: var(--theme-ink-blue, #9ac8ff);
-  text-decoration: none;
+  text-decoration: underline;
+  text-underline-offset: 4px;
 }
 :global(a):hover.scope {
   text-decoration: underline;
 }
 :global(a):focus-visible.scope,
-:global(summary):focus-visible.scope,
 .problem-panel:focus-visible.scope {
   outline: 2px solid #79b7ff;
   outline-offset: -2px;

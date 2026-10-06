@@ -1,6 +1,7 @@
 <script>
   import styles from './view.module.css';
   import { classNames } from '../../../shared/ui/class-names.ts';
+  import NavigationLink from '../../../shared/ui/navigation-link/view.svelte';
 
   let { algorithmId, algorithmName, gapSequence = $bindable('halving') } = $props();
   import { createViewModel } from './view-model.svelte.ts';
@@ -122,7 +123,7 @@
   {:else}
     <p class={classNames(styles, 'growth-note')}>{vm.model.note}</p>
   {/if}
-  <a class={classNames(styles, 'secondary learning-link')} href="#/algorithms/{algorithmId}/complexity"
-    >Read the reasoning in Complexity →</a
-  >
+  <div class={classNames(styles, 'growth-action')}>
+    <NavigationLink href="#/algorithms/{algorithmId}/complexity" label="Read the reasoning in Complexity" />
+  </div>
 </section>

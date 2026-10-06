@@ -1,14 +1,15 @@
 <script>
   import styles from './view.module.css';
   import { classNames } from '../class-names.ts';
+  import NavigationLink from '../navigation-link/view.svelte';
   let { entry, number = 1 } = $props();
 </script>
 
-<article class={classNames(styles, 'library-row')}>
+<article class={classNames(styles, 'library-row link-controls')}>
   <div class={classNames(styles, 'library-copy')}>
     <span class={classNames(styles, 'library-label')}>0{number} / {entry.title}</span>
     <h2 class={styles.scope}>
-      <a class={styles.scope} href={entry.href}>{entry.question} <span class={styles.scope}>↗</span></a>
+      <a class={styles.scope} href={entry.href}>{entry.question}</a>
     </h2>
     <p class={styles.scope}>{entry.description}</p>
   </div>
@@ -101,8 +102,8 @@
     {/if}
   </div>
   <nav class={classNames(styles, 'library-links')} aria-label={entry.navigationLabel ?? entry.title + ' topics'}>
-    {#each entry.links as link}<a class={styles.scope} href={link.href}
-        >{link.title}<span class={styles.scope}>→</span></a
-      >{/each}
+    {#each entry.links as link}
+      <NavigationLink href={link.href} label={link.title} />
+    {/each}
   </nav>
 </article>
