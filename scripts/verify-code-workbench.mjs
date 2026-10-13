@@ -58,7 +58,12 @@ try {
       await page.locator('.code-workbench').waitFor();
       await page.waitForFunction(() => document.querySelector('.code-workbench svg')?.viewBox.baseVal.width > 0);
       await bounded();
-      await page.getByRole('button', { name: 'Next decision →', exact: true }).click();
+      await page
+        .getByRole('button', {
+          name: route === 'structures/list-adt/visualize' ? 'Next decision' : 'Next decision →',
+          exact: true,
+        })
+        .click();
       await bounded();
       assert.ok((await page.locator('.code-line[aria-current=step]').count()) > 0);
       if (
