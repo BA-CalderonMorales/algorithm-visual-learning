@@ -35,10 +35,10 @@
       {#if view === 'visualize'}
         <div class={classNames(styles, 'study-visual-scroll')}>
           {#if lab}<CodeWorkbench definition={lab} />
-            <AnimationDisclosure label="Explore the concept animation"
-              >{#if lesson.id === 'list-insertion' || lesson.id === 'list-storage'}<InsertionWorkbench
-                />{:else}<ConceptFilm {film} {variants} {legend} embedded lessonPlayer />{/if}
-            </AnimationDisclosure>{:else if lesson.id === 'list-insertion' || lesson.id === 'list-storage'}<InsertionWorkbench
+            {#if lesson.id !== 'list-adt'}<AnimationDisclosure label="Explore the concept animation"
+                >{#if lesson.id === 'list-insertion' || lesson.id === 'list-storage'}<InsertionWorkbench
+                  />{:else}<ConceptFilm {film} {variants} {legend} embedded lessonPlayer />{/if}
+              </AnimationDisclosure>{/if}{:else if lesson.id === 'list-insertion' || lesson.id === 'list-storage'}<InsertionWorkbench
             />{:else if lesson.id === 'asymptotic'}<AsymptoticRatio
               comparisons={lesson.comparisons}
             />{:else}<ConceptFilm {film} {variants} {legend} embedded lessonPlayer />{/if}

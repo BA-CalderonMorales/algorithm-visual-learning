@@ -3,8 +3,10 @@ import { parseValues } from '../../trace/model.ts';
 export function createViewModel(props) {
   let raw = $state(props().definition.input ?? '8, 3, 6, 2, 5');
   let variant = $state(props().definition.variants?.[0]?.id ?? 'default');
+  let groupValues = $state((props().definition.variantGroups ?? []).map((group) => group.options[0]?.id ?? ''));
+  const selectedVariant = $derived(groupValues.length ? groupValues.join(':') : variant);
   let trace = $state(
-    untrack(() => props().definition.build(props().definition.size ? Number(raw) : parseValues(raw), variant)),
+    untrack(() => props().definition.build(props().definition.size ? Number(raw) : parseValues(raw), selectedVariant)),
   );
   let index = $state(0);
   let predicting = $state(false);
@@ -14,6 +16,8 @@ export function createViewModel(props) {
   let stage = $state<HTMLElement | null>(null);
   let codePanel = $state<HTMLElement | null>(null);
   let columns = $state(4);
+  const nodeSpacing = $derived(props().definition.followPointer ? (groupValues[1] === 'double' ? 124 : 108) : 90);
+  const nodeTop = props().definition.followPointer ? 58 : 40;
   const current = $derived(trace.scenes[index]);
   const diagramDescription = $derived.by(() => {
     const rows = current.rows
@@ -90,11 +94,15 @@ export function createViewModel(props) {
   const nodeLayouts = $derived(
     (current.nodes ?? []).map((node, i) => ({
       ...node,
-      x: 28 + (i % columns) * 90,
-      y: 40 + Math.floor(i / columns) * 145,
+      x: 28 + (i % columns) * nodeSpacing,
+      y: nodeTop + Math.floor(i / columns) * 145,
     })),
   );
-  const width = $derived(columns * 90 + 40);
+  const activePointer = $derived.by(() => {
+    const node = nodeLayouts.find((item) => item.active);
+    return node ? { x: node.x + 36, y: node.y - 24, id: node.id } : null;
+  });
+  const width = $derived(columns * nodeSpacing + 40);
   const height = $derived(
     current.grid?.length
       ? (Math.max(...current.grid.map((c) => c.row)) + 1) * 38 + 40
@@ -129,7 +137,7 @@ export function createViewModel(props) {
       const input = props().definition.size ? Number(raw) : parseValues(raw);
       if (props().definition.size && (!Number.isInteger(input) || input < 1 || input > 8))
         throw new Error('Choose an integer size from 1 to 8.');
-      trace = props().definition.build(input, variant);
+      trace = props().definition.build(input, selectedVariant);
       index = 0;
       choice = null;
       checked = false;
@@ -145,7 +153,7 @@ export function createViewModel(props) {
   onMount(() => {
     let resizeFrame = 0;
     const observer = new ResizeObserver((entries) => {
-      const nextColumns = Math.max(2, Math.min(8, Math.floor(entries[0].contentRect.width / 90)));
+      const nextColumns = Math.max(2, Math.min(8, Math.floor(entries[0].contentRect.width / nodeSpacing)));
       cancelAnimationFrame(resizeFrame);
       resizeFrame = requestAnimationFrame(() => {
         columns = nextColumns;
@@ -178,6 +186,13 @@ export function createViewModel(props) {
     },
     set variant(v) {
       variant = v;
+    },
+    get groupValues() {
+      return groupValues;
+    },
+    setGroup(index, value) {
+      groupValues[index] = value;
+      run();
     },
     get trace() {
       return trace;
@@ -233,6 +248,9 @@ export function createViewModel(props) {
     },
     get nodes() {
       return nodeLayouts;
+    },
+    get activePointer() {
+      return activePointer;
     },
     get edges() {
       return edges;
