@@ -59,12 +59,69 @@
   border: 1px solid var(--line);
   background: var(--theme-surface-0, #171719);
 }
+.workspace.balanced.scope > .state.scope,
+.workspace.balanced.scope > .code.scope {
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+}
+.workspace.balanced.scope {
+  align-items: stretch;
+}
+.workspace.balanced.scope > .code.scope > ol.scope {
+  flex: 1;
+  max-height: none;
+}
 .state h3.scope,
 .code h3.scope {
   font-size: 14px;
   padding: 14px;
   margin: 0;
   border-bottom: 1px solid var(--line);
+}
+.state-heading.scope {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.state-heading h3.scope {
+  min-width: 0;
+  border-bottom: 0;
+  padding-right: 0;
+}
+.state-heading .controls.scope {
+  flex: 0 0 auto;
+  flex-wrap: nowrap;
+  gap: 4px;
+  margin: 6px 8px 6px 0;
+}
+.state-heading .controls button.scope {
+  position: relative;
+  width: 40px;
+  min-width: 40px;
+  min-height: 40px;
+  padding: 4px;
+  font-size: 20px;
+  line-height: 1;
+}
+.button-tooltip.scope {
+  position: absolute;
+  right: -1px;
+  bottom: calc(100% + 6px);
+  z-index: 4;
+  padding: 6px 8px;
+  border: 1px solid var(--theme-border, #3c4653);
+  background: var(--theme-surface-1, #202127);
+  color: var(--theme-ink, #eee);
+  font: 12px/1.3 system-ui;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+}
+.state-heading .controls button:hover .button-tooltip.scope,
+.state-heading .controls button:focus-visible .button-tooltip.scope {
+  opacity: 1;
 }
 .diagram.scope {
   padding: 8px;
@@ -118,7 +175,26 @@
   font-size: 11px;
 }
 .node .reference.scope {
-  font-size: 11px;
+  font-size: 12px;
+  font-weight: 550;
+}
+.current-pointer.scope {
+  pointer-events: none;
+  transition: transform 360ms cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.current-pointer rect.scope {
+  fill: var(--theme-surface-1, #202127);
+  stroke: var(--blue);
+  stroke-width: 1.5;
+}
+.current-pointer path.scope {
+  stroke: var(--blue);
+  stroke-width: 2;
+}
+.current-pointer text.scope {
+  fill: var(--theme-ink, #eee);
+  font: 650 13px system-ui;
+  text-anchor: middle;
 }
 .edge.scope {
   fill: none;
@@ -130,12 +206,19 @@
   stroke-dasharray: 4 3;
 }
 .edge-label.scope {
-  fill: var(--muted);
-  font: 9px system-ui;
+  fill: var(--theme-ink, #eee);
+  stroke: var(--theme-surface-1, #202127);
+  stroke-width: 5px;
+  stroke-linejoin: round;
+  paint-order: stroke;
+  font: 650 12px system-ui;
   text-anchor: middle;
 }
 .diagram marker path.scope {
   fill: var(--green);
+}
+.diagram marker.prev-marker path.scope {
+  fill: var(--purple);
 }
 .variables.scope {
   display: flex;
@@ -159,6 +242,23 @@
     600 15px ui-monospace,
     monospace;
   overflow-wrap: anywhere;
+}
+.decision-caption.scope {
+  margin: 0;
+  padding: 11px 14px 13px;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.5;
+}
+.decision-caption span.scope {
+  display: block;
+  margin-bottom: 3px;
+  color: var(--blue);
+  font-size: 11px;
+  font-weight: 650;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
 }
 .code ol.scope {
   padding: 12px 12px 12px 42px;
@@ -244,7 +344,20 @@ input[type='radio'].scope {
   .workspace.scope {
     grid-template-columns: minmax(0, 1fr);
   }
+  .workspace.balanced.scope > .state.scope,
+  .workspace.balanced.scope > .code.scope {
+    height: auto;
+  }
+  .workspace.balanced.scope > .code.scope > ol.scope {
+    flex: initial;
+    max-height: 330px;
+  }
   .code ol.scope {
     max-height: 330px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .current-pointer.scope {
+    transition: none;
   }
 }

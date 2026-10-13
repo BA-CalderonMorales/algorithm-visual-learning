@@ -9,7 +9,7 @@
 <section class={classNames(styles, 'code-workbench')} aria-label="{definition.title} code workbench">
   <header class={styles.scope}>
     <h2 class={styles.scope}>{definition.title}</h2>
-    <p class={styles.scope}>{definition.intro}</p>
+    {#if definition.intro}<p class={styles.scope}>{definition.intro}</p>{/if}
   </header>
   <form
     class={classNames(styles, 'setup')}
@@ -26,25 +26,37 @@
         inputmode={definition.size ? 'numeric' : 'text'}
       /></label
     >
-    {#if definition.variants?.length}<label class={styles.scope}
+    {#if definition.variantGroups?.length}
+      {#each definition.variantGroups as group, i}<label class={styles.scope}
+          >{group.label}<select
+            class={styles.scope}
+            aria-label={group.label}
+            value={vm.groupValues[i]}
+            onchange={(event) => vm.setGroup(i, event.currentTarget.value)}
+            >{#each group.options as option}<option class={styles.scope} value={option.id}>{option.label}</option
+              >{/each}</select
+          ></label
+        >{/each}
+    {:else if definition.variants?.length}<label class={styles.scope}
         >Experiment<select class={styles.scope} aria-label="Experiment" bind:value={vm.variant} onchange={vm.run}
           >{#each definition.variants as variant}<option class={styles.scope} value={variant.id}>{variant.label}</option
             >{/each}</select
         ></label
       >{/if}
     <button class={styles.scope} type="submit">Build trace</button>
-    <label class={classNames(styles, 'predict-toggle')}
-      ><input class={styles.scope} type="checkbox" bind:checked={vm.predicting} />Predict before advancing</label
-    >
+    {#if !definition.followPointer}<label class={classNames(styles, 'predict-toggle')}
+        ><input class={styles.scope} type="checkbox" bind:checked={vm.predicting} />Predict before advancing</label
+      >{/if}
   </form>
   {#if vm.error}<p class={classNames(styles, 'error')} role="alert">{vm.error}</p>{/if}
-  <p class={classNames(styles, 'note')}>
-    {#if vm.current.nodes}Blue: active node · Solid: next · Dashed: prev.
-    {:else}Blue: active · Purple: current group · Green: completed.{/if}
-  </p>
-  <p class={classNames(styles, 'trace-meta')}>Decision {vm.index + 1} / {vm.trace.scenes.length}</p>
-  {#if !vm.predicting}<p class={classNames(styles, 'explanation')} aria-live="polite">{vm.current.why}</p>{/if}
-  {#if vm.predicting && vm.next}<fieldset class={classNames(styles, 'question')}>
+  {#if !definition.followPointer}<p class={classNames(styles, 'note')}>
+      {#if vm.current.nodes}Blue: active node · Solid: next · Dashed: prev.
+      {:else}Blue: active · Purple: current group · Green: completed.{/if}
+    </p>
+    <p class={classNames(styles, 'trace-meta')}>Decision {vm.index + 1} / {vm.trace.scenes.length}</p>
+    {#if !vm.predicting}<p class={classNames(styles, 'explanation')} aria-live="polite">{vm.current.why}</p>{/if}
+  {/if}
+  {#if !definition.followPointer && vm.predicting && vm.next}<fieldset class={classNames(styles, 'question')}>
       <legend class={styles.scope}
         >{vm.next.question?.prompt ?? 'Which line should execute next from this state?'}</legend
       >{#each vm.options as option, i}<label class={styles.scope}
@@ -64,17 +76,38 @@
         >
         {vm.next.question?.explanation ?? vm.next.why}
       </p>{/if}{/if}
-  <div class={classNames(styles, 'controls')}>
-    <button class={styles.scope} disabled={vm.index === 0} onclick={() => vm.move(-1)}>← Previous decision</button
-    ><button
-      class={styles.scope}
-      disabled={!vm.next || (vm.predicting && (!vm.checked || !vm.correct))}
-      onclick={() => vm.move(1)}>Next decision →</button
-    ><button class={styles.scope} onclick={vm.restart}>Restart trace</button>
-  </div>
-  <div class={classNames(styles, 'workspace')}>
+  {#if !definition.followPointer}<div class={classNames(styles, 'controls')}>
+      <button class={styles.scope} disabled={vm.index === 0} onclick={() => vm.move(-1)}>← Previous decision</button
+      ><button
+        class={styles.scope}
+        disabled={!vm.next || (vm.predicting && (!vm.checked || !vm.correct))}
+        onclick={() => vm.move(1)}>Next decision →</button
+      ><button class={styles.scope} onclick={vm.restart}>Restart trace</button>
+    </div>{/if}
+  <div class={classNames(styles, 'workspace', { balanced: definition.followPointer })}>
     <div class={classNames(styles, 'state')}>
-      <h3 class={styles.scope}>{vm.current.title}</h3>
+      {#if definition.followPointer}<div class={classNames(styles, 'state-heading')}>
+          <h3 class={styles.scope}>{vm.current.title}</h3>
+          <div class={classNames(styles, 'controls')} aria-label="Trace controls">
+            <button
+              class={styles.scope}
+              aria-label="Previous decision"
+              title="Previous decision"
+              disabled={vm.index === 0}
+              onclick={() => vm.move(-1)}
+              >←<span class={classNames(styles, 'button-tooltip')}>Previous decision</span></button
+            ><button
+              class={styles.scope}
+              aria-label="Next decision"
+              title="Next decision"
+              disabled={!vm.next}
+              onclick={() => vm.move(1)}
+              >→<span class={classNames(styles, 'button-tooltip')}>Next decision</span></button
+            ><button class={styles.scope} aria-label="Restart trace" title="Restart trace" onclick={vm.restart}
+              >↻<span class={classNames(styles, 'button-tooltip')}>Restart trace</span></button
+            >
+          </div>
+        </div>{:else}<h3 class={styles.scope}>{vm.current.title}</h3>{/if}
       <div class={classNames(styles, 'diagram')} bind:this={vm.stage}>
         <svg
           class={styles.scope}
@@ -94,13 +127,31 @@
               markerWidth="6"
               markerHeight="6"
               orient="auto-start-reverse"><path class={styles.scope} d="M0 0L10 5L0 10Z" /></marker
+            ><marker
+              class={classNames(styles, 'prev-marker')}
+              id="trace-arrow-prev"
+              viewBox="0 0 10 10"
+              refX="8"
+              refY="5"
+              markerWidth="6"
+              markerHeight="6"
+              orient="auto-start-reverse"><path class={styles.scope} d="M0 0L10 5L0 10Z" /></marker
             ></defs
           >
           {#if vm.current.nodes}
+            {#if definition.followPointer && vm.activePointer}<g
+                class={classNames(styles, 'current-pointer')}
+                transform="translate({vm.activePointer.x} {vm.activePointer.y})"
+                aria-hidden="true"
+                ><rect class={styles.scope} x="-72" y="-22" width="144" height="20" rx="4" /><path
+                  class={styles.scope}
+                  d="M0 5V20"
+                /><text class={styles.scope} x="0" y="-8">Current node: {vm.activePointer.id}</text></g
+              >{/if}
             {#each vm.edges as edge}<path
                 class={classNames(styles, 'edge', { back: edge.label === 'prev' })}
                 d={edge.d}
-                marker-end="url(#trace-arrow)"
+                marker-end={edge.label === 'prev' ? 'url(#trace-arrow-prev)' : 'url(#trace-arrow)'}
               /><text class={classNames(styles, 'edge-label')} x={edge.x} y={edge.y}>{edge.label}</text>{/each}
             {#each vm.nodes as node}<g
                 class={classNames(styles, 'node', { active: node.active })}
@@ -152,6 +203,10 @@
           {/if}
         </svg>
       </div>
+      {#if definition.followPointer}<p class={classNames(styles, 'decision-caption')} aria-live="polite">
+          <span class={styles.scope}>Decision {vm.index + 1} / {vm.trace.scenes.length}</span>
+          {vm.current.why}
+        </p>{/if}
       <dl class={classNames(styles, 'variables')}>
         {#each Object.entries(vm.current.variables) as [key, value]}<div class={styles.scope}>
             <dt class={styles.scope}>{key}</dt>
@@ -176,5 +231,5 @@
     </div>
   </div>
   {#if !vm.next}<p class={styles.scope} role="status">Trace complete.</p>{/if}
-  <p class={classNames(styles, 'note')}>{vm.trace.note}</p>
+  {#if !definition.followPointer}<p class={classNames(styles, 'note')}>{vm.trace.note}</p>{/if}
 </section>
