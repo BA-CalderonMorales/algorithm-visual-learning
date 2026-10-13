@@ -17,6 +17,7 @@ const routes = [
   'algorithms/tim/play',
   'structures/list-adt/visualize',
   'structures/python-lists/visualize',
+  'structures/list-storage/visualize',
   'structures/list-traversal/visualize',
   'structures/list-insertion/visualize',
   'complexity/time/visualize',
@@ -60,12 +61,22 @@ try {
       await bounded();
       await page
         .getByRole('button', {
-          name: route === 'structures/list-adt/visualize' ? 'Next decision' : 'Next decision →',
+          name: route.startsWith('structures/') ? 'Next decision' : 'Next decision →',
           exact: true,
         })
         .click();
       await bounded();
       assert.ok((await page.locator('.code-line[aria-current=step]').count()) > 0);
+      if (route.startsWith('structures/')) {
+        assert.equal(await page.locator('.current-pointer').count(), 1, `${route} shows its active position`);
+        assert.equal(
+          await page.locator('.animation-disclosure').count(),
+          0,
+          `${route} keeps one focused visualization`,
+        );
+        assert.equal(await page.locator('.workspace.balanced > .state').count(), 1);
+        assert.equal(await page.locator('.workspace.balanced > .code').count(), 1);
+      }
       if (
         width === 390 &&
         ['algorithms/shell/play', 'structures/list-insertion/visualize', 'discrete/induction/visualize'].includes(route)
@@ -105,16 +116,27 @@ try {
     await work.getByRole('button', { name: 'Next decision →', exact: true }).click();
   assert.match(await work.innerText(), /Trace complete/);
   await page.goto(`${base}/#/structures/list-insertion/visualize`);
-  await work.getByLabel('Input values', { exact: true }).fill('');
-  await work.getByRole('button', { name: 'Build trace', exact: true }).click();
-  await work.getByLabel('Experiment', { exact: true }).selectOption('append:double');
-  while (await work.getByRole('button', { name: 'Next decision →', exact: true }).isEnabled())
-    await work.getByRole('button', { name: 'Next decision →', exact: true }).click();
+  await work.getByLabel('Operation', { exact: true }).selectOption('append');
+  await work.getByLabel('List type', { exact: true }).selectOption('double');
+  while (await work.getByRole('button', { name: 'Next decision', exact: true }).isEnabled())
+    await work.getByRole('button', { name: 'Next decision', exact: true }).click();
   assert.match(await work.innerText(), /prev: None/);
   assert.match(await work.locator('.variables').innerText(), /head\s+X\s+tail\s+X/);
-  await work.getByLabel('Experiment', { exact: true }).selectOption('remove:double');
-  await work.getByRole('button', { name: 'Next decision →', exact: true }).click();
+  await work.getByLabel('Operation', { exact: true }).selectOption('remove');
+  await work.getByRole('button', { name: 'Next decision', exact: true }).click();
   assert.match(await work.innerText(), /Reject removal from an empty list/);
+  await page.goto(`${base}/#/structures/list-traversal/visualize`);
+  await work.getByLabel('Operation', { exact: true }).selectOption('search');
+  while (await work.getByRole('button', { name: 'Next decision', exact: true }).isEnabled())
+    await work.getByRole('button', { name: 'Next decision', exact: true }).click();
+  assert.match(await work.locator('.state h3').innerText(), /Found 6 at N2/);
+  assert.match(await work.locator('.variables').innerText(), /current\s+N2/);
+  await work.getByLabel('Input values', { exact: true }).fill('8, 3, 1, 2');
+  await work.getByRole('button', { name: 'Build trace', exact: true }).click();
+  await work.getByLabel('Operation', { exact: true }).selectOption('search');
+  while (await work.getByRole('button', { name: 'Next decision', exact: true }).isEnabled())
+    await work.getByRole('button', { name: 'Next decision', exact: true }).click();
+  assert.match(await work.locator('.state h3').innerText(), /Target 6 was not found/);
   await page.goto(`${base}/#/discrete/induction/visualize`);
   await work.getByLabel('Experiment', { exact: true }).selectOption('odd');
   for (let i = 0; i < 3; i++) await work.getByRole('button', { name: 'Next decision →', exact: true }).click();
@@ -129,6 +151,10 @@ try {
     if (['paper', 'dark'].includes(theme.id))
       await page.screenshot({ path: fileURLToPath(new URL(`merge-code-${theme.id}.png`, out)), fullPage: true });
   }
+  await page.goto(`${base}/#/structures/python-lists/visualize`);
+  assert.equal(await page.getByRole('button', { name: 'Next decision', exact: true }).count(), 1);
+  await page.getByRole('button', { name: 'Next decision', exact: true }).click();
+  assert.match(await page.locator('.current-pointer').innerText(), /Current index/);
   await page.goto(`${base}/#/algorithms/tim/play`);
   while (!(await work.locator('.state h3').innerText()).includes('Insert key'))
     await work.getByRole('button', { name: 'Next decision →', exact: true }).click();

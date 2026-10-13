@@ -5,16 +5,31 @@ import { countTrace, recurrenceTrace, spaceTrace } from '../complexity/code-trac
 import { inductionTrace, telescopeTrace } from '../discrete/code-traces.ts';
 import { linkedTrace } from '../structures/code-traces.ts';
 const links = {
-  title: 'Linked lists · references are the algorithm',
-  intro:
-    'Choose an operation and a representation. Nodes stay in allocation order: follow the arrows, head and tail rather than their positions on the screen. X holds the new value 42.',
+  title: 'Linked lists · follow the references',
+  intro: '',
   input: '8, 3, 6, 2',
-  variants: ['insert', 'prepend', 'append', 'remove', 'reverse', 'traverse'].flatMap((operation) =>
-    [false, true].map((doubly) => ({
-      id: `${operation}:${doubly ? 'double' : 'single'}`,
-      label: `${doubly ? 'Doubly' : 'Singly'} · ${operation}`,
-    })),
-  ),
+  followPointer: true,
+  variantGroups: [
+    {
+      label: 'Operation',
+      options: [
+        { id: 'prepend', label: 'Insert · head' },
+        { id: 'insert', label: 'Insert · middle' },
+        { id: 'append', label: 'Insert · tail' },
+        { id: 'remove', label: 'Remove' },
+        { id: 'reverse', label: 'Reverse' },
+        { id: 'search', label: 'Search · 6' },
+        { id: 'traverse', label: 'Traverse / yield' },
+      ],
+    },
+    {
+      label: 'List type',
+      options: [
+        { id: 'single', label: 'Singly linked' },
+        { id: 'double', label: 'Doubly linked' },
+      ],
+    },
+  ],
   build: (values, variant) => {
     const [operation, representation] = variant.split(':');
     return linkedTrace(values, operation, representation === 'double');
@@ -83,45 +98,31 @@ export const codeLabs = {
     build: telescopeTrace,
   },
   'python-lists': {
-    title: 'Python lists · explicit insertion',
-    intro: 'Compare data shifts in a contiguous sequence with reference updates in a linked chain.',
+    title: 'Python lists · shift indices',
+    intro: '',
     input: '8, 3, 6, 2',
+    followPointer: true,
     build: arrayTrace,
   },
   'list-adt': {
     ...links,
-    followPointer: true,
+    defaultGroups: ['prepend', 'single'],
     title: 'List operations · follow the references',
     intro: '',
-    variantGroups: [
-      {
-        label: 'Operation',
-        options: [
-          { id: 'prepend', label: 'Insert · head' },
-          { id: 'insert', label: 'Insert · middle' },
-          { id: 'append', label: 'Insert · tail' },
-          { id: 'remove', label: 'Remove' },
-          { id: 'traverse', label: 'Traverse' },
-        ],
-      },
-      {
-        label: 'List type',
-        options: [
-          { id: 'single', label: 'Singly linked' },
-          { id: 'double', label: 'Doubly linked' },
-        ],
-      },
-    ],
-    variants: undefined,
   },
-  'list-storage': links,
+  'list-storage': {
+    ...links,
+    defaultGroups: ['append', 'single'],
+    title: 'Linked storage · follow references',
+  },
   'list-traversal': {
     ...links,
-    variants: [
-      { id: 'traverse:single', label: 'Singly · traverse' },
-      { id: 'traverse:double', label: 'Doubly · traverse' },
-      ...links.variants,
-    ],
+    defaultGroups: ['traverse', 'single'],
+    title: 'Traversal · follow current',
   },
-  'list-insertion': links,
+  'list-insertion': {
+    ...links,
+    defaultGroups: ['insert', 'single'],
+    title: 'Insertion · rewire references',
+  },
 };

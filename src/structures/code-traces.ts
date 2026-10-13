@@ -36,6 +36,14 @@ export function linkedTrace(input: number[], variant = 'insert', doubly = false,
     line('visit', '        yield current.data');
     line('advance', '        current = current.next');
     line('return', '    return');
+  } else if (variant === 'search') {
+    line('def', 'def find(head, target):');
+    line('setup', '    current = head');
+    line('loop', '    while current is not None:');
+    line('match', '        if current.data == target:');
+    line('found', '            return current');
+    line('advance', '        current = current.next');
+    line('missing', '    return None');
   } else {
     const remove = variant === 'remove';
     line('def', `def ${remove ? 'remove' : 'insert'}(head, tail, index${remove ? '' : ', value'}):`);
@@ -114,6 +122,69 @@ export function linkedTrace(input: number[], variant = 'insert', doubly = false,
       'Traversal is complete',
       'Every reachable node was visited once. A cycle would violate the terminating-list assumption.',
     );
+  } else if (variant === 'search') {
+    const target = 6;
+    let current = head;
+    add('setup', 'current starts at head', 'Search begins at the first reachable node.', current ? [current] : [], {
+      current: current ?? 'None',
+      target,
+    });
+    while (current) {
+      add('loop', 'Check that current is not None', 'Only read data after confirming a node exists.', [current], {
+        current,
+        target,
+      });
+      visits++;
+      visited.push(find(current).data);
+      if (find(current).data === target) {
+        add(
+          'match',
+          `Compare ${current}.data with target`,
+          'This is the first matching node, so the search stops here.',
+          [current],
+          {
+            current,
+            target,
+          },
+        );
+        add(
+          'found',
+          `Found ${target} at ${current}`,
+          'Return the matching node without scanning the suffix.',
+          [current],
+          {
+            current,
+            target,
+          },
+        );
+        return trace.finish();
+      }
+      add(
+        'match',
+        `Compare ${current}.data with target`,
+        'No match; follow next to inspect the next node.',
+        [current],
+        {
+          current,
+          target,
+        },
+      );
+      current = find(current).next;
+      add(
+        'advance',
+        'Advance current',
+        'Each link visit moves the search forward by one node.',
+        current ? [current] : [],
+        {
+          current: current ?? 'None',
+          target,
+        },
+      );
+    }
+    add('missing', `Target ${target} was not found`, 'Reaching None means every node was checked.', [], {
+      current: 'None',
+      target,
+    });
   } else if (variant === 'reverse') {
     let previous = null,
       current = head;

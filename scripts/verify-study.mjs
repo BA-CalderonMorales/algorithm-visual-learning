@@ -93,19 +93,26 @@ try {
             assert.ok(Number(await page.getByLabel('Seek animation', { exact: true }).inputValue()) > 0.3);
           }
         }
-        if (tab.id === 'visualize' && ['list-insertion', 'list-storage'].includes(lesson.id)) {
-          await page.getByRole('button', { name: 'Next assignment →', exact: true }).click();
-          await page.getByRole('button', { name: 'Next assignment →', exact: true }).click();
-          assert.match(await page.locator('.assignment').innerText(), /prev.next = X/);
+        if (tab.id === 'visualize' && lesson.domain === 'structures') {
+          assert.equal(await page.locator('.code-workbench').count(), 1);
+          assert.equal(await page.locator('.animation-disclosure').count(), 0);
           assert.equal(
-            await page.locator('.node-workbench svg').first().getAttribute('aria-label'),
-            'A to X to B to C. prev.next = X; size += 1',
+            await page.getByLabel('Operation', { exact: true }).count(),
+            lesson.id === 'python-lists' ? 0 : 1,
           );
+          assert.equal(
+            await page.getByLabel('List type', { exact: true }).count(),
+            lesson.id === 'python-lists' ? 0 : 1,
+          );
+          await page.getByRole('button', { name: 'Next decision', exact: true }).click();
+          assert.ok(await page.locator('.code-line[aria-current=step]').count());
+          assert.equal(await page.locator('.current-pointer').count(), 1);
         }
         if (
           tab.id === 'visualize' &&
           !conceptVariants[lesson.id] &&
-          !['asymptotic', 'list-adt', 'list-insertion', 'list-storage'].includes(lesson.id)
+          lesson.id !== 'asymptotic' &&
+          lesson.domain !== 'structures'
         ) {
           await page.getByRole('button', { name: 'Next scene', exact: true }).click();
           assert.match(await page.getByLabel('Scene progress', { exact: true }).innerText(), /2/);

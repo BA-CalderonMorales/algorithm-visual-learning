@@ -46,10 +46,10 @@ try {
     }
     await page.goto(origin + '/#/structures/list-insertion/visualize');
     await revealAnimation(page);
-    for (const label of ['At the head', 'Between A and B', 'At the tail']) {
-      await page.getByRole('button', { name: label, exact: true }).click();
-      await page.getByRole('button', { name: 'Next assignment →', exact: true }).click();
-      await page.getByRole('button', { name: 'Next assignment →', exact: true }).click();
+    for (const operation of ['prepend', 'insert', 'append']) {
+      await page.getByLabel('Operation', { exact: true }).selectOption(operation);
+      await page.getByRole('button', { name: 'Next decision', exact: true }).click();
+      await page.getByRole('button', { name: 'Next decision', exact: true }).click();
       await bounded();
     }
     await page.screenshot({

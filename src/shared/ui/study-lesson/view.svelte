@@ -8,7 +8,6 @@
   import AsymptoticRatio from '../../../complexity/asymptotic/components/ratio/view.svelte';
   import NavigationLink from '../navigation-link/view.svelte';
   import ReasoningDisclosure from '../reasoning-disclosure/view.svelte';
-  import InsertionWorkbench from '../../../structures/components/insertion/view.svelte';
   import ReasoningPractice from '../reasoning-practice/view.svelte';
   import AnimationDisclosure from '../animation-disclosure/view.svelte';
   import CodeWorkbench from '../code-workbench/view.svelte';
@@ -35,11 +34,9 @@
       {#if view === 'visualize'}
         <div class={classNames(styles, 'study-visual-scroll')}>
           {#if lab}<CodeWorkbench definition={lab} />
-            {#if lesson.id !== 'list-adt'}<AnimationDisclosure label="Explore the concept animation"
-                >{#if lesson.id === 'list-insertion' || lesson.id === 'list-storage'}<InsertionWorkbench
-                  />{:else}<ConceptFilm {film} {variants} {legend} embedded lessonPlayer />{/if}
-              </AnimationDisclosure>{/if}{:else if lesson.id === 'list-insertion' || lesson.id === 'list-storage'}<InsertionWorkbench
-            />{:else if lesson.id === 'asymptotic'}<AsymptoticRatio
+            {#if lesson.domain !== 'structures'}<AnimationDisclosure label="Explore the concept animation"
+                ><ConceptFilm {film} {variants} {legend} embedded lessonPlayer />
+              </AnimationDisclosure>{/if}{:else if lesson.id === 'asymptotic'}<AsymptoticRatio
               comparisons={lesson.comparisons}
             />{:else}<ConceptFilm {film} {variants} {legend} embedded lessonPlayer />{/if}
         </div>
