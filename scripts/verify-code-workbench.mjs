@@ -122,6 +122,8 @@ try {
     await work.getByRole('button', { name: 'Next decision', exact: true }).click();
   assert.match(await work.innerText(), /prev: None/);
   assert.match(await work.locator('.variables').innerText(), /head\s+N0\s+tail\s+X/);
+  await work.getByLabel('Input values', { exact: true }).fill('');
+  await work.getByRole('button', { name: 'Build trace', exact: true }).click();
   await work.getByLabel('Operation', { exact: true }).selectOption('remove');
   await work.getByRole('button', { name: 'Next decision', exact: true }).click();
   assert.match(await work.innerText(), /Reject removal from an empty list/);
