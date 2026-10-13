@@ -156,7 +156,7 @@ try {
   await page.goto(`${base}/#/structures/python-lists/visualize`);
   assert.equal(await page.getByRole('button', { name: 'Next decision', exact: true }).count(), 1);
   await page.getByRole('button', { name: 'Next decision', exact: true }).click();
-  assert.match(await page.locator('.current-pointer').innerText(), /Current index/);
+  assert.match(await page.locator('.current-pointer').textContent(), /Current index/);
   await page.goto(`${base}/#/algorithms/tim/play`);
   while (!(await work.locator('.state h3').innerText()).includes('Insert key'))
     await work.getByRole('button', { name: 'Next decision →', exact: true }).click();
