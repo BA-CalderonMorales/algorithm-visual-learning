@@ -121,7 +121,7 @@ try {
   while (await work.getByRole('button', { name: 'Next decision', exact: true }).isEnabled())
     await work.getByRole('button', { name: 'Next decision', exact: true }).click();
   assert.match(await work.innerText(), /prev: None/);
-  assert.match(await work.locator('.variables').innerText(), /head\s+X\s+tail\s+X/);
+  assert.match(await work.locator('.variables').innerText(), /head\s+N0\s+tail\s+X/);
   await work.getByLabel('Operation', { exact: true }).selectOption('remove');
   await work.getByRole('button', { name: 'Next decision', exact: true }).click();
   assert.match(await work.innerText(), /Reject removal from an empty list/);
@@ -181,3 +181,4 @@ try {
 } finally {
   await browser.close();
 }
+
