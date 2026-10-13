@@ -42,9 +42,9 @@ async function bounded() {
   const bad = await page.locator('.code-workbench svg text').evaluateAll((nodes) =>
     nodes
       .filter((n) => {
-        const box = n.getBBox(),
-          svg = n.ownerSVGElement.viewBox.baseVal;
-        return box.x < -2 || box.x + box.width > svg.width + 2;
+        const box = n.getBoundingClientRect(),
+          svg = n.ownerSVGElement.getBoundingClientRect();
+        return box.left < svg.left - 2 || box.right > svg.right + 2;
       })
       .map((n) => n.textContent),
   );
