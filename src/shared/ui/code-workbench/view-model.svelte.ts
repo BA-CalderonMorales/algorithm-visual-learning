@@ -3,7 +3,11 @@ import { parseValues } from '../../trace/model.ts';
 export function createViewModel(props) {
   let raw = $state(props().definition.input ?? '8, 3, 6, 2, 5');
   let variant = $state(props().definition.variants?.[0]?.id ?? 'default');
-  let groupValues = $state((props().definition.variantGroups ?? []).map((group) => group.options[0]?.id ?? ''));
+  let groupValues = $state(
+    (props().definition.variantGroups ?? []).map(
+      (group, index) => props().definition.defaultGroups?.[index] ?? group.options[0]?.id ?? '',
+    ),
+  );
   const selectedVariant = $derived(groupValues.length ? groupValues.join(':') : variant);
   let trace = $state(
     untrack(() => props().definition.build(props().definition.size ? Number(raw) : parseValues(raw), selectedVariant)),
@@ -75,7 +79,11 @@ export function createViewModel(props) {
   const options = $derived(choices.map((_, i) => choices[(i + offset) % choices.length]));
   const correct = $derived(choice !== null && options[choice] === choices[0]);
   const rowLayouts = $derived.by(() => {
-    let y = current.nodes ? Math.ceil(current.nodes.length / columns) * 145 + 80 : 32;
+    let y = current.nodes
+      ? Math.ceil(current.nodes.length / columns) * 145 + 80
+      : props().definition.followPointer
+        ? 80
+        : 32;
     return current.rows.map((row) => {
       const maxChars = columns * 10;
       const words = row.label.split(' '),
@@ -100,7 +108,19 @@ export function createViewModel(props) {
   );
   const activePointer = $derived.by(() => {
     const node = nodeLayouts.find((item) => item.active);
-    return node ? { x: node.x + 36, y: node.y - 24, id: node.id } : null;
+    if (node) return { x: node.x + 36, y: node.y - 24, label: 'Current node', id: node.id };
+    if (!props().definition.followPointer) return null;
+    for (const row of rowLayouts) {
+      const index = row.active?.[0];
+      if (index !== undefined)
+        return {
+          x: 59 + (index % columns) * 90,
+          y: row.cellY + Math.floor(index / columns) * 82 - 28,
+          label: 'Current index',
+          id: String(index),
+        };
+    }
+    return null;
   });
   const width = $derived(columns * nodeSpacing + 40);
   const height = $derived(

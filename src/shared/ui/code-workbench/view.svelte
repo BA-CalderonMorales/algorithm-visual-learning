@@ -138,16 +138,16 @@
               orient="auto-start-reverse"><path class={styles.scope} d="M0 0L10 5L0 10Z" /></marker
             ></defs
           >
+          {#if definition.followPointer && vm.activePointer}<g
+              class={classNames(styles, 'current-pointer')}
+              transform="translate({Math.max(74, Math.min(vm.width - 74, vm.activePointer.x))} {vm.activePointer.y})"
+              aria-hidden="true"
+              ><rect class={styles.scope} x="-72" y="-22" width="144" height="20" rx="4" /><path
+                class={styles.scope}
+                d="M0 5V20"
+              /><text class={styles.scope} x="0" y="-8">{vm.activePointer.label}: {vm.activePointer.id}</text></g
+            >{/if}
           {#if vm.current.nodes}
-            {#if definition.followPointer && vm.activePointer}<g
-                class={classNames(styles, 'current-pointer')}
-                transform="translate({Math.max(74, Math.min(vm.width - 74, vm.activePointer.x))} {vm.activePointer.y})"
-                aria-hidden="true"
-                ><rect class={styles.scope} x="-72" y="-22" width="144" height="20" rx="4" /><path
-                  class={styles.scope}
-                  d="M0 5V20"
-                /><text class={styles.scope} x="0" y="-8">Current node: {vm.activePointer.id}</text></g
-              >{/if}
             {#each vm.edges as edge}<path
                 class={classNames(styles, 'edge', { back: edge.label === 'prev' })}
                 d={edge.d}
