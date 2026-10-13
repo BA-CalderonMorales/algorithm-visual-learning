@@ -141,7 +141,7 @@
           {#if vm.current.nodes}
             {#if definition.followPointer && vm.activePointer}<g
                 class={classNames(styles, 'current-pointer')}
-                transform="translate({vm.activePointer.x} {vm.activePointer.y})"
+                transform="translate({Math.max(74, Math.min(vm.width - 74, vm.activePointer.x))} {vm.activePointer.y})"
                 aria-hidden="true"
                 ><rect class={styles.scope} x="-72" y="-22" width="144" height="20" rx="4" /><path
                   class={styles.scope}
