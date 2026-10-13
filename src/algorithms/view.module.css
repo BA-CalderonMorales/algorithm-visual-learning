@@ -90,43 +90,54 @@
   background: var(--theme-surface-2, #23252b);
 }
 .catalog-table :global(thead) :global(th).scope {
-  padding-inline: 8px;
+  padding: 10px 9px;
   border-bottom: 1px solid var(--theme-border, #3b3e49);
-  color: var(--theme-ink-muted, #8f96a5);
-  font-size: 9px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  color: var(--theme-ink, #dce4ef);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.4;
+  letter-spacing: 0;
+  text-transform: none;
 }
 .sort-button.scope {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 12px;
   width: 100%;
-  min-height: 52px;
+  min-height: 44px;
   align-items: center;
   justify-content: space-between;
   gap: 6px;
-  padding: 6px;
-  border: 1px solid var(--theme-border, #454956);
-  background: var(--theme-surface-1, #1b1d23);
+  padding: 6px 4px;
+  border: 1px solid transparent;
+  background: transparent;
   color: inherit;
   cursor: pointer;
   font: inherit;
   letter-spacing: inherit;
   text-align: left;
   text-transform: inherit;
-  overflow-wrap: anywhere;
+  overflow-wrap: normal;
 }
 .sort-button :global(span).scope {
   flex-shrink: 0;
   margin-left: auto;
-  color: var(--theme-ink-muted, #717887);
+  color: var(--theme-ink-muted, #aeb0be);
   font-size: 12px;
 }
 .sort-button:hover.scope,
 .sort-button:focus-visible.scope {
   color: var(--theme-ink, #dce9f8);
   border-color: var(--blue);
+  background: var(--theme-surface-3, #2d313c);
+}
+.catalog-table :global(th[aria-sort='ascending']) .sort-button.scope,
+.catalog-table :global(th[aria-sort='descending']) .sort-button.scope {
+  color: var(--blue);
+  border-bottom-color: var(--blue);
+}
+.catalog-table :global(th[aria-sort='ascending']) .sort-button :global(span).scope,
+.catalog-table :global(th[aria-sort='descending']) .sort-button :global(span).scope {
+  color: var(--blue);
 }
 .sort-button:hover :global(span).scope,
 .sort-button:focus-visible :global(span).scope {
@@ -373,17 +384,6 @@
 }
 
 @container (max-width: 840px) {
-  .catalog-table :global(tbody) :global(th).scope::after {
-    display: block;
-    margin-top: 3px;
-    color: var(--theme-ink-muted, #8f96a5);
-    content: 'Open the concept and worked example';
-    font-size: 9px;
-    font-weight: 400;
-  }
-}
-
-@container (max-width: 840px) {
   .catalog-actions.scope {
     grid-template-columns: 1fr 1fr;
   }
@@ -406,4 +406,9 @@
   .catalog-table :global(tbody) :global(td):nth-child(6).scope {
     border-bottom: 1px solid var(--theme-border, #30323b);
   }
+}
+
+.catalog-toolbar.scope {
+  min-height: 59px;
+  padding-left: 60px;
 }

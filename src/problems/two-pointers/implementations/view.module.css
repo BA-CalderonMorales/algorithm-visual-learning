@@ -29,8 +29,8 @@
   flex: 0 0 auto;
   padding: 12px 16px;
   border-bottom: 1px solid var(--line);
-  max-height: 36%;
-  overflow: auto;
+  max-height: none;
+  overflow: visible;
   scrollbar-width: thin;
   scrollbar-color: var(--theme-surface-4, #52675d) var(--theme-surface-2, #202127);
 }
@@ -76,7 +76,7 @@
   }
   .approach-summary.scope {
     padding: 10px 12px;
-    max-height: 35%;
+    max-height: none;
   }
   .approach-heading h2.scope {
     font-size: 14px;

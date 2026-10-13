@@ -31,12 +31,8 @@
       </section>
     {:else if view === 'resources'}
       <section class={classNames(styles, 'resource-directory')}>
-        <p class={classNames(styles, 'library-label')}>Other places to learn</p>
-        <h2 class={styles.scope}>Use the explanation that clicks for you.</h2>
-        <p class={classNames(styles, 'resource-intro')}>
-          These complement this guide. Paid access elsewhere is optional; nothing on this site requires buying another
-          service.
-        </p>
+        <h2 class={styles.scope}>Resources</h2>
+        <p class={classNames(styles, 'resource-intro')}>External resources; access options vary.</p>
         {#each resources as resource}<article class={classNames(styles, 'resource-row')}>
             <div class={styles.scope}>
               <h3 class={styles.scope}>

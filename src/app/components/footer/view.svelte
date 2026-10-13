@@ -6,7 +6,5 @@
 </script>
 
 <footer class={classNames(styles, 'site-footer')}>
-  <span class={styles.scope}>DSA Study Studio</span><span class={styles.scope}
-    >Clear steps · careful reasoning · keep learning</span
-  >
+  <span class={styles.scope}>DSA Study Studio</span>
 </footer>

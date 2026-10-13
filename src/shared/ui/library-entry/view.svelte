@@ -7,7 +7,7 @@
 
 <article class={classNames(styles, 'library-row link-controls')}>
   <div class={classNames(styles, 'library-copy')}>
-    <span class={classNames(styles, 'library-label')}>0{number} / {entry.title}</span>
+    {#if entry.title !== entry.question}<span class={classNames(styles, 'library-label')}>{entry.title}</span>{/if}
     <h2 class={styles.scope}>
       <a class={styles.scope} href={entry.href}>{entry.question}</a>
     </h2>
@@ -37,6 +37,71 @@
           >{/each}
         <text class={styles.scope} x="30" y="65">i</text><text class={styles.scope} x="189" y="65">j</text>
       </svg>
+    {:else if ['structures', 'linked-list', 'list-adt', 'list-storage', 'list-insertion', 'list-traversal', 'python-lists'].includes(entry.id)}
+      <svg class={styles.scope} viewBox="0 0 220 90"
+        ><path class={classNames(styles, 'sketch-path')} d="M52 43h27m-7-5 7 5-7 5M127 43h27m-7-5 7 5-7 5" />
+        {#each ['A', 'B', 'C'] as value, i}<rect
+            class={styles.scope}
+            x={12 + i * 75}
+            y="24"
+            width="42"
+            height="36"
+          /><text class={styles.scope} x={33 + i * 75} y="47">{value}</text>{/each}
+        <text class={styles.scope} x="33" y="80">head</text>
+      </svg>
+    {:else if ['sliding-window', 'prefix-sum', 'binary-search', 'greedy'].includes(entry.id)}
+      <svg class={styles.scope} viewBox="0 0 220 90"
+        >{#each [1, 2, 3, 4, 5, 6] as value, i}<rect
+            class={styles.scope}
+            x={8 + i * 35}
+            y="26"
+            width="29"
+            height="32"
+          /><text class={styles.scope} x={22 + i * 35} y="47">{value}</text>{/each}<path
+          class={classNames(styles, 'sketch-path')}
+          d="M42 20v-6h105v6M42 64v6h105v-6"
+        /><text class={styles.scope} x="95" y="87">range</text></svg
+      >
+    {:else if entry.id === 'intervals'}
+      <svg class={styles.scope} viewBox="0 0 220 90"
+        ><path class={classNames(styles, 'sketch-path')} d="M20 25h95M75 47h110M20 72h165" /><text
+          class={styles.scope}
+          x="40"
+          y="16">start</text
+        ><text class={styles.scope} x="172" y="88">end</text></svg
+      >
+    {:else if entry.id === 'stack'}
+      <svg class={styles.scope} viewBox="0 0 220 90"
+        >{#each [3, 2, 1] as value, i}<rect class={styles.scope} x="65" y={8 + i * 26} width="80" height="23" /><text
+            class={styles.scope}
+            x="105"
+            y={25 + i * 26}>{value}</text
+          >{/each}<text class={styles.scope} x="175" y="23">top</text></svg
+      >
+    {:else if entry.id === 'matrices'}
+      <svg class={styles.scope} viewBox="0 0 220 90"
+        >{#each [0, 1, 2] as row}{#each [0, 1, 2] as col}<rect
+              class={styles.scope}
+              x={60 + col * 29}
+              y={6 + row * 27}
+              width="25"
+              height="23"
+            />{/each}{/each}<path class={classNames(styles, 'sketch-path')} d="M70 17h58v54H70V44h29" /></svg
+      >
+    {:else if ['heap', 'trie', 'graphs', 'depth-first-search', 'breadth-first-search', 'backtracking', 'dynamic-programming', 'lower-bound'].includes(entry.id)}
+      <svg class={styles.scope} viewBox="0 0 220 90"
+        ><path
+          class={classNames(styles, 'sketch-path')}
+          d="M110 25L55 64M110 25L165 64"
+        />{#each [[110, 20], [55, 68], [165, 68]] as point, i}<circle
+            class={styles.scope}
+            cx={point[0]}
+            cy={point[1]}
+            r="16"
+          /><text class={styles.scope} x={point[0]} y={point[1] + 5}
+            >{entry.id === 'heap' ? [1, 3, 4][i] : ['A', 'B', 'C'][i]}</text
+          >{/each}</svg
+      >
     {:else if entry.id === 'discrete' || entry.id === 'induction'}
       <svg class={styles.scope} viewBox="0 0 220 90"
         ><path

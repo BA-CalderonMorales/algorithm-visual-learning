@@ -5,13 +5,12 @@ export function topicEntries(collection, lessons) {
     const lesson = lessons[id];
     return {
       id,
-      title: collection.title,
+      title: lesson.title,
       question: lesson.title,
       href: lessonHref(lesson),
       description: lesson.question,
       navigationLabel: lesson.title + ' entry points',
       links: [
-        { title: 'Understand', href: lessonHref(lesson) },
         { title: 'Visualize', href: lessonHref(lesson, 'visualize') },
         { title: 'Examples', href: lessonHref(lesson, 'examples') },
       ],

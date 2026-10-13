@@ -10,10 +10,12 @@
   import Navigation from './components/navigation/view.svelte';
   import ReadingNavigation from './components/reading-navigation/view.svelte';
   import StudyLesson from '../shared/ui/study-lesson/view.svelte';
+  import { codeLabs } from './code-labs.ts';
   import StudyLibrary from '../explore/view.svelte';
   import TopicDirectory from '../shared/ui/topic-directory/view.svelte';
   import Problems from '../problems/view.svelte';
   import ProblemLesson from '../problems/two-pointers/view.svelte';
+  import CatalogProblemLesson from '../problems/components/lesson/view.svelte';
 
   import { createViewModel } from './view-model.svelte.ts';
   const vm = createViewModel();
@@ -51,8 +53,18 @@
       {:else if vm.domain === 'algorithms' && vm.topic === 'algorithm' && vm.selectedAlgorithm}
         <AlgorithmLesson {vm} />
       {:else if vm.domain === 'problems'}
-        {#if vm.topic === 'index' || vm.topic === 'two-pointers'}
-          <Problems view={vm.directoryView} bucket={vm.topic === 'two-pointers'} bind:heroVisible={vm.heroVisible} />
+        {#if vm.topic === 'index' || vm.topic === vm.problemPattern}
+          <Problems
+            view={vm.directoryView}
+            patternId={vm.topic === 'index' ? '' : vm.problemPattern}
+            bind:heroVisible={vm.heroVisible}
+          />
+        {:else if vm.topic.includes(':')}
+          {#key vm.topic}<CatalogProblemLesson
+              topic={vm.topic}
+              view={vm.studyView}
+              bind:heroVisible={vm.heroVisible}
+            />{/key}
         {:else}
           {#key vm.topic}<ProblemLesson
               id={vm.topic}
@@ -62,7 +74,7 @@
               bind:heroVisible={vm.heroVisible}
             />{/key}
         {/if}
-      {:else if (vm.domain === 'discrete' || vm.domain === 'complexity') && vm.topic === 'index'}
+      {:else if (vm.domain === 'discrete' || vm.domain === 'complexity' || vm.domain === 'structures') && vm.topic === 'index'}
         <TopicDirectory
           domain={vm.domain}
           view={vm.directoryView}
@@ -70,7 +82,7 @@
           lessons={vm.studyLessons}
           bind:heroVisible={vm.heroVisible}
         />
-      {:else if (vm.domain === 'discrete' || vm.domain === 'complexity') && vm.selectedStudyLesson}
+      {:else if (vm.domain === 'discrete' || vm.domain === 'complexity' || vm.domain === 'structures') && vm.selectedStudyLesson}
         <IntroHeading title={vm.selectedStudyLesson.title} bind:visible={vm.heroVisible}>
           <section class={classNames(styles, 'page-hero compact-hero study-page-heading')}>
             <a class={classNames(styles, 'study-back')} href="#/{vm.domain}">← {vm.studyDomains[vm.domain].title}</a>
@@ -80,6 +92,7 @@
         </IntroHeading>
         {#key vm.selectedStudyLesson.id}<StudyLesson
             lesson={vm.selectedStudyLesson}
+            lab={codeLabs[vm.selectedStudyLesson.id]}
             view={vm.studyView}
             film={vm.playFilms[vm.selectedStudyLesson.id]}
             variants={vm.conceptVariants[vm.selectedStudyLesson.id]}

@@ -1,3 +1,4 @@
+import { exposeSectionTabs } from './expose-section-tabs.mjs';
 import assert from 'node:assert/strict';
 import { mkdir } from 'node:fs/promises';
 import { chromium } from 'playwright';
@@ -90,6 +91,7 @@ try {
     await math.click();
     assert.equal(await drawer.locator('#navigation-discrete').isVisible(), false);
     await close();
+    await exposeSectionTabs(page);
     await page.getByRole('tab', { name: 'Understand', exact: true }).click();
     await open();
     assert.equal(await math.getAttribute('aria-expanded'), 'false', 'Tab switching preserves disclosure choice');
@@ -192,7 +194,7 @@ try {
         'The original eye button retains focus after closing',
       );
       const next = page.locator('.reading-navigation a[rel="next"]');
-      if (route.includes('/tim/')) assert.equal(await next.getAttribute('href'), '#/discrete');
+      if (route.includes('/tim/')) assert.equal(await next.getAttribute('href'), '#/problems');
       if (route.includes('/master-theorem/')) assert.equal(await next.getAttribute('href'), '#/complexity');
       assert.equal(await page.locator('.reading-navigation').count(), 1);
     }

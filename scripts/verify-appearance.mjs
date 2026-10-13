@@ -55,7 +55,7 @@ try {
       );
       const box = await menu.boundingBox();
       assert.ok(box.x >= 0 && box.x + box.width <= width, 'Theme picker stays inside viewport');
-      await page.getByRole('menuitemradio', { name: new RegExp(name) }).click();
+      await page.getByRole('menuitemradio', { name, exact: true }).click();
       assert.equal(await rootTheme(), name.toLowerCase());
       assert.equal(await picker.getAttribute('aria-expanded'), 'false');
       assert.equal(await picker.evaluate((el) => document.activeElement === el), true);
@@ -153,7 +153,7 @@ try {
     const frame = page.frameLocator('iframe');
     for (const theme of ['Midnight', 'Warm', 'Paper', 'Dawn', 'Dark']) {
       await page.getByRole('button', { name: 'Choose theme', exact: true }).click();
-      await page.getByRole('menuitemradio', { name: new RegExp(theme) }).click();
+      await page.getByRole('menuitemradio', { name: theme, exact: true }).click();
       await frame.locator('html[data-theme="' + theme.toLowerCase() + '"]').waitFor();
     }
     const next = frame.getByRole('button', { name: /Next step/i });

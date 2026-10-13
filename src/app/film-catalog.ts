@@ -1,3 +1,6 @@
+import { playFilms as bubble, legend as bubbleLegend } from '../algorithms/bubble/film.ts';
+import { playFilms as structures } from '../structures/films.ts';
+import { playFilms as lowerBound } from '../complexity/lower-bound/film.ts';
 import { playFilms as selection, legend as selectionLegend } from '../algorithms/selection/film.ts';
 import { playFilms as insertion, legend as insertionLegend } from '../algorithms/insertion/film.ts';
 import { playFilms as shell, legend as shellLegend } from '../algorithms/shell/film.ts';
@@ -24,6 +27,9 @@ import { playFilms as time, legend as timeLegend, variants as timeVariants } fro
 import { playFilms as space, legend as spaceLegend, variants as spaceVariants } from '../complexity/space/film.ts';
 export { sceneAt, chaptersFor } from '../shared/playback/model.ts';
 export const playFilms = {
+  ...bubble,
+  ...structures,
+  ...lowerBound,
   ...selection,
   ...insertion,
   ...shell,
@@ -45,6 +51,7 @@ export const conceptVariants = {
   space: spaceVariants,
 };
 export const conceptLegends = {
+  bubble: bubbleLegend,
   selection: selectionLegend,
   insertion: insertionLegend,
   shell: shellLegend,

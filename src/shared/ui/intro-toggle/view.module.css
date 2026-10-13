@@ -35,8 +35,9 @@
 }
 .intro-tooltip.scope {
   position: absolute;
-  top: calc(100% + 8px);
-  right: 0;
+  top: 50%;
+  right: calc(100% + 8px);
+  transform: translateY(-50%);
   z-index: 6;
   padding: 7px 9px;
   border: 1px solid var(--theme-border, #454d5b);

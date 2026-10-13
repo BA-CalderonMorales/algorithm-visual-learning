@@ -11,6 +11,7 @@ import { voiceForFilm } from '../algorithms/play/voice.ts';
 
 import { studyLessons, studyDomains, lessonTabs, lessonHref } from './study-catalog.ts';
 import { parseProblemRoute, problems } from '../problems/model.ts';
+import { findCatalogLesson, patterns } from '../problems/catalog/model.ts';
 import { routeEnabled } from './features.ts';
 
 export function createViewModel() {
@@ -35,6 +36,7 @@ export function createViewModel() {
   let implementationLanguage = $state('python-simple');
   let problemApproach = $state('brute');
   let problemLanguage = $state('python-simple');
+  let problemPattern = $state('');
   let selectedAlgorithm = $derived(algorithms.find((algorithm) => algorithm.id === selectedAlgorithmId));
   let selectedLesson = $derived(algorithmLessons[selectedAlgorithmId]);
 
@@ -63,6 +65,7 @@ export function createViewModel() {
     '#/algorithms/sorting': ['algorithms', 'catalog'],
     '#/discrete': ['discrete', 'index'],
     '#/complexity': ['complexity', 'index'],
+    '#/structures': ['structures', 'index'],
     '#/problems': ['problems', 'index'],
     '#/discrete/induction': ['discrete', 'induction'],
     '#/discrete/telescoping': ['discrete', 'telescoping'],
@@ -120,6 +123,7 @@ export function createViewModel() {
         const samePage = domain === 'problems' && topic === problemRoute.topic;
         domain = 'problems';
         topic = problemRoute.topic;
+        problemPattern = problemRoute.pattern ?? (problemRoute.topic === 'index' ? '' : 'two-pointers');
         studyView = problemRoute.view;
         problemApproach = problemRoute.approach ?? 'brute';
         problemLanguage = problemRoute.language ?? 'python-simple';
@@ -130,7 +134,7 @@ export function createViewModel() {
         return;
       }
       const directoryRoute = window.location.hash.match(
-        /^#\/(algorithms\/sorting|discrete|complexity)(?:\/(connections))?$/,
+        /^#\/(algorithms\/sorting|discrete|complexity|structures)(?:\/(connections))?$/,
       );
       if (directoryRoute) {
         const nextDomain = directoryRoute[1] === 'algorithms/sorting' ? 'algorithms' : directoryRoute[1];
@@ -171,7 +175,7 @@ export function createViewModel() {
         }
       }
       const studyRoute = window.location.hash.match(
-        /^#\/(discrete|complexity)\/([^/]+)(?:\/(understand|visualize|examples|practice))?$/,
+        /^#\/(discrete|complexity|structures)\/([^/]+)(?:\/(understand|visualize|examples|practice))?$/,
       );
       if (studyRoute) {
         const lesson = Object.values(studyLessons).find(
@@ -272,11 +276,13 @@ export function createViewModel() {
         : 'Algorithms'
       : domain === 'discrete'
         ? (selectedStudyLesson?.title ?? 'Discrete mathematics')
-        : domain === 'complexity'
-          ? (selectedStudyLesson?.title ?? 'Complexity')
+        : domain === 'complexity' || domain === 'structures'
+          ? (selectedStudyLesson?.title ?? studyDomains[domain].title)
           : domain === 'problems'
-            ? (problems.find((problem) => problem.id === topic)?.title ??
-              (topic === 'two-pointers' ? 'Two Pointers' : 'Problems'))
+            ? (findCatalogLesson(topic)?.title ??
+              problems.find((problem) => problem.id === topic)?.title ??
+              patterns.find((p) => p.id === topic)?.title ??
+              'Problems')
             : 'A visual DSA study guide',
   );
 
@@ -290,6 +296,9 @@ export function createViewModel() {
           : 'A growing companion for data structures & algorithms',
   );
   return {
+    get problemPattern() {
+      return problemPattern;
+    },
     get problemApproach() {
       return problemApproach;
     },

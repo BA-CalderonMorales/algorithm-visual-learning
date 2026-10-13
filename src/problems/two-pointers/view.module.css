@@ -20,10 +20,10 @@
   background: var(--theme-surface-1, #1b1d23);
 }
 .problem-panel.scope {
-  height: clamp(450px, 68svh, 780px);
+  height: auto;
   min-width: 0;
-  overflow: auto;
-  overscroll-behavior: contain;
+  overflow: visible;
+  overscroll-behavior: auto;
   padding: clamp(12px, 1.6vw, 22px);
   scrollbar-width: thin;
   scrollbar-color: #596579 var(--theme-surface-1, #1b1d23);
@@ -34,7 +34,7 @@
 .problem-panel.implementation-panel.scope {
   display: flex;
   flex-direction: column;
-  overflow: hidden;
+  overflow: visible;
 }
 .eyebrow.scope {
   color: var(--theme-ink-muted, #9ba8b9);
@@ -156,6 +156,6 @@
     grid-template-columns: 1fr;
   }
   .problem-panel.scope {
-    height: clamp(460px, 72svh, 680px);
+    height: auto;
   }
 }

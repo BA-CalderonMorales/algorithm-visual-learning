@@ -45,7 +45,7 @@ for problem, name in [("two-sum", "two_sum"), ("container", "max_area"), ("three
                     checked += 1
                 assert data == before, "Problem implementations must preserve input"
 
-for algorithm in ["selection", "insertion", "quick", "merge", "tim", "shell", "counting"]:
+for algorithm in ["bubble", "selection", "insertion", "quick", "merge", "tim", "shell", "counting"]:
     for language in ["python-simple.py", "python-typed.py"]:
         fn = load_function(root / "src/algorithms" / algorithm / "implementations" / language, algorithm + "_sort")
         in_place = language == "python-typed.py" and algorithm in ["selection", "insertion", "quick", "shell"]

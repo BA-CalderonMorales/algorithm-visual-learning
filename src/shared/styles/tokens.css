@@ -21,3 +21,7 @@
   --purple: #baa4ff;
   --orange: #ffbd82;
 }
+
+html {
+  scrollbar-gutter: stable;
+}

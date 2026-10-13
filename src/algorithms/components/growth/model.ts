@@ -14,6 +14,15 @@ const sameCases = (definition) =>
   Object.fromEntries(['best', 'average', 'worst'].map((key) => [key, { ...definition }]));
 
 export const growthModels = {
+  bubble: {
+    operation: 'Comparison growth',
+    note: 'These normalized curves show growth, not exact totals. Early exit detects ordered input in n−1 comparisons. Reverse order takes n(n−1)/2 comparisons.',
+    cases: {
+      best: model('Θ(n)', 'Already ordered: one pass makes no swaps.', 'n', linear),
+      average: model('Θ(n²)', 'Uniformly random permutation of distinct values.', 'n²', quadratic),
+      worst: model('Θ(n²)', 'Reverse order requires every shrinking pass.', 'n²', quadratic),
+    },
+  },
   selection: {
     operation: 'Element comparisons',
     note: 'Every input order requires the same suffix scans. n(n − 1) / 2 is the exact comparison count; its dominant term grows as Θ(n²). All three lines overlap. Swaps are a separate count.',

@@ -109,19 +109,23 @@
 
 <div class={classNames(styles, 'domain-tabs')} aria-label="Learning domains">
   <button
-    class={classNames(styles, '', { active: vm.domain === 'algorithms' })}
-    onclick={() => vm.openPage('algorithms', 'catalog')}>Algorithms</button
+    class={classNames(styles, '', { active: vm.domain === 'discrete' })}
+    onclick={() => vm.openPage('discrete', 'index')}>Discrete Math</button
   >
   <button
-    class={classNames(styles, '', { active: vm.domain === 'discrete' })}
-    onclick={() => vm.openPage('discrete', 'index')}>Discrete math</button
+    class={classNames(styles, '', { active: vm.domain === 'complexity' })}
+    onclick={() => vm.openPage('complexity', 'index')}>Complexity</button
+  >
+  <button
+    class={classNames(styles, '', { active: vm.domain === 'structures' })}
+    onclick={() => vm.openPage('structures', 'index')}>Data Structures</button
+  >
+  <button
+    class={classNames(styles, '', { active: vm.domain === 'algorithms' })}
+    onclick={() => vm.openPage('algorithms', 'catalog')}>Algorithms</button
   >
   {#if features.problems}<button
       class={classNames(styles, '', { active: vm.domain === 'problems' })}
       onclick={() => vm.openPage('problems', 'index')}>Problems</button
     >{/if}
-  <button
-    class={classNames(styles, '', { active: vm.domain === 'complexity' })}
-    onclick={() => vm.openPage('complexity', 'index')}>Complexity</button
-  >
 </div>

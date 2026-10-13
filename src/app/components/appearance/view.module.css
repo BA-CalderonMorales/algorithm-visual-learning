@@ -122,3 +122,53 @@
     width: min(244px, calc(100vw - 24px));
   }
 }
+
+.dark-plus.scope {
+  background: #1e1e1e;
+  --swatch-ink: #f0f0f0;
+}
+
+.light-plus.scope {
+  background: #ffffff;
+  --swatch-ink: #242424;
+}
+
+.monokai.scope {
+  background: #272822;
+  --swatch-ink: #f8f8f2;
+}
+
+.dracula.scope {
+  background: #282a36;
+  --swatch-ink: #f8f8f2;
+}
+
+.nord.scope {
+  background: #2e3440;
+  --swatch-ink: #eceff4;
+}
+
+.solarized-dark.scope {
+  background: #002b36;
+  --swatch-ink: #eee8d5;
+}
+
+.solarized-light.scope {
+  background: #fdf6e3;
+  --swatch-ink: #334a50;
+}
+
+.one-dark.scope {
+  background: #282c34;
+  --swatch-ink: #e6e9ef;
+}
+
+.tokyo-night.scope {
+  background: #1a1b26;
+  --swatch-ink: #d6def8;
+}
+
+.high-contrast.scope {
+  background: #000000;
+  --swatch-ink: #ffffff;
+}

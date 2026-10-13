@@ -1,0 +1,83 @@
+.scope {
+}
+.trace-practice.scope {
+  border: 1px solid var(--line);
+  padding: 24px;
+  margin: 20px 0;
+  line-height: 1.7;
+}
+.trace-practice h2.scope {
+  font-size: 21px;
+}
+.slots.scope {
+  display: flex;
+  flex-wrap: wrap;
+  list-style: none;
+  padding: 0;
+  gap: 8px;
+}
+.slot.scope {
+  display: grid;
+  gap: 4px;
+  padding: 10px;
+  min-width: 65px;
+  border: 1px solid var(--line);
+  background: var(--theme-surface-0, #171719);
+  text-align: center;
+}
+.slot strong.scope {
+  font-size: 22px;
+}
+.slot small.scope {
+  color: var(--muted);
+  font-size: 11px;
+}
+.active.scope {
+  border-color: var(--purple);
+  background: var(--theme-fill-purple, #352a49);
+}
+.why.scope {
+  color: var(--muted);
+}
+fieldset.scope {
+  border: 1px solid var(--line);
+  padding: 16px;
+}
+legend.scope {
+  max-width: 100%;
+}
+label.scope {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 44px;
+  padding: 10px 0;
+  cursor: pointer;
+}
+code.scope {
+  white-space: normal;
+  overflow-wrap: anywhere;
+  font-size: 13px;
+}
+input.scope {
+  accent-color: var(--blue);
+  flex-shrink: 0;
+}
+button.scope {
+  min-height: 44px;
+  margin: 16px 10px 0 0;
+  padding: 10px 16px;
+  color: var(--theme-ink, #eee);
+  border: 1px solid var(--line);
+  background: var(--theme-surface-2, #282b33);
+  cursor: pointer;
+}
+button:disabled.scope {
+  opacity: 0.4;
+  cursor: default;
+}
+button:focus-visible.scope,
+input:focus-visible.scope {
+  outline: 2px solid var(--blue);
+  outline-offset: 3px;
+}

@@ -32,7 +32,10 @@
     "test:film-rendering": "node scripts/verify-film-rendering.mjs",
     "generate:narration": "node scripts/generate-echo-narration.mjs",
     "test:narration": "node scripts/verify-recorded-narration.mjs && node scripts/verify-echo-narration.mjs",
-    "test:study": "node scripts/verify-study.mjs"
+    "test:study": "node scripts/verify-study.mjs",
+    "test:expanded": "node scripts/verify-expanded-models.mjs && node scripts/verify-expanded-learning.mjs",
+    "test:code-workbench": "node scripts/verify-code-workbench-models.mjs && node scripts/verify-linked-code.mjs && node scripts/verify-code-workbench.mjs",
+    "test:dropdowns": "node scripts/check-toggle.mjs && node scripts/check-nested-dropdowns.mjs"
   },
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "7.3.1",

@@ -99,11 +99,11 @@
 .algorithm-view.scope {
   position: relative;
   display: flex;
-  height: clamp(430px, calc(100dvh - 300px), 760px);
+  height: auto;
   min-height: 0;
   flex-direction: column;
   margin-top: 18px;
-  overflow: hidden;
+  overflow: visible;
   border: 1px solid var(--theme-border, #3a3d48);
   border-radius: 0;
   background: var(--theme-surface-1, #1c1d22);
@@ -440,11 +440,15 @@
 }
 @media (max-width: 720px) {
   .algorithm-view.scope {
-    height: clamp(400px, calc(100dvh - 260px), 720px);
+    height: auto;
   }
 }
 @media (max-width: 720px) {
   .practice-check-grid.scope {
     grid-template-columns: 1fr;
   }
+}
+
+.learning-view.scope {
+  overflow: visible;
 }
