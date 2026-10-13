@@ -105,7 +105,7 @@ try {
         if (
           tab.id === 'visualize' &&
           !conceptVariants[lesson.id] &&
-          !['asymptotic', 'list-insertion', 'list-storage'].includes(lesson.id)
+          !['asymptotic', 'list-adt', 'list-insertion', 'list-storage'].includes(lesson.id)
         ) {
           await page.getByRole('button', { name: 'Next scene', exact: true }).click();
           assert.match(await page.getByLabel('Scene progress', { exact: true }).innerText(), /2/);
