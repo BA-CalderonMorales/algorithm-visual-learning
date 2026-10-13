@@ -4,7 +4,7 @@ export async function revealAnimation(page) {
   const hash = new URL(page.url()).hash;
   const hasReference =
     /^#\/algorithms\/(shell|merge|tim)\/play$/.test(hash) ||
-    /^#\/(discrete\/(induction|telescoping|master-theorem)|complexity\/(time|space|sorting-lower-bound)|structures\/(list-adt|python-lists|list-storage|list-traversal|list-insertion))\/visualize$/.test(
+    /^#\/(discrete\/(induction|telescoping|master-theorem)|complexity\/(time|space|sorting-lower-bound)|structures\/(python-lists|list-storage|list-traversal|list-insertion))\/visualize$/.test(
       hash,
     );
   if (hasReference) await disclosure.first().waitFor();
