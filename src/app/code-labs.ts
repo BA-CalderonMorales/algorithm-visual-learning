@@ -88,7 +88,32 @@ export const codeLabs = {
     input: '8, 3, 6, 2',
     build: arrayTrace,
   },
-  'list-adt': links,
+  'list-adt': {
+    ...links,
+    followPointer: true,
+    title: 'List operations · follow the references',
+    intro: '',
+    variantGroups: [
+      {
+        label: 'Operation',
+        options: [
+          { id: 'prepend', label: 'Insert · head' },
+          { id: 'insert', label: 'Insert · middle' },
+          { id: 'append', label: 'Insert · tail' },
+          { id: 'remove', label: 'Remove' },
+          { id: 'traverse', label: 'Traverse' },
+        ],
+      },
+      {
+        label: 'List type',
+        options: [
+          { id: 'single', label: 'Singly linked' },
+          { id: 'double', label: 'Doubly linked' },
+        ],
+      },
+    ],
+    variants: undefined,
+  },
   'list-storage': links,
   'list-traversal': {
     ...links,
