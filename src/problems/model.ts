@@ -1,5 +1,6 @@
 import { lessons } from './two-pointers/lessons.ts';
 import { implementationSelection } from './two-pointers/implementations/model.ts';
+import { parseCatalogRoute, catalogSearchEntries } from './catalog/model.ts';
 
 export const problems = lessons;
 export const pattern = {
@@ -25,6 +26,8 @@ export function problemHref(id: string, view = 'understand') {
 }
 
 export function parseProblemRoute(hash: string) {
+  const expanded = parseCatalogRoute(hash);
+  if (expanded) return expanded;
   const route = hash.match(
     /^#\/problems(?:\/(connections|two-pointers)(?:\/([^/]+)(?:\/(understand|play|practice|implementations)(?:\/(.+))?)?)?)?$/,
   );
@@ -43,6 +46,7 @@ export function parseProblemRoute(hash: string) {
 }
 
 export const problemSearchEntries = [
+  ...catalogSearchEntries,
   {
     title: 'Problems · Two Pointers',
     group: 'Problems',

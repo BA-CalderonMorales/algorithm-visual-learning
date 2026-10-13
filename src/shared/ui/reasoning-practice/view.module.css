@@ -1,0 +1,65 @@
+.scope {
+}
+.reasoning-practice.scope {
+  padding: clamp(12px, 2vw, 24px);
+  border: 1px solid var(--line);
+  margin: 18px 0 28px;
+  background: var(--theme-surface-0, #171719);
+  line-height: 1.7;
+}
+.reasoning-practice h2.scope {
+  font-size: 21px;
+}
+.overline.scope {
+  color: var(--muted);
+  font-size: 13px;
+}
+fieldset.scope {
+  border: 1px solid var(--line);
+  padding: 16px;
+}
+legend.scope {
+  padding: 0 8px;
+  max-width: 100%;
+}
+label.scope {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  min-height: 44px;
+  padding: 10px 0;
+  cursor: pointer;
+}
+input.scope {
+  accent-color: var(--blue);
+  flex-shrink: 0;
+}
+button.scope {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  min-height: 44px;
+  margin: 16px 12px 0 0;
+  padding: 10px 16px;
+  border: 1px solid var(--line);
+  color: var(--theme-ink, #eee);
+  background: var(--theme-surface-2, #282b33);
+  cursor: pointer;
+}
+button:disabled.scope {
+  opacity: 0.4;
+  cursor: default;
+}
+button:focus-visible.scope,
+input:focus-visible.scope {
+  outline: 2px solid var(--blue);
+  outline-offset: 3px;
+}
+.feedback.scope {
+  margin-top: 18px;
+  padding: 16px;
+  border-left: 3px solid var(--blue);
+}
+
+fieldset.scope {
+  min-inline-size: 0;
+}

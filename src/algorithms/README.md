@@ -52,3 +52,13 @@ Run the architecture, walkthrough, Play, narration, and film-cache checks after
 changes. Preserve tablet controls, mobile readability, sharp edges, focused-step
 scrolling, and the distinction between theoretical growth and measured timing.
 See [source conventions](../README.md) for CSS ownership and the 500-line limit.
+
+`code-traces/` records real states for Bubble, Shell, Merge and the natural-run
+TimSort teaching model. Play pairs these states with executable Python teaching
+code through `shared/ui/code-workbench/`; the original films remain in an
+explicit disclosure. Quicksort keeps its established presentation. Bubble uses
+the workbench for Step-by-step; its legacy URL redirects to the application.
+
+Run `npm run test:code-workbench` against the local preview to verify input
+validation, exact counts, stable identities, list invariants, displayed Python,
+prediction gating, responsive diagrams, themes and code-panel scrolling.

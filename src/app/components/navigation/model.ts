@@ -2,6 +2,7 @@ import { algorithms } from '../../../algorithms/model.ts';
 import { studyLessons, studyDomains, lessonHref } from '../../study-catalog.ts';
 import { pattern, problems, problemHref } from '../../../problems/model.ts';
 import { features } from '../../features.ts';
+import { patterns, catalogLessons, catalogHref, topicKey } from '../../../problems/catalog/model.ts';
 
 export interface NavigationLink {
   domain: string;
@@ -19,7 +20,7 @@ export interface NavigationGroup {
 }
 
 // Use the existing catalogs: navigation must not maintain a second topic list.
-const studyGroup = (id: 'discrete' | 'complexity', symbol: string): NavigationGroup => ({
+const studyGroup = (id: 'discrete' | 'complexity' | 'structures', symbol: string): NavigationGroup => ({
   id,
   label: studyDomains[id].title,
   symbol,
@@ -31,6 +32,9 @@ const studyGroup = (id: 'discrete' | 'complexity', symbol: string): NavigationGr
 });
 
 export const navigationGroups: NavigationGroup[] = [
+  studyGroup('discrete', '∑'),
+  studyGroup('complexity', 'O'),
+  studyGroup('structures', '▤'),
   {
     id: 'algorithms',
     label: 'Algorithms',
@@ -40,21 +44,26 @@ export const navigationGroups: NavigationGroup[] = [
       .sort((a, b) => a.difficulty - b.difficulty)
       .map(({ id, name }) => ({ domain: 'algorithms', key: id, label: name, href: `#/algorithms/${id}/understand` })),
   },
-  studyGroup('discrete', '∑'),
-  studyGroup('complexity', 'O'),
   {
     id: 'problems',
     label: 'Problems',
     symbol: '⋈',
     overview: { domain: 'problems', key: 'index', label: 'All patterns', href: '#/problems' },
     topics: [
-      { domain: 'problems', key: pattern.id, label: pattern.title, href: pattern.href },
-      ...problems.map((problem) => ({
-        domain: 'problems',
-        key: problem.id,
-        label: problem.title,
-        href: problemHref(problem.id),
-      })),
+      ...patterns.flatMap((p) => [
+        { domain: 'problems', key: p.id, label: p.title, href: p.href },
+        ...(p.id === 'two-pointers'
+          ? problems.map((problem) => ({
+              domain: 'problems',
+              key: problem.id,
+              label: problem.title,
+              href: problemHref(problem.id),
+            }))
+          : []),
+        ...catalogLessons
+          .filter((entry) => entry.pattern === p.id)
+          .map((entry) => ({ domain: 'problems', key: topicKey(entry), label: entry.title, href: catalogHref(entry) })),
+      ]),
     ],
   },
 ].filter((group) => features.problems || group.id !== 'problems');
@@ -93,11 +102,14 @@ export function breadcrumbsFor(page: PageLocation): Breadcrumb[] {
     return label ? [home, { label }] : [{ label: 'Study home', home: true }];
   }
   const topic = group.topics.find((topic) => topic.key === currentKey(page));
-  if (group.id === 'problems' && topic && topic.key !== pattern.id) {
+  const currentPattern =
+    patterns.find((p) => p.id === topic?.key.split(':')[0]) ??
+    (problems.some((p) => p.id === topic?.key) ? pattern : undefined);
+  if (group.id === 'problems' && topic && currentPattern && topic.key !== currentPattern.id) {
     return [
       home,
       { label: group.label, href: group.overview.href },
-      { label: pattern.title, shortLabel: 'Pattern', href: pattern.href },
+      { label: currentPattern.title, shortLabel: 'Pattern', href: currentPattern.href },
       { label: topic.label },
     ];
   }

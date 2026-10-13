@@ -8,19 +8,19 @@
 .study-panel.scope {
   display: flex;
   flex-direction: column;
-  height: clamp(450px, 68svh, 780px);
+  height: auto;
   min-width: 0;
-  overflow: hidden;
+  overflow: visible;
   padding: clamp(12px, 1.5vw, 18px);
 }
 .study-scroll.scope,
 .study-visual-scroll.scope {
-  overflow-y: auto;
-  overflow-x: hidden;
+  overflow-y: visible;
+  overflow-x: visible;
   min-height: 0;
   scrollbar-width: thin;
   scrollbar-color: #596579 var(--theme-surface-1, #1b1d23);
-  overscroll-behavior: contain;
+  overscroll-behavior: auto;
 }
 .study-scroll.scope {
   padding: clamp(12px, 2vw, 24px);
@@ -202,7 +202,7 @@
 }
 @media (max-width: 720px) {
   .study-panel.scope {
-    height: clamp(460px, 72svh, 680px);
+    height: auto;
   }
   .study-flow.scope {
     grid-template-columns: 1fr;

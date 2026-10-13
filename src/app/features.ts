@@ -1,6 +1,6 @@
 // A build-time availability flag, not authentication or a secrecy boundary.
 export function problemsFlag(value: string | undefined, development: boolean) {
-  if (value === undefined || value === '') return development;
+  if (value === undefined || value === '') return true;
   return value === 'true';
 }
 

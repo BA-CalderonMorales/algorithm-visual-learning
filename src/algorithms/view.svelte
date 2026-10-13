@@ -94,9 +94,7 @@
                   ></button
                 ></th
               >
-              <th class={styles.scope} scope="col"
-                ><span class={classNames(styles, 'visually-hidden')}>Study links</span></th
-              >
+              <th class={styles.scope} scope="col">Study links</th>
             </tr></thead
           >
           <tbody class={styles.scope}>
@@ -141,12 +139,6 @@
           </tbody>
         </table>
       </div>
-      <p class={classNames(styles, 'section-footnote')}>
-        These are quick per-algorithm reminders. The <a
-          class={classNames(styles, 'inline-link')}
-          href="#/complexity/time">Complexity domain</a
-        > teaches how to analyze bounds and cases in general.
-      </p>
     </section>
   {:else}
     <DomainConnections

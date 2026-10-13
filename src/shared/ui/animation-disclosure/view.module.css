@@ -1,0 +1,16 @@
+.scope {
+}
+.animation-disclosure.scope {
+  margin: 16px;
+  border: 1px solid var(--theme-border, #454853);
+}
+summary.scope {
+  cursor: pointer;
+  padding: 14px;
+  min-height: 44px;
+  color: var(--theme-ink-blue, #9fc6ff);
+}
+summary:focus-visible.scope {
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
+}

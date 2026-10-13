@@ -29,8 +29,8 @@
 }
 .library-panel.scope {
   min-width: 0;
-  height: clamp(450px, 68svh, 780px);
-  overflow: auto;
+  height: auto;
+  overflow: visible;
   padding: 6px 27px 25px;
   scrollbar-width: thin;
   scrollbar-color: #596579 var(--theme-surface-1, #1b1d23);
@@ -105,6 +105,24 @@
   }
   .library-panel.scope {
     padding: 4px 17px 20px;
-    height: clamp(460px, 72svh, 680px);
+    height: auto;
   }
+}
+
+.library-navigation.vertical-navigation.scope {
+  position: sticky;
+  top: 114px;
+  align-self: start;
+  max-height: calc(100svh - 130px);
+  overflow: auto;
+}
+@media (max-width: 700px) {
+  .library-navigation.vertical-navigation.scope {
+    top: 88px;
+  }
+}
+
+/* Keep directory content beside the menu, with no extra row above it. */
+.library-panel:not(.edge-to-edge).scope {
+  padding-inline-start: 64px;
 }

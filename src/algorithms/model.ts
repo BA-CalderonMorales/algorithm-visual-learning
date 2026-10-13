@@ -1,6 +1,17 @@
 // Model: algorithm facts and learning cues stay separate from the Svelte view.
 export const algorithms = [
   {
+    id: 'bubble',
+    name: 'Bubble Sort',
+    difficulty: 1,
+    cue: 'Compare neighbors → swap inversions → settle a suffix.',
+    divide: 'No',
+    lower: 'Ω(n), already ordered input with early exit',
+    upper: 'O(n²)',
+    extra: 'Stable adjacent swaps; early exit after a pass without swaps.',
+    walkthrough: 'bubble_sort_walkthrough.html',
+  },
+  {
     id: 'quick',
     name: 'Quick Sort',
     difficulty: 5,

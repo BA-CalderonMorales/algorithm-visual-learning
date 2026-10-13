@@ -1,7 +1,7 @@
 export const collection = {
   title: 'Complexity',
   intro: 'First learn how growth bounds compare functions. Then analyze how much work and memory an algorithm needs.',
-  topics: ['asymptotic', 'time', 'space'],
+  topics: ['asymptotic', 'time', 'space', 'lower-bound'],
   bridge:
     'Bounds describe a function’s growth; best, average, and worst describe which input family produced that function. Time and space ask what resource is being counted.',
   links: [

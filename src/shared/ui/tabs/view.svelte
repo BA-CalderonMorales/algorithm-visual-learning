@@ -10,9 +10,10 @@
     idPrefix = 'view-tab',
     orientation = 'horizontal',
     compact = false,
+    onSelect = undefined,
   } = $props();
   import { createViewModel } from './view-model.svelte.ts';
-  const vm = createViewModel(() => ({ tabs, selected, label, controls, idPrefix, orientation }));
+  const vm = createViewModel(() => ({ tabs, selected, label, controls, idPrefix, orientation, onSelect }));
 </script>
 
 <div
@@ -29,6 +30,7 @@
       aria-selected={selected === tab.id}
       aria-controls={controls}
       tabindex={selected === tab.id ? 0 : -1}
+      onclick={(event) => vm.select(event, index)}
       onkeydown={(event) => vm.navigate(event, index)}>{tab.label}</a
     >{/each}
 </div>

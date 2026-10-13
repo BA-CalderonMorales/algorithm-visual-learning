@@ -1,0 +1,94 @@
+.scope {
+}
+.node-workbench.scope {
+  padding: 20px;
+  line-height: 1.7;
+}
+.node-workbench h2.scope {
+  font-size: 21px;
+}
+.choices.scope {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 16px 0;
+}
+.choices button.scope {
+  min-height: 44px;
+  padding: 10px 14px;
+  border: 1px solid var(--line);
+  background: var(--theme-surface-2, #282b33);
+  color: var(--theme-ink, #eee);
+  cursor: pointer;
+}
+.choices button[aria-pressed='true'].scope {
+  border-color: var(--blue);
+}
+.choices button:disabled.scope {
+  opacity: 0.4;
+  cursor: default;
+}
+.choices button:focus-visible.scope {
+  outline: 2px solid var(--blue);
+  outline-offset: 3px;
+}
+.diagram-scroll.scope {
+  overflow-x: auto;
+}
+.diagram-scroll svg.scope {
+  display: block;
+  width: 100%;
+  min-width: 580px;
+  background: var(--theme-surface-0, #171719);
+}
+.node polygon.scope {
+  fill: var(--theme-surface-2, #282b33);
+  stroke: var(--theme-ink-muted, #aeb0be);
+  stroke-width: 1;
+}
+.selected polygon.scope {
+  fill: var(--theme-fill-blue, #24435d);
+  stroke: var(--blue);
+}
+.node.scope {
+  transition: transform 0.35s ease;
+}
+.link.scope {
+  fill: none;
+  stroke: var(--green);
+  stroke-width: 2.5;
+}
+.diagram-scroll marker path.scope {
+  fill: var(--green);
+}
+.data.scope {
+  fill: var(--theme-ink, #eee);
+  font: 600 22px system-ui;
+}
+.next.scope {
+  fill: var(--muted);
+  font: 11px system-ui;
+}
+.head.scope {
+  fill: var(--blue);
+  font: 15px system-ui;
+}
+.address.scope,
+.end.scope {
+  fill: var(--muted);
+  font: 13px system-ui;
+}
+.assignment.scope {
+  border-left: 3px solid var(--blue);
+  padding: 16px;
+  background: var(--theme-surface-2, #282b33);
+}
+.note.scope {
+  color: var(--muted);
+  font-size: 13px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .node.scope {
+    transition: none;
+  }
+}

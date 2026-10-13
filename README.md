@@ -39,11 +39,7 @@ Publishing is automatic: push or merge changes to `develop`. The Pages workflow 
 
 To deploy the current `develop` branch again without a new change, open **Actions → Build and publish Sorting Walkthroughs → Run workflow**. GitHub Pages should use **GitHub Actions** as its source under **Settings → Pages**. No release tag is needed for a site deployment.
 
-Problems is a work-in-progress domain: visible during local development, hidden
-from production navigation, search, and routes by default. When ready, build
-with `VITE_ENABLE_PROBLEMS=true` (set it in the Pages build environment, or in
-`.env.production.local` for a local production preview). Use `false` to hide it
-locally. This is a release flag, not access control.
+Problems is available in production by default. Sixteen pattern directories include original decision traces and practice. The existing Two Pointers films and implementation variants remain available. Set `VITE_ENABLE_PROBLEMS=false` only when deliberately hiding the domain in a custom build.
 
 Exported videos are cached between deployments. Each film is checked against its scene data, shared renderer, capture code, dependencies, and file checksum. Missing, changed, or damaged videos are regenerated; narration and site-only edits reuse unchanged films. A cold or expired cache still needs a full render. The build and walkthrough checks always run.
 
@@ -72,3 +68,7 @@ Sorting Play tabs offer optional Echo narration, loaded one scene at a time. Stu
 ## Contributing
 
 This project is designed to be forked, adapted for future classes, and improved by students. See [CONTRIBUTING.md](CONTRIBUTING.md) for the small local workflow and teaching-focused guidelines, and [CONTRIBUTORS.md](CONTRIBUTORS.md) for attribution. The project is licensed under the [MIT License](LICENSE).
+
+## Appearance
+
+Fifteen study palettes are available in the theme menu. Ten are study adaptations inspired by VS Code/editor themes, rather than imported extensions: Dark+, Light+, Monokai, Dracula, Nord, Solarized Dark/Light, One Dark, Tokyo Night, and High Contrast. The original five palettes remain available. See [VS Code themes](https://code.visualstudio.com/docs/configure/themes), [Dracula](https://github.com/dracula/visual-studio-code), and the named theme projects for their original editor versions. No third-party theme code or artwork is bundled.

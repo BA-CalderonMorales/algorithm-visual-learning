@@ -6,7 +6,7 @@ export const entries = [
     title: 'Algorithms',
     question: 'What moves, and why?',
     href: '#/algorithms/sorting',
-    description: 'Compare seven sorting algorithms. Follow their decisions, then read the code.',
+    description: 'Compare eight sorting algorithms, trace their decisions, and read the code.',
     links: [
       { title: 'Selection sort', href: '#/algorithms/selection/understand' },
       { title: 'Shell sort', href: '#/algorithms/shell/play' },
@@ -38,16 +38,30 @@ export const entries = [
     ],
   },
   {
+    id: 'structures',
+    title: 'Data structures',
+    question: 'What does the representation make easy?',
+    href: '#/structures',
+    description:
+      'Separate the List ADT, Python object references, array slots, and linked nodes. Preserve links while inserting.',
+    links: [
+      { title: 'The List ADT', href: '#/structures/list-adt' },
+      { title: 'Insert a node', href: '#/structures/list-insertion/visualize' },
+      { title: 'All data structures', href: '#/structures' },
+    ],
+  },
+  {
     id: 'problems',
     title: 'Problems',
     question: 'Why is this the next move?',
     href: '#/problems',
     description:
-      'Build interview intuition by pattern. Start with Two Pointers: sorted pairs, container walls, and 3-Sum.',
+      'Build problem-solving intuition across sixteen patterns. Trace the decisions, state the assumptions, and practice explaining why the move is safe.',
     links: [
       { title: 'Two Pointers', href: '#/problems/two-pointers' },
       { title: 'Watch Two Sum', href: '#/problems/two-pointers/two-sum/play' },
       { title: 'Watch 3-Sum', href: '#/problems/two-pointers/three-sum/play' },
+      { title: 'Sliding Window', href: '#/problems/sliding-window' },
     ],
   },
 ].filter((entry) => routeEnabled(entry.href));

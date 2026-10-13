@@ -17,6 +17,9 @@ export function createViewModel(props = () => ({})) {
     window.location.hash = tabs[next].href;
   }
   return {
+    select(event, index) {
+      props().onSelect?.(event, tabs[index]);
+    },
     get navigate() {
       return navigate;
     },

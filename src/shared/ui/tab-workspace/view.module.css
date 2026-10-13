@@ -1,0 +1,155 @@
+.scope {
+}
+.tab-workspace.scope {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr);
+  min-width: 0;
+  align-items: start;
+}
+.tab-workspace.collapsed.scope {
+  grid-template-columns: 44px minmax(0, 1fr);
+}
+.section-rail.scope {
+  position: sticky;
+  top: var(--section-top, 114px);
+  align-self: start;
+  border-right: 1px solid var(--theme-border, #3a3d47);
+  background: var(--theme-surface-1, #1b1d23);
+  max-height: calc(100svh - 130px);
+  overflow: auto;
+  scrollbar-width: thin;
+}
+.section-toggle.scope {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  width: 100%;
+  padding: 10px 14px;
+  border: 0;
+  background: var(--theme-surface-2, #202229);
+  color: var(--theme-ink, #eee);
+  cursor: pointer;
+}
+.section-toggle:focus-visible.scope {
+  outline: 2px solid var(--blue);
+  outline-offset: -3px;
+}
+.toggle-label.scope {
+  font-size: 11px;
+  text-align: left;
+}
+.collapsed .toggle-label.scope {
+  display: none;
+}
+.section-content.scope {
+  min-width: 0;
+}
+.section-options[hidden].scope {
+  display: none;
+}
+.nested .section-rail.scope {
+  top: var(--section-top, 114px);
+}
+@media (max-width: 700px) {
+  .tab-workspace.scope,
+  .tab-workspace.collapsed.scope {
+    display: grid;
+    grid-template-columns: 44px minmax(0, 1fr);
+  }
+  .section-rail.scope {
+    top: var(--section-top, 57px);
+    width: 44px;
+    overflow: visible;
+    max-height: none;
+    z-index: 2;
+    border-right: 0;
+  }
+  .section-toggle.scope {
+    border-bottom: 1px solid var(--theme-border, #3a3d47);
+  }
+  .tab-workspace .toggle-label.scope {
+    display: none;
+  }
+  .section-options.scope {
+    position: absolute;
+    top: 44px;
+    left: 0;
+    width: min(240px, calc(100vw - 32px));
+    max-height: 60svh;
+    overflow: auto;
+    background: var(--theme-surface-1, #1b1d23);
+    border: 1px solid var(--theme-border, #3a3d47);
+    box-shadow: 0 8px 20px #0003;
+  }
+  .nested .section-rail.scope {
+    position: relative;
+    top: 0;
+    z-index: 1;
+  }
+}
+
+@media (max-width: 700px) {
+  .nested .section-options.scope {
+    width: min(240px, calc(100vw - 180px));
+  }
+}
+
+/* Catalog navigation shares the toolbar without reserving a blank table column. */
+.tab-workspace.overlay.scope,
+.tab-workspace.overlay.collapsed.scope {
+  grid-template-columns: minmax(0, 1fr);
+}
+.overlay .section-rail.scope {
+  grid-area: 1 / 1;
+  width: 44px;
+  height: 0;
+  overflow: visible;
+  border-right: 0;
+  z-index: 3;
+}
+.overlay .section-content.scope {
+  grid-area: 1 / 1;
+}
+.overlay .toggle-label.scope {
+  display: none;
+}
+.overlay .section-options.scope {
+  position: absolute;
+  top: 44px;
+  left: 0;
+  width: min(220px, calc(100vw - 32px));
+  max-height: 60svh;
+  overflow: auto;
+  background: var(--theme-surface-1, #1b1d23);
+  border: 1px solid var(--theme-border, #3a3d47);
+  box-shadow: 0 8px 20px #0003;
+}
+
+/* Every lesson selector uses the same flyout, at every screen size. */
+.section-rail.scope {
+  width: 44px;
+  overflow: visible;
+  max-height: none;
+  border-right: 0;
+  z-index: 3;
+}
+.toggle-label.scope {
+  display: none;
+}
+.section-options.scope {
+  position: absolute;
+  top: 44px;
+  left: 0;
+  width: min(220px, calc(100vw - 32px));
+  max-height: 60svh;
+  overflow: auto;
+  background: var(--theme-surface-1, #1b1d23);
+  border: 1px solid var(--theme-border, #3a3d47);
+  box-shadow: 0 8px 20px #0003;
+}
+.nested .section-rail.scope {
+  position: relative;
+  top: 0;
+  z-index: 2;
+}

@@ -252,7 +252,16 @@ export function renderFilm(canvas, film, seconds, { compact = false, exportVideo
     });
     return;
   }
-  const isConcept = ['induction', 'telescoping', 'master', 'time', 'space'].some((id) => film.id.startsWith(id));
+  const isConcept = [
+    'induction',
+    'telescoping',
+    'master',
+    'time',
+    'space',
+    'list-',
+    'python-lists',
+    'lower-bound',
+  ].some((id) => film.id.startsWith(id));
   const amount = reduced ? 1 : ease(Math.min(1, local / 0.9));
   const margin = compact ? 34 : 68;
   const available = width - margin * 2;

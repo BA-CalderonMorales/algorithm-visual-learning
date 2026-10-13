@@ -1,0 +1,73 @@
+import { lesson } from './lesson.ts';
+const make = (...args: Parameters<typeof lesson> extends [string, ...infer Rest] ? Rest : never) =>
+  lesson('two-pointers', ...args);
+export const lessons = [
+  make(
+    'Triangle Numbers',
+    'Sort lengths, fix the largest side, and count valid pairs in batches.',
+    'For positive sorted sides, only the sum of the two smaller sides needs checking.',
+    '[2, 3, 4, 5]',
+    [
+      'largest = 5; pair = 2 + 4 > 5 :: Both left candidates 2 and 3 work with 4: add 2.',
+      'now pair = 2 + 3 = 5 :: Equality is not enough; move left and finish this largest-side pass.',
+      'largest = 4; pair = 2 + 3 > 4 :: Add 1 more. Total: 3 triangles.',
+    ],
+    'O(n²), including the O(n log n) sort',
+    'O(1) scan storage; sorting storage depends on implementation',
+    'Require a strict inequality and exclude nonpositive lengths.',
+    'If a[left] + a[right] > a[k], how many pairs can we count immediately?',
+    ['right − left', 'One regardless of the distance', 'k − right'],
+    'Sorted order guarantees every larger left value also succeeds with this right endpoint.',
+  ),
+  make(
+    'Move Zeroes',
+    'Compact nonzero values into a prefix, then fill the remaining slots with zero.',
+    'The written prefix contains encountered nonzero values in their original order.',
+    '[0, 4, 0, 2]',
+    [
+      'write = 0; read 0 :: Skip zero without advancing write.',
+      'read 4; write at 0 → [4, 4, 0, 2] :: The unread region is still scanned normally.',
+      'read 2; write at 1; fill suffix → [4, 2, 0, 0] :: Nonzero order is preserved.',
+    ],
+    'O(n)',
+    'O(1)',
+    'Intermediate duplicates are temporary; only the final array matters.',
+    'When reading a zero, which pointer advances?',
+    ['Only read', 'Only write', 'Both'],
+    'write tracks how many nonzero values have been retained; a zero adds none.',
+  ),
+  make(
+    'Sort Colors',
+    'Partition 0, 1, and 2 with low, scan, and high boundaries.',
+    'Before low are zeros; between low and scan are ones; after high are twos.',
+    '[2, 0, 1]',
+    [
+      'low = scan = 0; high = 2 :: All positions are initially unknown.',
+      'swap 2 with high → [1, 0, 2]; high = 1 :: Inspect the incoming 1 before moving scan.',
+      'scan past 1; swap 0 with low → [0, 1, 2] :: The unknown region is empty.',
+    ],
+    'O(n)',
+    'O(1)',
+    'After swapping with high, do not advance scan: the incoming value is unclassified.',
+    'After moving a 2 to the high boundary, what happens to scan?',
+    ['Stay and inspect the replacement', 'Always advance', 'Return to index zero'],
+    'The replacement may be a 0 or a 2, so it still needs classification.',
+  ),
+  make(
+    'Trapping Rain Water',
+    'Accumulate water from the side with the smaller established boundary maximum.',
+    'The smaller boundary maximum determines a safe water level on that side.',
+    '[3, 0, 2, 0, 4]',
+    [
+      'left maximum = 3; right maximum = 4 :: The right wall is tall enough to support level 3.',
+      'interior heights 0, 2, 0 :: Contributions are 3, 1, and 3.',
+      'total = 7 :: Add per-position water, rather than one container rectangle.',
+    ],
+    'O(n)',
+    'O(1)',
+    'Container With Most Water measures one rectangle; this task sums water above interior bars.',
+    'At a position of height 2 bounded at level 3, how much water is stored?',
+    ['1', '3', '6'],
+    'Water depth is the supported level minus the bar height, clamped at zero.',
+  ),
+];

@@ -1,6 +1,20 @@
 import { growthModels } from './components/growth/model.ts';
 // Short explanations; time cases come from the shared Complexity/Growth model.
 export const algorithmLessons = {
+  bubble: {
+    idea: 'Compare neighboring values and swap only when the left is greater. Repeat over a shrinking prefix.',
+    invariant:
+      'After each pass, the largest remaining value is fixed at the pass boundary; the suffix beyond it is sorted.',
+    example:
+      'For [3, 1, 2], the first pass swaps 3 with 1, then with 2, producing [1, 2, 3]. A later pass detects no swaps.',
+    watch: 'The indices stay fixed while values move. Equal values never swap, preserving stable order.',
+    practice: 'A pass completes without a swap. Why can this version stop?',
+    answer:
+      'Every adjacent pair was already ordered. That implies the entire remaining prefix is ordered, so no further pass is needed.',
+    space:
+      'O(1) working space for the in-place core; this displayed function returns a copy and therefore allocates O(n) space.',
+    note: 'Early exit gives Θ(n) best-case time. Random and reverse-ordered inputs need Θ(n²) work.',
+  },
   quick: {
     idea: 'Choose a pivot, move smaller values to its left and larger values to its right, then sort the two sides independently.',
     invariant:

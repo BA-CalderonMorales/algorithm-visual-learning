@@ -1,3 +1,4 @@
+import { exposeSectionTabs } from './expose-section-tabs.mjs';
 import assert from 'node:assert/strict';
 import { mkdtemp } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
@@ -9,7 +10,7 @@ import { approaches, implementations, implementationHref } from '../src/problems
 import { languages } from '../src/shared/ui/code-view/languages.ts';
 
 assert.equal(problemsFlag(undefined, true), true);
-assert.equal(problemsFlag(undefined, false), false);
+assert.equal(problemsFlag(undefined, false), true);
 assert.equal(problemsFlag('false', true), false);
 assert.equal(problemsFlag('true', false), true);
 assert.equal(problemsFlag('typo', false), false);
@@ -22,9 +23,9 @@ try {
   for (const enabled of [false, true]) {
     const outDir = await mkdtemp(path.join(tmpdir(), 'study-problems-flag-'));
     await build({
-        logLevel: 'error',
-        define: { 'import.meta.env.VITE_ENABLE_PROBLEMS': JSON.stringify(String(enabled)) },
-        build: { outDir, copyPublicDir: false },
+      logLevel: 'error',
+      define: { 'import.meta.env.VITE_ENABLE_PROBLEMS': JSON.stringify(String(enabled)) },
+      build: { outDir, copyPublicDir: false },
     });
     const port = enabled ? 5191 : 5190;
     const server = await preview({ build: { outDir }, preview: { host: '127.0.0.1', port, strictPort: true } });
@@ -55,7 +56,10 @@ try {
       ]) {
         await page.goto(base + route);
         if (!enabled) await page.waitForURL('**/#/home');
-        else await page.getByRole('tablist').first().waitFor();
+        else {
+          await exposeSectionTabs(page);
+          await page.getByRole('tablist').first().waitFor();
+        }
       }
       if (enabled) {
         for (const [id, definition] of Object.entries(implementations)) {
